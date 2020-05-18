@@ -80,5 +80,9 @@ public class Plato extends Consumible{
 		}
 		return false;
 	}
+	@Override
+	public String toString() {
+		return "Plato ["+super.toString()+", tipo=" + tipo + "]";
+	}
 
 }

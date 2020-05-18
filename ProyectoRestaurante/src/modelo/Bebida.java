@@ -26,7 +26,7 @@ public class Bebida extends Consumible {
 
 	@Override
 	public String toString() {
-		return "Bedida [cantidad=" + cantidad + ", toString()=" + super.toString() + "]";
+		return "Bebida [" + super.toString() + "cantidad=" + cantidad + "]";
 	}
 	
 	@Override

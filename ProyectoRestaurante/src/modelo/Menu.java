@@ -47,7 +47,7 @@ public class Menu extends Consumible{
 
 	@Override
 	public String toString() {
-		return super.toString() +"/n"+listaConsumibles;
+		return "Menu (" + super.toString() +" -> "+listaConsumibles + ")";
 	}
 
 	@Override

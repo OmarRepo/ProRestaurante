@@ -63,7 +63,7 @@ public class PruebaPedido {
 	
 	public static void mostrarCarta(Restaurante res) {
 		System.out.format("%s\n","Mostrando carta");
-		System.out.format("%s\n",res.getCarta().toString());
+		System.out.format("%s\n",res.getCarta().mostrarCarta());
 		System.out.format("%s\n","----------");
 	}
 	
