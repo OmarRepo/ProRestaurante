@@ -1,17 +1,23 @@
 package modelo;
 
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class Pedido {
-	
+
 	private int numeroPedido;
 	private int iDmesa;
 	private HashSet<Consumible> consumibles;
 	private int numeroClientes;
 	private double precio;
 	private ESTADO_PEDIDO estado;
-	
-	//Constructores
+
+	// Constructores
 	public Pedido(int numeroPedido, int iDmesa, HashSet<Consumible> consumibles, int numeroClientes, double precio) {
 		this.numeroPedido = numeroPedido;
 		this.iDmesa = iDmesa;
@@ -20,26 +26,57 @@ public class Pedido {
 		this.precio = precio;
 		this.estado = ESTADO_PEDIDO.en_espera;
 	}
+
+	// Metodos
+
+	public boolean cancelarPedido() {
+		// BASE DE DATOS
+
+		return true;
+
+	}
+
+	public boolean confirmarPedido() {
+		// BASE DE DATOS
+		return true;
+
+	}
+
+	//antes public void pagar()
 	
-	//Metodos
-	
-	public void cancelarPedido() {
-		
+	/** recorre el HashSet consumibles y va sumando el precio de los consumibles
+	 * 
+	 */
+	public void calcularPrecio() {
+		Iterator<Consumible> it = consumibles.iterator();
+		while (it.hasNext()) {
+			Consumible consumible = it.next();
+			precio += consumible.getPrecio();
+		}
 	}
 	
-	public void confirmarPedido() {
-		
+	/**
+	 * crea y almacena en un fichero de texto la factura con los datos del pedido
+	 * @throws IOException
+	 */
+
+	public void imprimirFactura() throws IOException {
+		File f = new File("factura.txt");
+
+		if (!f.exists()) {
+			f.createNewFile();
+		}
+		FileWriter fw = new FileWriter(f);
+		BufferedWriter bw = new BufferedWriter(fw);
+
+		String texto = this.toString();
+
+		bw.write(texto);
+		bw.close();
+
 	}
-	
-	public void pagar() {
-		
-	}
-	
-	public void imprimirFactura() {
-		
-	}
-	
-	//Get
+
+	// Get
 	public int getNumeroPedido() {
 		return numeroPedido;
 	}
@@ -63,9 +100,8 @@ public class Pedido {
 	public ESTADO_PEDIDO getEstado() {
 		return estado;
 	}
-	
-	
-	//Set
+
+	// Set
 	public void setNumeroPedido(int numeroPedido) {
 		this.numeroPedido = numeroPedido;
 	}
@@ -96,13 +132,4 @@ public class Pedido {
 				+ ", numeroClientes=" + numeroClientes + ", precio=" + precio + ", estado=" + estado + "]";
 	}
 
-	
-
-
-
-
-	
-	
-	
-	
 }
