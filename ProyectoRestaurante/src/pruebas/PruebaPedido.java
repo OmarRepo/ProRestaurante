@@ -32,6 +32,8 @@ public class PruebaPedido {
 		alma.anadirProducto(ig2);
 		alma.anadirProducto(ig3);
 		alma.anadirProducto(ig4);
+		alma.anadirProducto(bebida1);
+		alma.anadirProducto(bebida2);
 		//van para carta
 		Plato plato1 =new Plato("P01", "Tortilla", 3, TIPO_PLATO.entrante);
 		plato1.anadirIngrediente("I01",1);
@@ -68,9 +70,9 @@ public class PruebaPedido {
 	public static void mostrarAlmacen(Restaurante res) {
 		System.out.format("%s\n","Mostrando almacen");
 		System.out.format("%s\n","Ingredientes");
-		System.out.format("%s\n",);
+		System.out.format("%s\n",((AlmacenCutre) res.getAlmacen()).mostrarIngredientes());
 		System.out.format("%s\n","Bebidas");
-		System.out.format("%s\n",);
+		System.out.format("%s\n",((AlmacenCutre) res.getAlmacen()).mostrarBebidas());
 		System.out.format("%s\n","----------");
 	}
 	public static void hacerPedido(Restaurante res) {

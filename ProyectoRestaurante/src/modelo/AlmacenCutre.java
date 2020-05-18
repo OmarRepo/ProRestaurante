@@ -8,10 +8,14 @@ public class AlmacenCutre extends Almacen{
 	private HashSet<Ingrediente> ingredientes;
 	private HashSet<Bebida> bebidas;
 	
+	//Constructor
+	
 	public AlmacenCutre() {
 		ingredientes = new HashSet<Ingrediente>();
 		bebidas = new HashSet<Bebida>();
 	}
+	
+	//Metodos
 	
 	public void anadirProducto(Object o) {
 		if (o instanceof Ingrediente) {
@@ -47,6 +51,21 @@ public class AlmacenCutre extends Almacen{
 	
 	public void modificarProducto(String id,String nombre) {
 	
+	}
+	
+	public String mostrarIngredientes() {
+		String cadena="";
+		for (Iterator<Ingrediente> it = ingredientes.iterator(); it.hasNext();) {
+			cadena+=it.next().toString()+"\n";
+		}
+		return cadena;
+	}
+	public String mostrarBebidas() {
+		String cadena="";
+		for (Iterator<Bebida> it = bebidas.iterator(); it.hasNext();) {
+			cadena+=it.next().toString()+"\n";
+		}
+		return cadena;
 	}
 	
 	
