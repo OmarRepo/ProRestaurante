@@ -57,6 +57,30 @@ public class Restaurante {
 		return "Restaurante [carta=" + carta + ", Mesa=" + Arrays.toString(Mesa) + ", almacen=" + almacen + "]";
 	}
 	
+	/**
+	 * busca y devuelve un objeto Mesa en el array de mesas del restaurante
+	 * @param idMesa
+	 * @return Mesa si existe una mesa con el idMesa pasado como paráemtro dentro del array
+	 * @return null si no existe una mesa con el idMesa pasado como parámetro
+	 */
+	
+	public Mesa buscarMesa(int idMesa) {
+		for (int i = 0; i < Mesa.length; i++) {
+			if(Mesa[i].getIdMesa()==idMesa) {
+				return Mesa[i];
+			}
+		}
+		
+		return null;
+	}
+	
 	
 	
 }
+
+
+
+
+
+
+
