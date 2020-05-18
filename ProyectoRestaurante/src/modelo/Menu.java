@@ -32,9 +32,9 @@ public class Menu extends Consumible{
 	 * @param id
 	 * @return true si encuentra y elimina el consumible, false si no encuentra el id de consumible
 	 */
-	public void eliminarConsumible(String id) {
+	public boolean eliminarConsumible(String id) {
 		
-		listaConsumibles.removeIf((Consumible c) -> c.getId().equalsIgnoreCase(id));
+		return listaConsumibles.removeIf((Consumible c) -> c.getId().equalsIgnoreCase(id));
 
 	}
 	
