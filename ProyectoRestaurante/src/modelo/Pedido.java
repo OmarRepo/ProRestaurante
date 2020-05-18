@@ -5,21 +5,20 @@ import java.util.HashSet;
 public class Pedido {
 	
 	private int numeroPedido;
-	private Mesa mesa;
-	private HashSet<Menu> menus;
+	private int iDmesa;
+	private HashSet<Consumible> consumibles;
 	private int numeroClientes;
 	private double precio;
-	private boolean estado;
+	private ESTADO_PEDIDO estado;
 	
 	//Constructores
-	public Pedido(int numeroPedido, Mesa mesa, HashSet<Menu> menus, int numeroClientes, double precio, boolean estado) {
-		super();
+	public Pedido(int numeroPedido, int iDmesa, HashSet<Consumible> consumibles, int numeroClientes, double precio) {
 		this.numeroPedido = numeroPedido;
-		this.mesa = mesa;
-		this.menus = menus;
+		this.iDmesa = iDmesa;
+		this.consumibles = consumibles;
 		this.numeroClientes = numeroClientes;
 		this.precio = precio;
-		this.estado = estado;
+		this.estado = ESTADO_PEDIDO.en_espera;
 	}
 	
 	//Metodos
@@ -36,17 +35,21 @@ public class Pedido {
 		
 	}
 	
+	public void imprimirFactura() {
+		
+	}
+	
 	//Get
 	public int getNumeroPedido() {
 		return numeroPedido;
 	}
 
-	public Mesa getMesa() {
-		return mesa;
+	public int getiDmesa() {
+		return iDmesa;
 	}
 
-	public HashSet<Menu> getMenus() {
-		return menus;
+	public HashSet<Consumible> getConsumibles() {
+		return consumibles;
 	}
 
 	public int getNumeroClientes() {
@@ -57,21 +60,22 @@ public class Pedido {
 		return precio;
 	}
 
-	public boolean isEstado() {
+	public ESTADO_PEDIDO getEstado() {
 		return estado;
 	}
+	
 	
 	//Set
 	public void setNumeroPedido(int numeroPedido) {
 		this.numeroPedido = numeroPedido;
 	}
 
-	public void setMesa(Mesa mesa) {
-		this.mesa = mesa;
+	public void setiDmesa(int iDmesa) {
+		this.iDmesa = iDmesa;
 	}
 
-	public void setMenus(HashSet<Menu> menus) {
-		this.menus = menus;
+	public void setConsumibles(HashSet<Consumible> consumibles) {
+		this.consumibles = consumibles;
 	}
 
 	public void setNumeroClientes(int numeroClientes) {
@@ -82,15 +86,21 @@ public class Pedido {
 		this.precio = precio;
 	}
 
-	public void setEstado(boolean estado) {
+	public void setEstado(ESTADO_PEDIDO estado) {
 		this.estado = estado;
 	}
 
 	@Override
 	public String toString() {
-		return "Pedido [numeroPedido=" + numeroPedido + ", mesa=" + mesa + ", menus=" + menus + ", numeroClientes="
-				+ numeroClientes + ", precio=" + precio + ", estado=" + estado + "]";
+		return "Pedido [numeroPedido=" + numeroPedido + ", iDmesa=" + iDmesa + ", consumibles=" + consumibles
+				+ ", numeroClientes=" + numeroClientes + ", precio=" + precio + ", estado=" + estado + "]";
 	}
+
+	
+
+
+
+
 	
 	
 	

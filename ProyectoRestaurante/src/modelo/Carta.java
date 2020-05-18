@@ -4,14 +4,14 @@ import java.util.HashSet;
 
 public class Carta {
 	
-	private HashSet<Consumibles> listaMenus;
+	private HashSet<Consumible> listaConsumibles;
 	
 	//Contructores
 	public Carta() {
-		listaMenus = new HashSet<Consumibles>();
+		listaConsumibles = new HashSet<Consumible>();
 	}
-	public Carta(HashSet<Consumibles> listaMenus) {
-		this.listaMenus = listaMenus;
+	public Carta(HashSet<Consumible> listaMenus) {
+		this.listaConsumibles = listaMenus;
 	}
 	
 	//Metodos
@@ -23,16 +23,16 @@ public class Carta {
 	}
 	
 	//Get
-	public HashSet<Consumibles> getListaMenus() {
-		return listaMenus;
+	public HashSet<Consumible> getListaConsumibles() {
+		return listaConsumibles;
 	}
 	//Set
-	public void setListaMenus(HashSet<Consumibles> listaMenus) {
-		this.listaMenus = listaMenus;
+	public void setListaConsumibles(HashSet<Consumible> listaConsumibles) {
+		this.listaConsumibles = listaConsumibles;
 	}
 	@Override
 	public String toString() {
-		return "Carta [listaMenus=" + listaMenus + "]";
+		return "Carta [listaMenus=" + listaConsumibles + "]";
 	}
 	
 }
