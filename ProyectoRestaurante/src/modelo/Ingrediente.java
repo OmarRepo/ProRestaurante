@@ -1,18 +1,18 @@
 package modelo;
 
 public class Ingrediente {
-	private int idIngrediente;
+	private String idIngrediente;
 	private String nombre;
 	private int cantidad;
 	
 	//constructor
-	public Ingrediente(int idIngrediente, String nombre, int cantidad) {
+	public Ingrediente(String idIngrediente, String nombre, int cantidad) {
 		this.idIngrediente = idIngrediente;
 		this.nombre = nombre;
 		this.cantidad = cantidad;
 	}
 	//get
-	public int getIdIngrediente() {
+	public String getIdIngrediente() {
 		return idIngrediente;
 	}
 	public String getNombre() {
@@ -23,7 +23,7 @@ public class Ingrediente {
 	}
 	
 	//set
-	public void setIdIngrediente(int idIngrediente) {
+	public void setIdIngrediente(String idIngrediente) {
 		this.idIngrediente = idIngrediente;
 	}
 	public void setNombre(String nombre) {

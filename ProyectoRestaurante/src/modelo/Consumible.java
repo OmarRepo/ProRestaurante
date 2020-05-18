@@ -1,5 +1,7 @@
 package modelo;
 
+import java.util.Objects;
+
 public abstract class Consumible {
 	private String id;
 	private String nombre;
@@ -37,6 +39,23 @@ public abstract class Consumible {
 	@Override
 	public String toString() {
 		return "Consumible [id=" + id + ", nombre=" + nombre + ", precio=" + precio + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.getId(),this.getNombre(),this.getPrecio());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Consumible) {
+			Consumible other = (Consumible) obj;
+			if (this.getId().equalsIgnoreCase(other.getId()))
+				return true;
+		}
+		return false;
 	}
 	
 	

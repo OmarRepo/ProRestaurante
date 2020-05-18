@@ -13,12 +13,24 @@ public class Menu extends Consumible{
 	
 	//Metodos
 	
-	public void anadirConsumible(Plato plato) {
-		
+	/**
+	 * Añade un consumible al menu
+	 * @param consumible
+	 * 
+	 */
+	public void anadirConsumible(Consumible consumible) {
+		listaConsumibles.add(consumible);
 	}
 	
-	public void eliminarConsumible(int id) {
+	/**
+	 * Busca en la lista de consumibles el id pasado como parametro y lo elimina
+	 * @param id
+	 * @return true si encuentra y elimina el consumible, false si no encuentra el id de consumible
+	 */
+	public void eliminarConsumible(String id) {
 		
+		listaConsumibles.removeIf((Consumible c) -> c.getId().equalsIgnoreCase(id));
+
 	}
 	
 	public HashSet<Consumible> getListaConsumibles() {
@@ -31,6 +43,18 @@ public class Menu extends Consumible{
 	@Override
 	public String toString() {
 		return super.toString() +"/n"+listaConsumibles;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Plato) {
+			Plato other = (Plato) obj;
+			if (this.getId() == other.getId())
+				return true;
+		}
+		return false;
 	}
 
 	

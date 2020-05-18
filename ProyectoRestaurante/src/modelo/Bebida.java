@@ -1,14 +1,16 @@
 package modelo;
 
-public class Bedida extends Consumible {
+public class Bebida extends Consumible {
+	
 	private int cantidad;
-
-	public Bedida(String id, String nombre, double precio, int cantidad) {
+	
+	//Constructor
+	public Bebida(String id, String nombre, double precio, int cantidad) {
 		super(id, nombre, precio);
 		this.cantidad = cantidad;
 	}
+	
 	//get
-
 	public int getCantidad() {
 		return cantidad;
 	}
@@ -22,5 +24,16 @@ public class Bedida extends Consumible {
 		return "Bedida [cantidad=" + cantidad + ", toString()=" + super.toString() + "]";
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj instanceof Bebida) {
+			Bebida other = (Bebida) obj;
+			if (this.getId().equalsIgnoreCase(other.getId()))
+				return true;
+		}
+		return false;
+	}
 	
 }
