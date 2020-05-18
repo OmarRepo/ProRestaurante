@@ -2,88 +2,51 @@ package modelo;
 
 import java.util.HashSet;
 
-public class Plato implements Consumibles{
+public class Plato extends Consumible{
 	
-	private int idPlato;
-	private String nombre;
-	private HashSet<Producto> productos;
-	private double precio;
+	private HashSet<Ingrediente> ingredientes;
 	private TIPO_PLATO tipo;
 	
 	//Constructores
-	public Plato(int idPlato, String nombre, double precio, TIPO_PLATO tipo) {
-		this.idPlato = idPlato;
-		this.nombre = nombre;
-		this.productos = new HashSet<Producto>();
-		this.precio = precio;
+	public Plato(String id, String nombre, double precio, HashSet<Ingrediente> ingredientes, TIPO_PLATO tipo) {
+		super(id, nombre, precio);
+		this.ingredientes = ingredientes;
 		this.tipo = tipo;
 	}
-	public Plato(int idPlato, String nombre, HashSet<Producto> productos, double precio, TIPO_PLATO tipo) {
-		this.idPlato = idPlato;
-		this.nombre = nombre;
-		this.productos = productos;
-		this.precio = precio;
+	public Plato(String id, String nombre, double precio, TIPO_PLATO tipo) {
+		super(id, nombre, precio);
 		this.tipo = tipo;
 	}
-	
+
+
 	//Metodos
-	
-	public void anadirProducto(Producto producto) {
+	public void anadirIngrediente(Ingrediente ingrediente) {
 		
 	}
 	
-	public void eliminarProducto(int id) {
+	public void eliminarIngrediente(int id) {
 		
 	}
 	
-	
-	//Get
-	public int getIdPlato() {
-		return idPlato;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public HashSet<Producto> getProductos() {
-		return productos;
-	}
-
-	public double getPrecio() {
-		return precio;
+	//get
+	public HashSet<Ingrediente> getIngredientes() {
+		return ingredientes;
 	}
 
 	public TIPO_PLATO getTipo() {
 		return tipo;
 	}
 	
-	//Set
-	public void setIdPlato(int idPlato) {
-		this.idPlato = idPlato;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public void setProductos(HashSet<Producto> productos) {
-		this.productos = productos;
-	}
-
-	public void setPrecio(double precio) {
-		this.precio = precio;
+	//set
+	public void setIngredientes(HashSet<Ingrediente> ingredientes) {
+		this.ingredientes = ingredientes;
 	}
 
 	public void setTipo(TIPO_PLATO tipo) {
 		this.tipo = tipo;
 	}
 
-	@Override
-	public String toString() {
-		return "Plato [idPlato=" + idPlato + ", nombre=" + nombre + ", productos=" + productos
-				+ ", precio=" + precio + ", tipo=" + tipo + "]";
-	}
+	
 	
 	
 	

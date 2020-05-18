@@ -3,13 +3,17 @@ package modelo;
 public class Camarero extends Empleado{
 	
 
-	//PRUEBA ADRI
+	//constructor
 	public Camarero(String dni, String nombre) {
 		super(dni, nombre);
 	}
 	
 	//Metodos
-	public void tomarNota() {
+	public void tomarNota(int idMesa) {
+		
+	}
+	
+	public void mostrarCarta() {
 		
 	}
 

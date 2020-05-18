@@ -10,7 +10,7 @@ public class Restaurante {
 	private Almacen almacen;
 	
 	//Constructores
-	public Restaurante(Carta carta, modelo.Mesa[] mesa, Empleado[] listaEmpleados, Almacen almacen) {
+	public Restaurante(Carta carta, Mesa[] mesa, Empleado[] listaEmpleados, Almacen almacen) {
 		super();
 		this.carta = carta;
 		Mesa = mesa;

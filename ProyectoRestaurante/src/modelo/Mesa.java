@@ -5,14 +5,13 @@ import java.util.HashSet;
 public class Mesa {
 	
 	private int idMesa;
-	private ESTADO estado;
+	private boolean disponible;
 	private HashSet<Pedido> pedidos;
 	
 	//Constructores
-	public Mesa(int idMesa, ESTADO estado) {
-		super();
+	public Mesa(int idMesa) {
 		this.idMesa = idMesa;
-		this.estado = estado;
+		this.disponible = true;
 		this.pedidos = new HashSet<Pedido>();
 	}
 	
@@ -21,11 +20,9 @@ public class Mesa {
 	public int getIdMesa() {
 		return idMesa;
 	}
-
-	public ESTADO getEstado() {
-		return estado;
+	public boolean isDisponible() {
+		return disponible;
 	}
-
 	public HashSet<Pedido> getPedidos() {
 		return pedidos;
 	}
@@ -34,20 +31,20 @@ public class Mesa {
 	public void setIdMesa(int idMesa) {
 		this.idMesa = idMesa;
 	}
-
-	public void setEstado(ESTADO estado) {
-		this.estado = estado;
-	}
-
 	public void setPedidos(HashSet<Pedido> pedidos) {
 		this.pedidos = pedidos;
 	}
 
+	public void setDisponible(boolean disponible) {
+		this.disponible = disponible;
+	}
 
 	@Override
 	public String toString() {
-		return "Mesa [idMesa=" + idMesa + ", estado=" + estado + ", pedidos=" + pedidos + "]";
+		return "Mesa [idMesa=" + idMesa + ", disponible=" + disponible + ", pedidos=" + pedidos + "]";
 	}
-	
+
+
+
 	
 }
