@@ -67,6 +67,22 @@ public class AlmacenCutre extends Almacen{
 		}
 		return cadena;
 	}
+
+	public HashSet<Ingrediente> getIngredientes() {
+		return ingredientes;
+	}
+
+	public HashSet<Bebida> getBebidas() {
+		return bebidas;
+	}
+
+	public void setIngredientes(HashSet<Ingrediente> ingredientes) {
+		this.ingredientes = ingredientes;
+	}
+
+	public void setBebidas(HashSet<Bebida> bebidas) {
+		this.bebidas = bebidas;
+	}
 	
 	
 	
