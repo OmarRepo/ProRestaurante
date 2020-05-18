@@ -58,24 +58,25 @@
     </ownedOperation>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_UTTIMIrsEeqy28eGaZLTow" name="Carta" visibility="public">
-    <ownedAttribute xmi:id="_XXIsoIrsEeqy28eGaZLTow" name="listaMenus" visibility="private" type="_KU_zUI4eEeq8_PMFBtT_lw">
+    <ownedAttribute xmi:id="_XXIsoIrsEeqy28eGaZLTow" name="listaConsumible" visibility="private" type="_KU_zUI4eEeq8_PMFBtT_lw">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cFRPsIrsEeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cFRPsYrsEeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
-    <ownedOperation xmi:id="_BP42wIruEeqy28eGaZLTow" name="anadirMenu">
+    <ownedOperation xmi:id="_BP42wIruEeqy28eGaZLTow" name="anadirConsumible">
       <ownedParameter xmi:id="_EHpuEIruEeqy28eGaZLTow" name="menu" type="_cFuisIrsEeqy28eGaZLTow"/>
     </ownedOperation>
-    <ownedOperation xmi:id="_Ba1igIruEeqy28eGaZLTow" name="eliminarMenu">
+    <ownedOperation xmi:id="_Ba1igIruEeqy28eGaZLTow" name="eliminarConsumible">
       <ownedParameter xmi:id="_RO87gIruEeqy28eGaZLTow" name="id">
         <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
       </ownedParameter>
     </ownedOperation>
+    <ownedOperation xmi:id="_jztggJkuEeqHjbDXk4G-EA" name="mostrarCarta"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_cFuisIrsEeqy28eGaZLTow" name="Menu "/>
   <packagedElement xmi:type="uml:Class" xmi:id="_fVtswIrsEeqy28eGaZLTow" name="Empleado[]  "/>
   <packagedElement xmi:type="uml:Class" xmi:id="_omRAMIruEeqy28eGaZLTow" name="Plato" visibility="public">
     <generalization xmi:id="_yPcvMJhbEeqHpqvNkaNCeQ" general="_Xt90kJhbEeqHpqvNkaNCeQ"/>
-    <ownedAttribute xmi:id="_ggIKEIrvEeqy28eGaZLTow" name="productos" visibility="private" type="_C0OtcI1WEeqL5YueY9nIsA">
+    <ownedAttribute xmi:id="_ggIKEIrvEeqy28eGaZLTow" name="ingredientes" visibility="private" type="_bf2z8JkuEeqHjbDXk4G-EA">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_8CKQ0IrxEeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_8CK34IrxEeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
@@ -84,10 +85,15 @@
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7t5oUYsCEeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
     <interfaceRealization xmi:id="_TmQyUIsIEeqy28eGaZLTow" client="_omRAMIruEeqy28eGaZLTow"/>
-    <ownedOperation xmi:id="_rJI6sIrwEeqy28eGaZLTow" name="anadirProducto">
-      <ownedParameter xmi:id="_axPpwIrxEeqy28eGaZLTow" name="producto" type="_tbitEIruEeqy28eGaZLTow"/>
+    <ownedOperation xmi:id="_rJI6sIrwEeqy28eGaZLTow" name="anadirIngrediente">
+      <ownedParameter xmi:id="_axPpwIrxEeqy28eGaZLTow" name="id">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+      </ownedParameter>
+      <ownedParameter xmi:id="_teJa8JktEeqHjbDXk4G-EA" name="cantidad">
+        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      </ownedParameter>
     </ownedOperation>
-    <ownedOperation xmi:id="_rUpAEIrwEeqy28eGaZLTow" name="eliminarProducto">
+    <ownedOperation xmi:id="_rUpAEIrwEeqy28eGaZLTow" name="eliminarIngrediente">
       <ownedParameter xmi:id="_eh8UMIrxEeqy28eGaZLTow" name="id">
         <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
       </ownedParameter>
@@ -95,7 +101,7 @@
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_q8epoIruEeqy28eGaZLTow" name="Menu" visibility="public">
     <generalization xmi:id="_20yioJhbEeqHpqvNkaNCeQ" general="_Xt90kJhbEeqHpqvNkaNCeQ"/>
-    <ownedAttribute xmi:id="_KpCaoIryEeqy28eGaZLTow" name="listaConsumibles" visibility="private" type="_jF8EUJhZEeqHpqvNkaNCeQ">
+    <ownedAttribute xmi:id="_KpCaoIryEeqy28eGaZLTow" name="listaConsumibles" visibility="private" type="_KU_zUI4eEeq8_PMFBtT_lw">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_2OrZ0IryEeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_2OrZ0YryEeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
@@ -110,8 +116,8 @@
     </ownedOperation>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_tbitEIruEeqy28eGaZLTow" name="Ingrediente" visibility="public">
-    <ownedAttribute xmi:id="_xbWxkIruEeqy28eGaZLTow" name="idProducto" visibility="private">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+    <ownedAttribute xmi:id="_xbWxkIruEeqy28eGaZLTow" name="idIngrediente" visibility="private">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_QY0IQIrvEeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QY0IQYrvEeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
@@ -124,15 +130,6 @@
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_TVfUwIrvEeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_TVfUwYrvEeqy28eGaZLTow" value="1"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_K0vuIJhVEeqHpqvNkaNCeQ" name="precio" visibility="private">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_MqJwkJhVEeqHpqvNkaNCeQ" value="1"/>
-      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_MqJwkZhVEeqHpqvNkaNCeQ" value="1"/>
-    </ownedAttribute>
-    <ownedAttribute xmi:id="_AuwYwJhZEeqHpqvNkaNCeQ" name="tipo" visibility="private">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_f9BLkJhZEeqHpqvNkaNCeQ" value="1"/>
-      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_f9BLkZhZEeqHpqvNkaNCeQ" value="1"/>
     </ownedAttribute>
     <interfaceRealization xmi:id="_8whiQJhQEeqHpqvNkaNCeQ" client="_tbitEIruEeqy28eGaZLTow"/>
   </packagedElement>
@@ -160,7 +157,6 @@
         <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
       </ownedParameter>
     </ownedOperation>
-    <ownedOperation xmi:id="_ktGyQJhgEeqHpqvNkaNCeQ" name="mostrarCarta"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_0rlZ8IrzEeqy28eGaZLTow" name="Cocinero" visibility="public">
     <generalization xmi:id="_scc6sIsGEeqy28eGaZLTow" general="_gXnKcIrzEeqy28eGaZLTow"/>
@@ -196,7 +192,8 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_VWjegIr4Eeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_VWjegYr4Eeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
-    <ownedAttribute xmi:id="_nTNGwIr3Eeqy28eGaZLTow" name="mesa" visibility="private" type="_rdTRAIrpEeqy28eGaZLTow">
+    <ownedAttribute xmi:id="_nTNGwIr3Eeqy28eGaZLTow" name="iDmesa" visibility="private">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_WYF0AIr4Eeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_WYF0AYr4Eeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
@@ -288,7 +285,6 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ItjMkJhfEeqHpqvNkaNCeQ" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_ItjMkZhfEeqHpqvNkaNCeQ" value="1"/>
     </ownedAttribute>
-    <ownedOperation xmi:id="_O82K8JhgEeqHpqvNkaNCeQ"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_B-ESQJheEeqHpqvNkaNCeQ" name="Bebida" visibility="public">
     <generalization xmi:id="_DmY68JheEeqHpqvNkaNCeQ" general="_Xt90kJhbEeqHpqvNkaNCeQ"/>
@@ -361,4 +357,7 @@
     </ownedLiteral>
   </packagedElement>
   <packagedElement xmi:type="uml:Dependency" xmi:id="_pbmsQJhhEeqHpqvNkaNCeQ" client="_0rlZ8IrzEeqy28eGaZLTow" supplier="_k34T0Ir3Eeqy28eGaZLTow"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_CNM5YJktEeqHjbDXk4G-EA" name="HashSet &lt;Producto>   "/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_leZWIJktEeqHjbDXk4G-EA" name="HashSet &lt;Ingrediente>    "/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_bf2z8JkuEeqHjbDXk4G-EA" name="HashMap &lt;String, Integer>     "/>
 </uml:Model>
