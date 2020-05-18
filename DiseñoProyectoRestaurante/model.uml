@@ -188,7 +188,7 @@
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_k34T0Ir3Eeqy28eGaZLTow" name="Pedido" visibility="public">
     <ownedAttribute xmi:id="_mA3VIIr3Eeqy28eGaZLTow" name="numeroPedido" visibility="private">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_VWjegIr4Eeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_VWjegYr4Eeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
