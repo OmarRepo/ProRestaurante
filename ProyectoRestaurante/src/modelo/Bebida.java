@@ -9,6 +9,11 @@ public class Bebida extends Consumible {
 		super(id, nombre, precio);
 		this.cantidad = cantidad;
 	}
+	public Bebida(Bebida b) {
+		super(b);
+		this.cantidad = b.getCantidad();
+	}
+
 	
 	//get
 	public int getCantidad() {
