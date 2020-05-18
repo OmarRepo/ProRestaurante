@@ -12,6 +12,7 @@
     <semanticResources>http://www.eclipse.org/uml2/5.0.0/UML</semanticResources>
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <semanticResources>pathmap://UML_LIBRARIES/EcorePrimitiveTypes.library.uml</semanticResources>
+    <semanticResources>pathmap://UML_LIBRARIES/XMLPrimitiveTypes.library.uml</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_WOl3kIrpEeqy28eGaZLTow">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.obeonetwork.dsl.uml2.core.design/description/uml2core.odesign#//@ownedViewpoints[name='Reused']"/>
     </ownedViews>
@@ -1147,7 +1148,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_ReusedMappingForFeatures']/@subNodeMappings[name='CD_Property']"/>
       </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_-jjn0or3Eeqy28eGaZLTow" name="mesa : Mesa [1]">
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_-jjn0or3Eeqy28eGaZLTow" name="idMesa : int [1]">
         <target xmi:type="uml:Property" href="model.uml#_nTNGwIr3Eeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Property" href="model.uml#_nTNGwIr3Eeqy28eGaZLTow"/>
         <ownedStyle xmi:type="diagram:Square" uid="_-jjn04r3Eeqy28eGaZLTow" labelAlignment="LEFT">
