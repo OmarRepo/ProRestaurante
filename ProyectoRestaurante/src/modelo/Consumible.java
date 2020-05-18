@@ -42,7 +42,7 @@ public abstract class Consumible {
 
 	@Override
 	public String toString() {
-		return "Consumible [id=" + id + ", nombre=" + nombre + ", precio=" + precio + "]";
+		return "id=" + id + ", nombre=" + nombre + ", precio=" + precio;
 	}
 
 	@Override

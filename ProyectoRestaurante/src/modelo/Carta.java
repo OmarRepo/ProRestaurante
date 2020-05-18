@@ -34,8 +34,7 @@ public class Carta {
 		String carta = "";
 		while (it.hasNext()) {
 			Consumible consumible = it.next();
-			carta.concat(consumible.toString());
-			carta.concat("\n");
+			carta += consumible.toString()+"\n";
 		}
 
 		return carta;
@@ -53,7 +52,7 @@ public class Carta {
 
 	@Override
 	public String toString() {
-		return "Carta [listaMenus=" + listaConsumibles + "]";
+		return "Carta " + listaConsumibles;
 	}
 
 }

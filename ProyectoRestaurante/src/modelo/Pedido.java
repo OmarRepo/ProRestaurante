@@ -5,27 +5,27 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
+
 
 public class Pedido {
 
-	private int numeroPedido;
-	private int iDmesa;
-	private HashSet<Consumible> consumibles;
-	private int numeroClientes;
+	private String idPedido;
+	private int idMesa;
+	private HashMap<String, Integer> consumibles;
 	private double precio;
 	private ESTADO_PEDIDO estado;
 
 	// Constructores
-	public Pedido(int numeroPedido, int iDmesa, HashSet<Consumible> consumibles, int numeroClientes, double precio) {
-		this.numeroPedido = numeroPedido;
-		this.iDmesa = iDmesa;
+	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, int numeroClientes) {
+		this.idPedido = idPedido;
+		this.idMesa = iDmesa;
 		this.consumibles = consumibles;
-		this.numeroClientes = numeroClientes;
-		this.precio = precio;
+		this.precio = 0;
 		this.estado = ESTADO_PEDIDO.en_espera;
 	}
+	
 
 	// Metodos
 
@@ -47,11 +47,18 @@ public class Pedido {
 	/** recorre el HashSet consumibles y va sumando el precio de los consumibles
 	 * 
 	 */
-	public void calcularPrecio() {
-		Iterator<Consumible> it = consumibles.iterator();
+	public void calcularPrecio(Carta carta) {
+		Iterator<String> it=consumibles.keySet().iterator();
+		Iterator<Consumible>itCarta=carta.getListaConsumibles().iterator();
+		
 		while (it.hasNext()) {
-			Consumible consumible = it.next();
-			precio += consumible.getPrecio();
+			String key  = it.next();
+			while(itCarta.hasNext()) {
+				Consumible consumible=(Consumible)itCarta.next();
+				if(key.equalsIgnoreCase(consumible.getId())) {
+					precio+=consumible.getPrecio();
+				}
+			}
 		}
 	}
 	
@@ -62,14 +69,16 @@ public class Pedido {
 
 	public void imprimirFactura() throws IOException {
 		File f = new File("factura.txt");
-
+		
 		if (!f.exists()) {
 			f.createNewFile();
 		}
-		FileWriter fw = new FileWriter(f);
+		FileWriter fw = new FileWriter(f, true);
 		BufferedWriter bw = new BufferedWriter(fw);
 
-		String texto = this.toString();
+		String texto = this.toString()+"\n";
+	
+	
 
 		bw.write(texto);
 		bw.close();
@@ -77,21 +86,18 @@ public class Pedido {
 	}
 
 	// Get
-	public int getNumeroPedido() {
-		return numeroPedido;
+	public String getIdPedido() {
+		return idPedido;
 	}
 
-	public int getiDmesa() {
-		return iDmesa;
+	public int getIdMesa() {
+		return idMesa;
 	}
 
-	public HashSet<Consumible> getConsumibles() {
+	public HashMap<String, Integer> getConsumibles() {
 		return consumibles;
 	}
 
-	public int getNumeroClientes() {
-		return numeroClientes;
-	}
 
 	public double getPrecio() {
 		return precio;
@@ -102,20 +108,16 @@ public class Pedido {
 	}
 
 	// Set
-	public void setNumeroPedido(int numeroPedido) {
-		this.numeroPedido = numeroPedido;
+	public void setIdPedido(String idPedido) {
+		this.idPedido = idPedido;
 	}
 
-	public void setiDmesa(int iDmesa) {
-		this.iDmesa = iDmesa;
+	public void setIdMesa(int iDmesa) {
+		this.idMesa = iDmesa;
 	}
 
-	public void setConsumibles(HashSet<Consumible> consumibles) {
+	public void setConsumibles(HashMap<String, Integer> consumibles) {
 		this.consumibles = consumibles;
-	}
-
-	public void setNumeroClientes(int numeroClientes) {
-		this.numeroClientes = numeroClientes;
 	}
 
 	public void setPrecio(double precio) {
@@ -128,8 +130,8 @@ public class Pedido {
 
 	@Override
 	public String toString() {
-		return "Pedido [numeroPedido=" + numeroPedido + ", iDmesa=" + iDmesa + ", consumibles=" + consumibles
-				+ ", numeroClientes=" + numeroClientes + ", precio=" + precio + ", estado=" + estado + "]";
+		return "Pedido [numeroPedido=" + idPedido + ", iDmesa=" + idMesa + ", consumibles=" + consumibles
+				+ ", precio=" + precio + ", estado=" + estado + "]";
 	}
 
 }
