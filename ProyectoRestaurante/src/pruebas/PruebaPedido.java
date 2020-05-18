@@ -103,7 +103,6 @@ public class PruebaPedido {
 		}while(continuar.equalsIgnoreCase("si"));
 		
 		Pedido ped=new Pedido(numeroPedido, idMesa, consumibles);
-		
 		if(res.buscarMesa(idMesa)!=null); {
 			res.buscarMesa(idMesa).getPedidos().add(ped);
 			System.out.format("%s\n","Pedido creado y añadido");
@@ -132,6 +131,7 @@ public class PruebaPedido {
 		String opcion;
 		Restaurante res=prepararRestaurante();
 		System.out.format("%s\n","mostrar carta\nmostrar almacen\nhacer pedido\nver pedidos\npagar\nsalir");
+		System.out.format("%s","Opcion: ");
 		opcion=sc.nextLine();
 		while(!opcion.equals("salir")) {
 			switch (opcion) {
