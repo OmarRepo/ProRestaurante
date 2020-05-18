@@ -17,13 +17,51 @@ public class AlmacenCutre extends Almacen{
 	
 	//Metodos
 	
+	public boolean comprobarDisponibilidadBebida(Bebida bebida) {
+		Iterator<Bebida> it = bebidas.iterator();
+		while (it.hasNext()) {
+			Bebida bebidaIt = it.next();
+			if(bebidaIt.getId()==bebida.getId()) {
+				if(bebidaIt.getCantidad()>=1) {//si queda al menos una bebida con ese id en el almacen
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	
+	}
+	
+	
+	public boolean comprobarDisponibilidadIngredientes(Ingrediente ingrediente) {
+		Iterator<Ingrediente> it = ingredientes.iterator();
+		while (it.hasNext()) {
+			Ingrediente ingredienteIt = it.next();
+			if(ingredienteIt.getId()==ingrediente.getId()) {
+				if(ingredienteIt.getCantidad()>=1) {//si queda al menos un ingrediente con ese id en el almacen
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	public void anadirProducto(Object o) {
 		if (o instanceof Ingrediente) {
 			Ingrediente i = (Ingrediente) o;
 			if (!ingredientes.add(i)) {
 				for (Iterator<Ingrediente> it = ingredientes.iterator(); it.hasNext();) {
 					Ingrediente in = it.next();
-					if (in.getIdIngrediente().equals(i.getIdIngrediente()))
+					if (in.getId().equals(i.getId()))
 						in.setCantidad(in.getCantidad()+i.getCantidad());
 				}
 			}	
@@ -43,7 +81,7 @@ public class AlmacenCutre extends Almacen{
 	@Override
 	public void eliminarProducto(String id) {
 		if (id.startsWith("I"))
-			ingredientes.removeIf((Ingrediente i) -> i.getIdIngrediente().equalsIgnoreCase(id));
+			ingredientes.removeIf((Ingrediente i) -> i.getId().equalsIgnoreCase(id));
 		else {
 			bebidas.removeIf((Consumible c) -> c.getId().equalsIgnoreCase(id));
 		}
@@ -67,7 +105,7 @@ public class AlmacenCutre extends Almacen{
 		}
 		return cadena;
 	}
-
+	/*
 	public HashSet<Ingrediente> getIngredientes() {
 		return ingredientes;
 	}
@@ -84,6 +122,6 @@ public class AlmacenCutre extends Almacen{
 		this.bebidas = bebidas;
 	}
 	
-	
+	*/
 	
 }

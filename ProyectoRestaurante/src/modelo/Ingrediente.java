@@ -1,19 +1,19 @@
 package modelo;
 
 public class Ingrediente {
-	private String idIngrediente;
+	private String id;
 	private String nombre;
 	private int cantidad;
 	
 	//constructor
-	public Ingrediente(String idIngrediente, String nombre, int cantidad) {
-		this.idIngrediente = idIngrediente;
+	public Ingrediente(String id, String nombre, int cantidad) {
+		this.id = id;
 		this.nombre = nombre;
 		this.cantidad = cantidad;
 	}
 	//get
-	public String getIdIngrediente() {
-		return idIngrediente;
+	public String getId() {
+		return id;
 	}
 	public String getNombre() {
 		return nombre;
@@ -23,8 +23,8 @@ public class Ingrediente {
 	}
 	
 	//set
-	public void setIdIngrediente(String idIngrediente) {
-		this.idIngrediente = idIngrediente;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
@@ -35,7 +35,7 @@ public class Ingrediente {
 	
 	@Override
 	public String toString() {
-		return "Ingrediente [idIngrediente=" + idIngrediente + ", nombre=" + nombre + ", cantidad=" + cantidad + "]";
+		return "Ingrediente [idIngrediente=" + id + ", nombre=" + nombre + ", cantidad=" + cantidad + "]";
 	}
 	
 	
