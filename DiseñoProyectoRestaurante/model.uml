@@ -197,7 +197,7 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_WYF0AIr4Eeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_WYF0AYr4Eeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
-    <ownedAttribute xmi:id="_oa35cIr3Eeqy28eGaZLTow" name="consumibles" visibility="private" type="_KU_zUI4eEeq8_PMFBtT_lw">
+    <ownedAttribute xmi:id="_oa35cIr3Eeqy28eGaZLTow" name="consumibles" visibility="private" type="_JS1W8Jk7EeqWJ_KqlvM6IA">
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_X6R_gIr4Eeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_X6R_gYr4Eeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
@@ -360,4 +360,5 @@
   <packagedElement xmi:type="uml:Class" xmi:id="_CNM5YJktEeqHjbDXk4G-EA" name="HashSet &lt;Producto>   "/>
   <packagedElement xmi:type="uml:Class" xmi:id="_leZWIJktEeqHjbDXk4G-EA" name="HashSet &lt;Ingrediente>    "/>
   <packagedElement xmi:type="uml:Class" xmi:id="_bf2z8JkuEeqHjbDXk4G-EA" name="HashMap &lt;String, Integer>     "/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_JS1W8Jk7EeqWJ_KqlvM6IA" name="HashMap&lt;String,Integer>      "/>
 </uml:Model>

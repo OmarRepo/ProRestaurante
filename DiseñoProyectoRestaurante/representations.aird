@@ -1129,7 +1129,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_ReusedMappingForFeatures']/@subNodeMappings[name='CD_Property']"/>
       </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_-jjn1Ir3Eeqy28eGaZLTow" name="consumibles : HashSet&lt;Consumible>      [1]">
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_-jjn1Ir3Eeqy28eGaZLTow" name="consumibles : HashMap&lt;String,Integer>       [1]">
         <target xmi:type="uml:Property" href="model.uml#_oa35cIr3Eeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Property" href="model.uml#_oa35cIr3Eeqy28eGaZLTow"/>
         <ownedStyle xmi:type="diagram:Square" uid="_-jjn1Yr3Eeqy28eGaZLTow" labelAlignment="LEFT">
