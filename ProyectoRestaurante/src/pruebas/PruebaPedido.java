@@ -88,18 +88,18 @@ public class PruebaPedido {
 		String idConsumible;
 		int idMesa;
 		System.out.format("%s\n","Introduce numero de mesa");
-		idMesa=sc.nextInt();
+		idMesa=Integer.parseInt(sc.nextLine());
 		HashMap<String,Integer> consumibles=new HashMap<String,Integer>();
 		System.out.format("%s\n","Introduce numero de pedido");
-		String numeroPedido=sc.next();
+		String numeroPedido=sc.nextLine();
 		do{
 			System.out.format("%s\n","Introduce id de consumible");
-			idConsumible=sc.next();
+			idConsumible=sc.nextLine();
 			System.out.format("%s\n","Introduce cantidad");
-			cantidad=sc.nextInt();
+			cantidad=Integer.parseInt(sc.nextLine());
 			consumibles.put(idConsumible, cantidad);
 			System.out.format("%s\n","¿Quieres continuar pidiendo?(Si/No)");
-			continuar=sc.next();
+			continuar=sc.nextLine();
 		}while(continuar.equalsIgnoreCase("si"));
 		
 		Pedido ped=new Pedido(numeroPedido, idMesa, consumibles);
