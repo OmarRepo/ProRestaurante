@@ -9,6 +9,7 @@ public class Menu extends Consumible{
 	//Constructores
 	public Menu(String id, String nombre, double precio) {
 		super(id, nombre, precio);
+		this.listaConsumibles = new HashSet<Consumible>();
 	}
 	public Menu(Menu m) {
 		super(m);
