@@ -1,35 +1,40 @@
 package modelo;
 
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.HashMap;
 
 public class Plato extends Consumible{
 	
-	private HashSet<Ingrediente> ingredientes;
+	private HashMap<String,Integer> ingredientes;
 	private TIPO_PLATO tipo;
 	
 	//Constructores
-	public Plato(String id, String nombre, double precio, HashSet<Ingrediente> ingredientes, TIPO_PLATO tipo) {
+	public Plato(String id, String nombre, double precio, HashMap<String,Integer> ingredientes, TIPO_PLATO tipo) {
 		super(id, nombre, precio);
 		this.ingredientes = ingredientes;
 		this.tipo = tipo;
 	}
 	public Plato(String id, String nombre, double precio, TIPO_PLATO tipo) {
 		super(id, nombre, precio);
-		this.ingredientes = new HashSet<Ingrediente>();
+		this.ingredientes = new HashMap<String,Integer>();
 		this.tipo = tipo;
+	}
+	public Plato(Plato p) {
+		super(p);
+		this.ingredientes = p.getIngredientes();
+		this.tipo = p.getTipo();
 	}
 
 
 	//Metodos
 	/**
-	 * Añade un ingrediente al hashSet con los ingredientes que forman el plato
-	 * @param ingrediente
+	 * Añade un ingrediente al hashMap con los ingredientes que forman el plato
+	 * @param id identificador del ingrediente que vas a añadir
+	 * @param cantidad cantidad del ingrediente que necesita el plato
 	 * 
 	 */
-	public void anadirIngrediente(Ingrediente ingrediente) {
+	public void anadirIngrediente(String id, int cantidad) {
 		
-		ingredientes.add(ingrediente);
+		ingredientes.put(id, cantidad);
 	
 	}
 	
@@ -40,12 +45,14 @@ public class Plato extends Consumible{
 	 */
 	public boolean eliminarIngrediente(String id) {
 		
-		return ingredientes.removeIf((Ingrediente i) -> i.getIdIngrediente().equalsIgnoreCase(id));
-	
+		if (ingredientes.remove(id) != null)
+			return true;
+		return false;
+		
 	}
 	
 	//get
-	public HashSet<Ingrediente> getIngredientes() {
+	public HashMap<String,Integer> getIngredientes() {
 		return ingredientes;
 	}
 
@@ -54,7 +61,7 @@ public class Plato extends Consumible{
 	}
 	
 	//set
-	public void setIngredientes(HashSet<Ingrediente> ingredientes) {
+	public void setIngredientes(HashMap<String,Integer> ingredientes) {
 		this.ingredientes = ingredientes;
 	}
 

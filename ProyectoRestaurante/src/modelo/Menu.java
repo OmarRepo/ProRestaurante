@@ -10,7 +10,11 @@ public class Menu extends Consumible{
 	public Menu(String id, String nombre, double precio) {
 		super(id, nombre, precio);
 	}
-	
+	public Menu(Menu m) {
+		super(m);
+		this.listaConsumibles = m.getListaConsumibles();
+	}
+
 	//Metodos
 	
 	/**

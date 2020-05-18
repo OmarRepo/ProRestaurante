@@ -13,7 +13,11 @@ public abstract class Consumible {
 		this.nombre = nombre;
 		this.precio = precio;
 	}
-	
+	public Consumible(Consumible c) {
+		this.id = c.getId();
+		this.nombre = c.getNombre();
+		this.precio = c.getPrecio();
+	}
 	//get
 	public String getId() {
 		return id;
