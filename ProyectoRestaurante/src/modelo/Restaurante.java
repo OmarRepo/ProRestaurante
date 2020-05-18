@@ -5,69 +5,75 @@ import java.util.Arrays;
 public class Restaurante {
 	
 	private Carta carta;
-	private Mesa[] Mesa;
+	private Mesa[] listaMesas;
 	private Empleado[] listaEmpleados;
 	private Almacen almacen;
 	
 	//Constructores
-	public Restaurante(Carta carta, Mesa[] mesa, Empleado[] listaEmpleados, Almacen almacen) {
-		super();
+	public Restaurante(Carta carta, Mesa[] listalistaMesass, Empleado[] listaEmpleados, Almacen almacen) {
 		this.carta = carta;
-		Mesa = mesa;
+		this.listaMesas = listalistaMesass;
 		this.listaEmpleados = listaEmpleados;
 		this.almacen = almacen;
 	}
 	
-	//Get
+	
+	@Override
+	public String toString() {
+		return "Restaurante [carta=" + carta + ", listaMesas=" + Arrays.toString(listaMesas) + ", almacen=" + almacen + "]";
+	}
+	
 	public Carta getCarta() {
 		return carta;
 	}
 
-	public Mesa[] getMesa() {
-		return Mesa;
+
+	public Mesa[] getListaMesas() {
+		return listaMesas;
 	}
+
 
 	public Empleado[] getListaEmpleados() {
 		return listaEmpleados;
 	}
 
+
 	public Almacen getAlmacen() {
 		return almacen;
 	}
-	
-	//Set
+
+
 	public void setCarta(Carta carta) {
 		this.carta = carta;
 	}
 
-	public void setMesa(Mesa[] mesa) {
-		Mesa = mesa;
+
+	public void setListaMesas(Mesa[] listaMesas) {
+		this.listaMesas = listaMesas;
 	}
+
 
 	public void setListaEmpleados(Empleado[] listaEmpleados) {
 		this.listaEmpleados = listaEmpleados;
 	}
 
+
 	public void setAlmacen(Almacen almacen) {
 		this.almacen = almacen;
 	}
 
-	@Override
-	public String toString() {
-		return "Restaurante [carta=" + carta + ", Mesa=" + Arrays.toString(Mesa) + ", almacen=" + almacen + "]";
-	}
-	
+
 	/**
-	 * busca y devuelve un objeto Mesa en el array de mesas del restaurante
-	 * @param idMesa
-	 * @return Mesa si existe una mesa con el idMesa pasado como paráemtro dentro del array
-	 * @return null si no existe una mesa con el idMesa pasado como parámetro
+	 * busca y devuelve un objeto listaMesas en el array de mesas del restaurante
+	 * @param idlistaMesas
+	 * @return listaMesas si existe una mesa con el idlistaMesas pasado como paráemtro dentro del array
+	 * @return null si no existe una mesa con el idlistaMesas pasado como parámetro
 	 */
 	
 	public Mesa buscarMesa(int idMesa) {
-		for (int i = 0; i < Mesa.length; i++) {
-			if(Mesa[i].getIdMesa()==idMesa) {
-				return Mesa[i];
+		for (int i = 0; i < listaMesas.length; i++) {
+			if(listaMesas[i].getIdMesa()==idMesa) {
+				return listaMesas[i];
 			}
 		}
 		

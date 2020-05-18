@@ -2,13 +2,19 @@ package pruebas;
 
 import modelo.Bebida;
 import modelo.Carta;
+import modelo.Consumible;
 import modelo.Ingrediente;
 import modelo.Menu;
 import modelo.Mesa;
+import modelo.Pedido;
 import modelo.Plato;
 import modelo.Restaurante;
 import modelo.TIPO_PLATO;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import modelo.AlmacenCutre;
@@ -16,7 +22,6 @@ import modelo.AlmacenCutre;
 public class PruebaPedido {
 	
 	public static Scanner sc=new Scanner(System.in);
-	
 	
 	public static Restaurante prepararRestaurante() {
 		//van para almacen
@@ -57,6 +62,8 @@ public class PruebaPedido {
 		carta.anadirConsumible(plato1);
 		carta.anadirConsumible(plato2);
 		carta.anadirConsumible(plato3);
+		carta.anadirConsumible(bebida1);
+		carta.anadirConsumible(bebida2);
 		Mesa[] mesas= {new Mesa(1),new Mesa(2)};
 		return new Restaurante(carta, mesas, null, alma);
 	}
@@ -76,18 +83,55 @@ public class PruebaPedido {
 		System.out.format("%s\n","----------");
 	}
 	public static void hacerPedido(Restaurante res) {
+		String continuar="";
+		Integer cantidad;
+		String idConsumible;
+		int idMesa;
+		System.out.format("%s\n","Introduce numero de mesa");
+		idMesa=sc.nextInt();
+		HashMap<String,Integer> consumibles=new HashMap<String,Integer>();
+		System.out.format("%s\n","Introduce numero de pedido");
+		String numeroPedido=sc.next();
+		do{
+			System.out.format("%s\n","Introduce id de consumible");
+			idConsumible=sc.next();
+			System.out.format("%s\n","Introduce cantidad");
+			cantidad=sc.nextInt();
+			consumibles.put(idConsumible, cantidad);
+			System.out.format("%s\n","¿Quieres continuar pidiendo?(Si/No)");
+			continuar=sc.next();
+		}while(continuar.equalsIgnoreCase("si"));
 		
+		Pedido ped=new Pedido(numeroPedido, idMesa, consumibles);
+		
+		if(res.buscarMesa(idMesa)!=null); {
+			res.buscarMesa(idMesa).getPedidos().add(ped);
+			System.out.format("%s\n","Pedido creado y añadido");
+			System.out.format("%s\n","Pedido creado: ");
+			System.out.format("%s\n",ped.toString());
+		}
 	}
 	public static void verPedidos(Restaurante res) {
-		
+		System.out.format("%s\n","Viendo pedidos");
+		for (Mesa m : res.getListaMesas()) {
+			System.out.format("%s\n","Mesa:"+m.getIdMesa());
+			for (Pedido p: m.getPedidos()) {
+				System.out.format("%s\n",p.toString());
+			}
+		}
 	}
-	public static void pagarPedido(Restaurante res) {
-		
+	public static void pagarPedido(Restaurante res) throws IOException {
+		System.out.format("%s\n","Generando factura...");
+		for (Mesa m : res.getListaMesas()) {
+			for (Pedido p: m.getPedidos()) {
+				p.imprimirFactura();
+			}
+		}
 	}
 	public static void main(String[] args) {
 		String opcion;
 		Restaurante res=prepararRestaurante();
-		
+		System.out.format("%s\n","mostrar carta\nmostrar almacen\nhacer pedido\nver pedidos\npagar\nsalir");
 		opcion=sc.nextLine();
 		while(!opcion.equals("salir")) {
 			switch (opcion) {
@@ -104,11 +148,16 @@ public class PruebaPedido {
 				verPedidos(res);
 				break;
 			case "pagar":
-				pagarPedido(res);
+				try {
+					pagarPedido(res);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				break;
 			default:
 				break;
 			}
+			System.out.format("%s\n","mostrar carta\nmostrar almacen\nhacer pedido\nver pedidos\npagar\nsalir");
 			opcion=sc.nextLine();
 		}	
 	}
