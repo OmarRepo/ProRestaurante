@@ -1,5 +1,7 @@
 package modelo;
 
+import java.util.Scanner;
+
 public class Camarero extends Empleado{
 	
 
@@ -11,11 +13,12 @@ public class Camarero extends Empleado{
 	//Metodos
 	public void tomarNota(int idMesa) {
 		
-	}
-	
-	public void mostrarCarta() {
+		Scanner sc = new Scanner(System.in);
+		
 		
 	}
+	
+
 
 	@Override
 	public String toString() {

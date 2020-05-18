@@ -18,14 +18,15 @@ public class Pedido {
 	private ESTADO_PEDIDO estado;
 
 	// Constructores
-	public Pedido(int numeroPedido, int iDmesa, HashSet<Consumible> consumibles, int numeroClientes, double precio) {
+	public Pedido(int numeroPedido, int iDmesa, HashSet<Consumible> consumibles, int numeroClientes) {
 		this.numeroPedido = numeroPedido;
 		this.iDmesa = iDmesa;
 		this.consumibles = consumibles;
 		this.numeroClientes = numeroClientes;
-		this.precio = precio;
+		this.precio = 0;
 		this.estado = ESTADO_PEDIDO.en_espera;
 	}
+	
 
 	// Metodos
 
@@ -62,7 +63,7 @@ public class Pedido {
 
 	public void imprimirFactura() throws IOException {
 		File f = new File("factura.txt");
-
+		//append
 		if (!f.exists()) {
 			f.createNewFile();
 		}
