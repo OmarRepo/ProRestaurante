@@ -894,7 +894,7 @@
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_Class']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_Class']"/>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_39qgoorxEeqy28eGaZLTow" name="productos : HashSet&lt;Producto>   [1]">
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_39qgoorxEeqy28eGaZLTow" name="ingredientes : HashSet&lt;Ingrediente>    [1]">
         <target xmi:type="uml:Property" href="model.uml#_ggIKEIrvEeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Property" href="model.uml#_ggIKEIrvEeqy28eGaZLTow"/>
         <ownedStyle xmi:type="diagram:Square" uid="_39rHsIrxEeqy28eGaZLTow" labelAlignment="LEFT">
@@ -910,7 +910,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_ReusedMappingForFeatures']/@subNodeMappings[name='CD_Property']"/>
       </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_39rHs4rxEeqy28eGaZLTow" name="anadirProducto(producto : Ingrediente)">
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_39rHs4rxEeqy28eGaZLTow" name="anadirIngrediente(ingrediente : Ingrediente)">
         <target xmi:type="uml:Operation" href="model.uml#_rJI6sIrwEeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Operation" href="model.uml#_rJI6sIrwEeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Parameter" href="model.uml#_axPpwIrxEeqy28eGaZLTow"/>
@@ -919,7 +919,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_ReusedMappingForFeatures']/@subNodeMappings[name='CD_Operation']"/>
       </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_39rHtYrxEeqy28eGaZLTow" name="eliminarProducto(id : int)">
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_39rHtYrxEeqy28eGaZLTow" name="eliminarIngrediente(id : int)">
         <target xmi:type="uml:Operation" href="model.uml#_rUpAEIrwEeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Operation" href="model.uml#_rUpAEIrwEeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Parameter" href="model.uml#_eh8UMIrxEeqy28eGaZLTow"/>
@@ -978,7 +978,7 @@
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_Class']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.obeonetwork.dsl.uml2.design/description/uml2.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Class%20Diagram']/@defaultLayer/@containerMappings[name='CD_Class']"/>
-      <ownedElements xmi:type="diagram:DNodeListElement" uid="_O671AIrvEeqy28eGaZLTow" name="idProducto : int [1]">
+      <ownedElements xmi:type="diagram:DNodeListElement" uid="_O671AIrvEeqy28eGaZLTow" name="idIngrediente : int [1]">
         <target xmi:type="uml:Property" href="model.uml#_xbWxkIruEeqy28eGaZLTow"/>
         <semanticElements xmi:type="uml:Property" href="model.uml#_xbWxkIruEeqy28eGaZLTow"/>
         <ownedStyle xmi:type="diagram:Square" uid="_O671AYrvEeqy28eGaZLTow" labelAlignment="LEFT">
