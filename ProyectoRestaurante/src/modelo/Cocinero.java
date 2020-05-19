@@ -11,40 +11,12 @@ public class Cocinero extends Empleado {
 	}
 
 	// Metodos
-	/*
-	public void prepararPedido(Pedido pedido, Carta carta, AlmacenCutre almacenCutre) {
-		//Iterator<Consumible> it = pedido.getConsumibles().iterator();
-		Iterator<String> it=pedido.getConsumibles().keySet().iterator();
-		while (it.hasNext()) {
-			String key  = it.next();
 
-			if (key instanceof Bebida) {
-				
-			}
-
-
-
-		}
-
-	}
-	
-	
-	
-	//Iterator<Consumible> it = pedido.getConsumibles().iterator();
-	Iterator<String> it=consumibles.keySet().iterator();
-	while (it.hasNext()) {
-		String key  = it.next();
-		
-		if (true) {//si el consumible es un objeto de tipo bebida
-			if(almacenCutre.comprobarDisponibilidadBebida(bebida)){
-				almacenCutre.eliminarProducto(id);
-			}
+	public void prepararPedido(Pedido pedido, Carta carta, AlmacenCutre almacenCutre) { // Iterator<Consumible> it =
+		if(pedido.comprobarPedido(carta, almacenCutre)) {
 			
 		}
 	}
-
-	*/
-
 
 	@Override
 	public String toString() {

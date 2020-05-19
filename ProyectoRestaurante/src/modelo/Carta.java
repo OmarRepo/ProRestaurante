@@ -19,7 +19,6 @@ public class Carta {
 	// Metodos
 	public void anadirConsumible(Consumible consumible) {
 		listaConsumibles.add(consumible);
-		
 
 	}
 
@@ -34,7 +33,7 @@ public class Carta {
 		String carta = "";
 		while (it.hasNext()) {
 			Consumible consumible = it.next();
-			carta += consumible.toString()+"\n";
+			carta += consumible.toString() + "\n";
 		}
 
 		return carta;

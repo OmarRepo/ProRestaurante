@@ -5,13 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class Pedido {
 
 	private String idPedido;
 	private int idMesa;
-	private HashMap<String, Integer> consumibles;
+	private HashMap<String, Integer> consumibles;// la clave es un id tipo String y la cantidad un integer
 	private double precio;
 	private ESTADO_PEDIDO estado;
 
@@ -38,38 +39,154 @@ public class Pedido {
 		return true;
 
 	}
-/*
+
+	/**
+	 * comprueba si existen suficientes unidades de ingredientes para preparar
+	 * platos y menús o suficientes unidades de bebida
+	 * 
+	 * @param carta
+	 * @param almacenCutre
+	 * @return
+	 */
+
 	public boolean comprobarPedido(Carta carta, AlmacenCutre almacenCutre) {
 		for (String idConsumible : consumibles.keySet()) {
+
+			// si el consumible es una bebida
 			if (idConsumible.startsWith("B")) {
-				if (almacenCutre.comprobarDisponibilidadBebida(bebida)) {
+
+				if (almacenCutre.comprobarDisponibilidadBebida(idConsumible, consumibles.get(idConsumible)) != 0) {
+					return true;// si hay bebidas suficientes
+				}
+
+			}
+
+			// si el consumible es un plato
+			if (idConsumible.startsWith("P")) {
+				if (!almacenCutre.comprobarDisponibilidadPlato(consultarIngredientesPlato(carta, idConsumible))) {
 					return true;
 				}
-			}
-
-			if (idConsumible.startsWith("P")) {
 
 			}
 
+			// si el consumible es un menú
 			if (idConsumible.startsWith("M")) {
+				// Menu menu=(Menu)consumibles.get(idConsumible);
+				if (comprobarDisponibilidadMenu(consultarConsumiblesMenu(carta, idConsumible), almacenCutre, carta)) {
+					return true;
+				}
 
 			}
 
 		}
 
-		return true;
+		return false;
 	}
-	
-	
-	public void consultarIngredientesPlato() {
+
+	/**
+	 * comprueba que queda en el almacén tanto la bebida del menú como los
+	 * ingredientes necesarios para preparar los platos
+	 * 
+	 * @param consumibles
+	 * @param almacenCutre
+	 * @param carta
+	 * @return
+	 */
+
+	public boolean comprobarDisponibilidadMenu(HashMap<String, Integer> consumibles, AlmacenCutre almacenCutre,
+			Carta carta) {
+		for (String idConsumible : consumibles.keySet()) {
+			// para la bebida del menú
+			if (idConsumible.startsWith("B")) {
+
+				if ((almacenCutre.comprobarDisponibilidadBebida(idConsumible, consumibles.get(idConsumible))) != 0) {
+					return false;// si hay bebidas suficientes
+				}
+
+			}
+
+			// para los platos del menú
+			if (idConsumible.startsWith("P")) {
+				if (!almacenCutre.comprobarDisponibilidadPlato(consultarIngredientesPlato(carta, idConsumible))) {
+					return false;
+				}
+
+			}
+
+		}
+
+		return true;// si tanto la bebida como los platos están disponibles (existen suficientes
+					// ingredientes en el almacén para prepararlos)
+	}
+
+	/**
+	 * devuelve un hashMap con los consumibles (platos y bebida) que forman el menú
+	 * @param carta
+	 * @param idMenu
+	 * @return
+	 */
+
+	public HashMap<String, Integer> consultarConsumiblesMenu(Carta carta, String idMenu) {
+		Iterator<Consumible> itCarta = carta.getListaConsumibles().iterator();
+
+		while (itCarta.hasNext()) {
+			Consumible consumible = itCarta.next();
+			if (consumible.getId().startsWith("M")) {// primero combrobamos que el consumible de la carta es un menú
+														// (más eficiente)
+				if (consumible.getId().equalsIgnoreCase(idMenu)) {// después comprobamos si es el menú buscado
+					Menu menu = (Menu) consumible; // casteamos el objeto consumible para poder acceder al atributo
+													// private HashMap<String,Integer> ingredientes;
+
+					// convertimos el atributo de la clase Menu "listaConsumibles" ya que es un
+					// hashSet y necesitamos un hashMap ya que es lo que acepta como parámetro
+					// nuestro método
+					// boolean comprobarDisponibilidadMenu(HashMap<String, Integer> consumibles,
+					// AlmacenCutre almacenCutre, Carta carta)
+					HashSet<Consumible> setListaConsumibles = menu.getListaConsumibles();
+					Iterator<Consumible> itSet = setListaConsumibles.iterator();
+
+					HashMap<String, Integer> mapListaConsumibles = new HashMap<String, Integer>();
+
+					while (itSet.hasNext()) {
+						Consumible consumibleSet = itSet.next();
+						mapListaConsumibles.put(consumibleSet.getId(), 1);// los parametros son id del consumible (plato
+																			// o bebida) y la cantidad que vamos a
+																			// fijarla en 1
+					}
+
+					return mapListaConsumibles;
+				}
+			}
+		}
+		return null;
 
 	}
-	
-	
-	public void consultarConsumiblesMenu() {
-		
+
+	/**
+	 * devuelve un hasMap con los ingredientes que forman un plato
+	 * @param carta
+	 * @param idPlato
+	 * @return
+	 */
+
+	public HashMap<String, Integer> consultarIngredientesPlato(Carta carta, String idPlato) {
+		Iterator<Consumible> itCarta = carta.getListaConsumibles().iterator();
+
+		while (itCarta.hasNext()) {
+			Consumible consumible = itCarta.next();
+			if (consumible.getId().startsWith("P")) {// primero combrobamos que el consumible de la carta es un plato
+														// (más eficiente)
+				if (consumible.getId().equalsIgnoreCase(idPlato)) {// después comprobamos si es el plato buscado
+					Plato plato = (Plato) consumible; // casteamos el objeto consumible para poder acceder al atributo
+														// private HashMap<String,Integer> ingredientes;
+					HashMap<String, Integer> ingredientes = plato.getIngredientes();
+					return ingredientes;
+				}
+			}
+		}
+		return null;
+
 	}
-	*/
 
 	// antes public void pagar()
 
