@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Plato extends Consumible{
 	
-	private HashMap<String,Integer> ingredientes;
+	private HashMap<String, Integer> ingredientes;
 	private TIPO_PLATO tipo;
 	
 	//Constructores
