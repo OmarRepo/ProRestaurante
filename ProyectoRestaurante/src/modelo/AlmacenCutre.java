@@ -17,6 +17,39 @@ public class AlmacenCutre extends Almacen {
 	}
 
 	// Metodos
+	
+	/**
+	 * 
+	 * @param idIngrediente
+	 */
+	public void actualizarCantidadIngrediente(String idIngrediente) {
+		for (Ingrediente ingrediente : ingredientes) {
+			if(ingrediente.getId().equalsIgnoreCase(idIngrediente)) {
+				ingrediente.setCantidad(ingrediente.getCantidad()-1);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param idBebida
+	 */
+	public void actualizarCantidadBebidas(String idBebida) {
+		for (Bebida bebida : bebidas) {
+			if(bebida.getId().equalsIgnoreCase(idBebida)) {
+				bebida.setCantidad(bebida.getCantidad()-1);
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param idBebida
+	 * @param cantidad
+	 * @return
+	 */
 
 	public int comprobarDisponibilidadBebida(String idBebida, int cantidad) {
 		int cantidadAlmacen = 0;
@@ -34,10 +67,22 @@ public class AlmacenCutre extends Almacen {
 		}
 		return calcularNoDisponibles(cantidadAlmacen, cantidad);
 	}
+	/**
+	 * 
+	 * @param cantidadAlmacen
+	 * @param cantidadPedido
+	 * @return
+	 */
 
 	public int calcularNoDisponibles(int cantidadAlmacen, int cantidadPedido) {
 		return cantidadAlmacen - cantidadPedido;
 	}
+	/**
+	 * 
+	 * @param idIngrediente
+	 * @param cantidad
+	 * @return
+	 */
 
 
 	public int comprobarDisponibilidadIngredientes(String idIngrediente, int cantidad) {
@@ -56,6 +101,11 @@ public class AlmacenCutre extends Almacen {
 		return calcularNoDisponibles(cantidadAlmacen, cantidad);
 
 	}
+	/**
+	 * 
+	 * @param ingredientes
+	 * @return
+	 */
 
 	public boolean comprobarDisponibilidadPlato(HashMap<String, Integer> ingredientes) {
 		for (String idIngrediente : ingredientes.keySet()) {
@@ -67,6 +117,10 @@ public class AlmacenCutre extends Almacen {
 
 		return true;
 	}
+	/**
+	 * 
+	 * @param o
+	 */
 
 
 	public void anadirProducto(Object o) {
@@ -91,6 +145,9 @@ public class AlmacenCutre extends Almacen {
 		}
 
 	}
+	/**
+	 * 
+	 */
 
 	@Override
 	public void eliminarProducto(String id) {
@@ -104,6 +161,10 @@ public class AlmacenCutre extends Almacen {
 	public void modificarProducto(String id, String nombre) {
 
 	}
+	/**
+	 * 
+	 * @return
+	 */
 
 	public String mostrarIngredientes() {
 		String cadena = "";
@@ -112,6 +173,10 @@ public class AlmacenCutre extends Almacen {
 		}
 		return cadena;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 
 	public String mostrarBebidas() {
 		String cadena = "";
@@ -119,6 +184,23 @@ public class AlmacenCutre extends Almacen {
 			cadena += it.next().toString() + "\n";
 		}
 		return cadena;
+	}
+	//getters y setters
+
+	public HashSet<Ingrediente> getIngredientes() {
+		return ingredientes;
+	}
+
+	public void setIngredientes(HashSet<Ingrediente> ingredientes) {
+		this.ingredientes = ingredientes;
+	}
+
+	public HashSet<Bebida> getBebidas() {
+		return bebidas;
+	}
+
+	public void setBebidas(HashSet<Bebida> bebidas) {
+		this.bebidas = bebidas;
 	}
 
 

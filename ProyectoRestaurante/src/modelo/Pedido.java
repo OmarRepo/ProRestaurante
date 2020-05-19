@@ -48,16 +48,23 @@ public class Pedido {
 	 * @param almacenCutre
 	 * @return
 	 */
-
-	public boolean comprobarPedido(Carta carta, AlmacenCutre almacenCutre) {
+	//antes comprobarPedido
+	public boolean isComprobado(Carta carta, AlmacenCutre almacenCutre) {
+		int noDisponibles;//prueba
 		for (String idConsumible : consumibles.keySet()) {
 
 			// si el consumible es una bebida
 			if (idConsumible.startsWith("B")) {
 
-				if (almacenCutre.comprobarDisponibilidadBebida(idConsumible, consumibles.get(idConsumible)) != 0) {
+				if ((noDisponibles=almacenCutre.comprobarDisponibilidadBebida(idConsumible, consumibles.get(idConsumible))) != 0) {
 					return true;// si hay bebidas suficientes
 				}
+				//inicio prueba
+				else {
+					System.out.format("%s%d\n","Bebidas no disponibles ",noDisponibles);
+				}
+				
+				//fin prueba
 
 			}
 
