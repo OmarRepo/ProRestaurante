@@ -51,7 +51,7 @@ public class Carta {
 
 	@Override
 	public String toString() {
-		return "Carta " + listaConsumibles;
+		return "CARTA\n" + listaConsumibles;
 	}
 
 }

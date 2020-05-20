@@ -26,6 +26,12 @@ public class Plato extends Consumible{
 
 
 	//Metodos
+	/*
+	@Override
+	public boolean validarId(String id) {
+		return id.matches("^([P][0-9]{2})$");
+	}
+	*/
 	/**
 	 * Añade un ingrediente al hashMap con los ingredientes que forman el plato
 	 * @param id identificador del ingrediente que vas a añadir
@@ -75,14 +81,14 @@ public class Plato extends Consumible{
 			return true;
 		if (obj instanceof Plato) {
 			Plato other = (Plato) obj;
-			if (this.getId().equalsIgnoreCase(other.getId()))
+			if (this.getId().equals(other.getId()))
 				return true;
 		}
 		return false;
 	}
 	@Override
 	public String toString() {
-		return "Plato ["+super.toString()+", tipo=" + tipo + "]";
+		return "\tPlato ["+super.toString()+", tipo=" + tipo + "]\n";
 	}
 
 }

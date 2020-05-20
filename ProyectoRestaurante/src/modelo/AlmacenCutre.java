@@ -17,33 +17,31 @@ public class AlmacenCutre extends Almacen {
 	}
 
 	// Metodos
-	
+
 	/**
 	 * 
 	 * @param idIngrediente
 	 */
 	public void actualizarCantidadIngrediente(String idIngrediente) {
 		for (Ingrediente ingrediente : ingredientes) {
-			if(ingrediente.getId().equalsIgnoreCase(idIngrediente)) {
-				ingrediente.setCantidad(ingrediente.getCantidad()-1);
+			if (ingrediente.getId().equalsIgnoreCase(idIngrediente)) {
+				ingrediente.setCantidad(ingrediente.getCantidad() - 1);
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param idBebida
 	 */
 	public void actualizarCantidadBebidas(String idBebida) {
 		for (Bebida bebida : bebidas) {
-			if(bebida.getId().equalsIgnoreCase(idBebida)) {
-				bebida.setCantidad(bebida.getCantidad()-1);
+			if (bebida.getId().equalsIgnoreCase(idBebida)) {
+				bebida.setCantidad(bebida.getCantidad() - 1);
 			}
 		}
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * @param idBebida
@@ -67,6 +65,7 @@ public class AlmacenCutre extends Almacen {
 		}
 		return calcularNoDisponibles(cantidadAlmacen, cantidad);
 	}
+
 	/**
 	 * 
 	 * @param cantidadAlmacen
@@ -77,13 +76,13 @@ public class AlmacenCutre extends Almacen {
 	public int calcularNoDisponibles(int cantidadAlmacen, int cantidadPedido) {
 		return cantidadAlmacen - cantidadPedido;
 	}
+
 	/**
 	 * 
 	 * @param idIngrediente
 	 * @param cantidad
 	 * @return
 	 */
-
 
 	public int comprobarDisponibilidadIngredientes(String idIngrediente, int cantidad) {
 		int cantidadAlmacen = 0;
@@ -101,6 +100,7 @@ public class AlmacenCutre extends Almacen {
 		return calcularNoDisponibles(cantidadAlmacen, cantidad);
 
 	}
+
 	/**
 	 * 
 	 * @param ingredientes
@@ -117,34 +117,41 @@ public class AlmacenCutre extends Almacen {
 
 		return true;
 	}
+
 	/**
 	 * 
 	 * @param o
 	 */
 
-
 	public void anadirProducto(Object o) {
 		if (o instanceof Ingrediente) {
 			Ingrediente i = (Ingrediente) o;
-			if (!ingredientes.add(i)) {
-				for (Iterator<Ingrediente> it = ingredientes.iterator(); it.hasNext();) {
-					Ingrediente in = it.next();
-					if (in.getId().equals(i.getId()))
-						in.setCantidad(in.getCantidad() + i.getCantidad());
+			if (i.getId() != null) {// la bebida sólo se añade al almacén si el ID no es nulo(es decir, si al
+									// validarlo cumple la expresión regular)
+				if (!ingredientes.add(i)) {
+					for (Iterator<Ingrediente> it = ingredientes.iterator(); it.hasNext();) {
+						Ingrediente in = it.next();
+						if (in.getId().equals(i.getId()))
+							in.setCantidad(in.getCantidad() + i.getCantidad());
+					}
 				}
 			}
 		} else if (o instanceof Bebida) {
 			Bebida b = (Bebida) o;
-			if (!bebidas.add(b)) {
-				for (Iterator<Bebida> it = bebidas.iterator(); it.hasNext();) {
-					Bebida be = (Bebida) it.next();
-					if (be.getId().equals(b.getId()))
-						be.setCantidad(be.getCantidad() + b.getCantidad());
+			if (b.getId() != null) {// la bebida sólo se añade al almacén si el ID no es nulo(es decir, si al
+									// validarlo cumple la expresión regular)
+				if (!bebidas.add(b)) {
+					for (Iterator<Bebida> it = bebidas.iterator(); it.hasNext();) {
+						Bebida be = (Bebida) it.next();
+						if (be.getId().equals(b.getId()))
+							be.setCantidad(be.getCantidad() + b.getCantidad());
+					}
 				}
 			}
 		}
 
 	}
+
 	/**
 	 * 
 	 */
@@ -161,6 +168,7 @@ public class AlmacenCutre extends Almacen {
 	public void modificarProducto(String id, String nombre) {
 
 	}
+
 	/**
 	 * 
 	 * @return
@@ -173,6 +181,7 @@ public class AlmacenCutre extends Almacen {
 		}
 		return cadena;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -185,7 +194,7 @@ public class AlmacenCutre extends Almacen {
 		}
 		return cadena;
 	}
-	//getters y setters
+	// getters y setters
 
 	public HashSet<Ingrediente> getIngredientes() {
 		return ingredientes;
@@ -203,5 +212,9 @@ public class AlmacenCutre extends Almacen {
 		this.bebidas = bebidas;
 	}
 
+	@Override
+	public String toString() {
+		return "AlmacenCutre\nINGREDIENTES\n" + ingredientes + "\n\n\nBEBIDAS\n" + bebidas + "\n";
+	}
 
 }

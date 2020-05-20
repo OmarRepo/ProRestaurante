@@ -20,6 +20,12 @@ public class Menu extends Consumible {
 	}
 
 	// Metodos
+	/*
+	@Override
+	public boolean validarId(String id) {
+		return id.matches("^([M][0-9]{2})$");
+	}
+	*/
 
 	/**
 	 * Añade un consumible al menu
@@ -54,7 +60,7 @@ public class Menu extends Consumible {
 
 	@Override
 	public String toString() {
-		return "Menu (" + super.toString() + " -> " + listaConsumibles + ")";
+		return "\n\tMENU (" + super.toString() + "\n" + listaConsumibles + ")\n";
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class Menu extends Consumible {
 			return true;
 		if (obj instanceof Plato) {
 			Plato other = (Plato) obj;
-			if (this.getId() == other.getId())
+			if (this.getId().equals(other.getId()))
 				return true;
 		}
 		return false;
