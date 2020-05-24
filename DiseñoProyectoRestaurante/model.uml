@@ -35,10 +35,6 @@
       <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_9bI7UIsEEeqy28eGaZLTow" value="1"/>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_9bI7UYsEEeqy28eGaZLTow" value="1"/>
     </ownedAttribute>
-    <ownedAttribute xmi:id="_bkaQQIrqEeqy28eGaZLTow" name="pedidos" visibility="private" type="_LD3BUI1WEeqL5YueY9nIsA">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_30HBYIsEEeqy28eGaZLTow" value="1"/>
-      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_30HBYYsEEeqy28eGaZLTow" value="1"/>
-    </ownedAttribute>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="__VPEwIrpEeqy28eGaZLTow"/>
   <packagedElement xmi:type="uml:Class" xmi:id="_N1ZikIrqEeqy28eGaZLTow" name="Carta "/>
@@ -69,10 +65,6 @@
     </ownedOperation>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_UTTIMIrsEeqy28eGaZLTow" name="Carta" visibility="public">
-    <ownedAttribute xmi:id="_XXIsoIrsEeqy28eGaZLTow" name="listaConsumible" visibility="private" type="_KU_zUI4eEeq8_PMFBtT_lw">
-      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cFRPsIrsEeqy28eGaZLTow" value="1"/>
-      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cFRPsYrsEeqy28eGaZLTow" value="1"/>
-    </ownedAttribute>
     <ownedOperation xmi:id="_BP42wIruEeqy28eGaZLTow" name="anadirConsumible">
       <ownedParameter xmi:id="_EHpuEIruEeqy28eGaZLTow" name="menu" type="_cFuisIrsEeqy28eGaZLTow"/>
     </ownedOperation>
