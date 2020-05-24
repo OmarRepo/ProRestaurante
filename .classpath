@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/ivanp/git/ProRestaurante/LibreriasExternas/miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="LibreriasExternas/miglayout15-swing.jar"/>
 	<classpathentry kind="output" path="ProyectoRestaurante/bin"/>
 </classpath>
