@@ -27,6 +27,7 @@ public class VentanaLogin extends JFrame implements ActionListener{
 	private JLabel password;
 	private JPasswordField escribePassword;
 	private JButton acceder;
+	private JButton crearUsuario;
 	private JPanel panel;
 	Restaurante res;
 	
@@ -45,12 +46,16 @@ public class VentanaLogin extends JFrame implements ActionListener{
 		escribePassword = new JPasswordField(10);
 		acceder = new JButton("Acceder");
 		acceder.addActionListener(this);
+		crearUsuario = new JButton("Crear Usuario");
+		crearUsuario.addActionListener(this);
+		crearUsuario.setToolTipText("Necesitas ser administrador.");
 		
 		panel.add(user);
 		panel.add(escribeUser,"wrap");
 		panel.add(password);
 		panel.add(escribePassword,"wrap");
-		panel.add(acceder,"skip");
+		panel.add(acceder,"skip, split2");
+		panel.add(crearUsuario);
 		panel.setAlignmentX(CENTER_ALIGNMENT);
 		setLocationRelativeTo(null);
 		this.add(panel);
@@ -74,6 +79,11 @@ public class VentanaLogin extends JFrame implements ActionListener{
 		if (e.getSource().equals(acceder)) {
 			
 			new VentanaPrincipalCamarero();
+		}
+		if (e.getSource().equals(crearUsuario)) {
+			
+			
+			
 		}
 		
 	}

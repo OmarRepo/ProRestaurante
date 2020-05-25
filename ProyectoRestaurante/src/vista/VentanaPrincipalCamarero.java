@@ -52,15 +52,15 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener{
 		mostrarCarta.addActionListener(this);
 		
 		idPedido = new JLabel("ID Pedido: ");
-		txtIdPedido = new JTextField(3);
+		txtIdPedido = new JTextField(4);
 		mesa = new JLabel("Mesa: ");
-		txtMesa = new JTextField(3);
+		txtMesa = new JTextField(4);
 		consumible = new JLabel("Consumible: ");
 		txtConsumible = new JTextField(4);
 		cantidad = new JLabel("Cantidad: ");
-		txtCantidad = new JTextField(3);
+		txtCantidad = new JTextField(4);
 		
-		anadirIngrediente = new JButton("Añadir Ingrediente");
+		anadirIngrediente = new JButton("Añadir Consumible");
 		anadirIngrediente.addActionListener(this);
 		hacerPedido = new JButton("Hacer Pedido");
 		hacerPedido.addActionListener(this);
@@ -77,7 +77,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener{
 		panel.add(cantidad);
 		panel.add(txtCantidad,"wrap");
 		panel.add(anadirIngrediente);
-		panel.add(hacerPedido);
+		panel.add(hacerPedido,"split2");
 		panel.add(pagar);
 		
 		setLocationRelativeTo(null);
