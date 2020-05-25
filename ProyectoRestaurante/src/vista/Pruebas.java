@@ -1,11 +1,15 @@
 package vista;
 
+import java.io.IOException;
+import java.util.HashMap;
+
 import modelo.AlmacenCutre;
 import modelo.Bebida;
 import modelo.Carta;
 import modelo.Ingrediente;
 import modelo.Menu;
 import modelo.Mesa;
+import modelo.Pedido;
 import modelo.Plato;
 import modelo.Restaurante;
 import modelo.TIPO_PLATO;
@@ -56,6 +60,30 @@ public class Pruebas {
 		carta.anadirConsumible(bebida2);
 		Mesa[] mesas = { new Mesa(1), new Mesa(2) };
 		return new Restaurante(carta, mesas, null, alma);
+	}
+	
+	public static void AnadirConsumible(HashMap<String, Integer> consumibles, String idConsumible, Integer cantidad) {
+		consumibles.put(idConsumible, cantidad);
+	}
+	
+	public static String hacerPedido(Restaurante res, HashMap<String, Integer> consumibles,String numeroPedido, int idMesa) {
+		
+		Pedido ped = new Pedido(numeroPedido, idMesa, consumibles);
+		if (res.buscarMesa(idMesa) != null) {
+			res.buscarMesa(idMesa).getPedidos().add(ped);
+			
+			return ped.toString();
+		}
+		return "error";
+	}
+	
+	public static void pagarPedido(Restaurante res) throws IOException {
+		System.out.format("%s\n", "Generando factura...");
+		for (Mesa m : res.getListaMesas()) {
+			for (Pedido p : m.getPedidos()) {
+				p.imprimirFactura();
+			}
+		}
 	}
 	
 	public static void main(String[] args) {

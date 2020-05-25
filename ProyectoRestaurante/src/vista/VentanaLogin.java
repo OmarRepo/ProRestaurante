@@ -37,8 +37,6 @@ public class VentanaLogin extends JFrame implements ActionListener{
 	
 	public void crearVentana() {
 		
-		res = Pruebas.prepararRestaurante();
-		
 		panel = new JPanel();
 		panel.setLayout(new MigLayout());
 		user = new JLabel("Usuario: ");
@@ -74,9 +72,8 @@ public class VentanaLogin extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource().equals(acceder)) {
-			if (JOptionPane.showConfirmDialog(this, "Mostrar Carta?")==0)
-				JOptionPane.showMessageDialog(this, res.getCarta().mostrarCarta());
-				
+			
+			new VentanaPrincipalCamarero();
 		}
 		
 	}
