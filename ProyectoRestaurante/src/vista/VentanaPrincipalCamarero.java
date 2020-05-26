@@ -13,7 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
@@ -23,6 +27,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener{
 	private Restaurante res;
 	private	HashMap<String, Integer> consumibles;
 	
+	//Carta
 	private JButton mostrarCarta;
 	private JLabel idPedido;
 	private JTextField txtIdPedido;
@@ -36,17 +41,28 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener{
 	private JButton hacerPedido;
 	private JButton pagar;
 	
-	private JPanel panel;
+	//Pedidos
+	private DefaultTableModel model;
+	private JTable tabla;
+	//Paneles
+	private JTabbedPane pestañas;
+	private JPanel panelCarta;
+	private JScrollPane panelPedidos;
 	
 	public VentanaPrincipalCamarero() {
 		crearVentana();
+		prepararTabla();
 		res = Pruebas.prepararRestaurante();
 		consumibles = new HashMap<String, Integer>();
 	}
 	
 	public void crearVentana() {
-		panel = new JPanel();
-		panel.setLayout(new MigLayout());
+		
+		pestañas = new JTabbedPane();
+		
+		//Panel Carta
+		panelCarta = new JPanel();
+		panelCarta.setLayout(new MigLayout());
 		
 		mostrarCarta = new JButton("Mostrar Carta");
 		mostrarCarta.addActionListener(this);
@@ -67,21 +83,34 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener{
 		pagar = new JButton("Pagar");
 		pagar.addActionListener(this);
 		
-		panel.add(mostrarCarta,"wrap");
-		panel.add(idPedido);
-		panel.add(txtIdPedido,"wrap");
-		panel.add(mesa);
-		panel.add(txtMesa,"wrap");
-		panel.add(consumible);
-		panel.add(txtConsumible,"wrap");
-		panel.add(cantidad);
-		panel.add(txtCantidad,"wrap");
-		panel.add(anadirIngrediente);
-		panel.add(hacerPedido,"split2");
-		panel.add(pagar);
+		panelCarta.add(mostrarCarta,"wrap");
+		panelCarta.add(idPedido,"align 50% 50%");
+		panelCarta.add(txtIdPedido,"wrap");
+		panelCarta.add(mesa);
+		panelCarta.add(txtMesa,"wrap");
+		panelCarta.add(consumible);
+		panelCarta.add(txtConsumible,"wrap");
+		panelCarta.add(cantidad);
+		panelCarta.add(txtCantidad,"wrap");
+		panelCarta.add(anadirIngrediente);
+		panelCarta.add(hacerPedido,"split2");
+		panelCarta.add(pagar);
 		
-		setLocationRelativeTo(null);
-		this.add(panel);
+		pestañas.addTab("Carta", panelCarta);
+		
+		//Panel Pedidos
+		tabla = new JTable();
+		panelPedidos = new JScrollPane(tabla);
+		
+		
+		
+		//panelPedidos.add(tabla);
+		pestañas.addTab("Pedidos", panelPedidos);
+		
+		
+		this.add(pestañas);
+		
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("Camarero");
@@ -93,6 +122,13 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener{
 	  
 	    setLocationRelativeTo(null);
 	    setVisible(true);
+	}
+	
+	public void prepararTabla() {
+		
+		String titulos[] = {"ID Pedido","Mesa","Consumibles","Estado"};
+		model = new DefaultTableModel(null,titulos);
+		tabla.setModel(model);
 	}
 
 	@Override
