@@ -1,0 +1,9 @@
+CREATE OR REPLACE PROCEDURE drop_if_exists(table_name VARCHAR2) IS
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE ' || table_name;
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+      END IF;
+END;
