@@ -4,6 +4,7 @@ import java.sql.Date;
 
 public class Empleado {
 	
+	private String id;
 	private String dni;
 	private String nombre;
 	private Date fechaContrato;
@@ -11,18 +12,23 @@ public class Empleado {
 	en lugar de la de util*/
 	
 	//Constructores
-	public Empleado(String dni, String nombre) {
+	public Empleado(String id, String dni, String nombre) {
+		this.id = id;
 		this.dni = dni;
 		this.nombre = nombre;
 		this.fechaContrato =null;
 	}
 	public Empleado(Empleado that) {
+		this.id = that.id;
 		this.dni = that.dni;
 		this.nombre = that.nombre;
 		this.fechaContrato = that.fechaContrato;
 	}
 	
 	//Get
+	public String getId() {
+		return id;
+	}
 	public String getDni() {
 		return dni;
 	}
@@ -32,6 +38,9 @@ public class Empleado {
 	}
 	
 	//Set
+	public void setId(String id) {
+		this.id = id;
+	}
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
@@ -55,6 +64,8 @@ public class Empleado {
 	public String toString() {
 		return "Empleado [dni=" + dni + ", nombre=" + nombre + ", fechaContrato=" + fechaContrato + "]";
 	}
+	
+	
 
 
 

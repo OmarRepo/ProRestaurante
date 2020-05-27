@@ -66,9 +66,9 @@ public class Pruebas {
 		consumibles.put(idConsumible, cantidad);
 	}
 	
-	public static String hacerPedido(Restaurante res, HashMap<String, Integer> consumibles,String numeroPedido, int idMesa) {
+	public static String hacerPedido(Restaurante res, HashMap<String, Integer> consumibles,String numeroPedido, int idMesa, String idCamarero, String idCocinero) {
 		
-		Pedido ped = new Pedido(numeroPedido, idMesa, consumibles);
+		Pedido ped = new Pedido(numeroPedido, idMesa, consumibles,idCamarero, idCocinero);
 		if (res.buscarMesa(idMesa) != null) {
 			res.buscarMesa(idMesa).getPedidos().add(ped);
 			

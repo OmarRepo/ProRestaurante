@@ -15,7 +15,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class VentanaAdmin extends JFrame implements ActionListener{
 	
-	
+	private JLabel skillsAdmin;
 	private JButton crearUsuario;
 	private JPanel panel;
 	Restaurante res;
@@ -29,10 +29,12 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 		panel = new JPanel();
 		panel.setLayout(new MigLayout());
 		
+		skillsAdmin = new JLabel("Opciones de administrador");
 		crearUsuario = new JButton("Crear Usuario");
 		crearUsuario.addActionListener(this);
 		crearUsuario.setToolTipText("Necesitas ser administrador.");
 		
+		panel.add(skillsAdmin);
 		panel.add(crearUsuario);
 		
 		panel.setAlignmentX(CENTER_ALIGNMENT);
@@ -53,7 +55,9 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if (e.getSource().equals(crearUsuario)) {
+			
+		}
 	
 	}
 	

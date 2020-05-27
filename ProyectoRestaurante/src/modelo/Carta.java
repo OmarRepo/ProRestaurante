@@ -30,13 +30,13 @@ public class Carta {
 	// antes en clase Empleado
 	public String mostrarCarta() {
 		Iterator<Consumible> it = listaConsumibles.iterator();
-		String carta = "Carta:\n";
+		String carta = "<html><body>Carta<br>";
 		while (it.hasNext()) {
 			Consumible consumible = it.next();
-			carta += consumible.getId() + " " + consumible.getNombre() + " " + consumible.getPrecio() + "€" + "\n";
+			carta += consumible.getId() + " " + consumible.getNombre() + " " + consumible.getPrecio() + "€" + "<br>";
 		}
 
-		return carta;
+		return carta+"</body></html>";
 	}
 
 	// Get

@@ -5,8 +5,8 @@ import java.util.HashMap;
 public class Cocinero extends Empleado {
 
 	// Constructores
-	public Cocinero(String dni, String nombre) {
-		super(dni, nombre);
+	public Cocinero(String id,String dni, String nombre) {
+		super(id, dni, nombre);
 	}
 
 	// Metodos

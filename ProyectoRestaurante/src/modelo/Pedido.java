@@ -4,6 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,20 +17,37 @@ public class Pedido {
 	private String idPedido;
 	private int idMesa;
 	private HashMap<String, Integer> consumibles;// la clave es un id tipo String y la cantidad un integer
+	private String idCamarero;
+	private String idCocinero;
 	private double precio;
 	private ESTADO_PEDIDO estado;
 
 	// Constructores
-	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles) {
+	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles,String idCamarero, String idCocinero) {
 		this.idPedido = idPedido;
 		this.idMesa = iDmesa;
 		this.consumibles = consumibles;
 		this.precio = 0;
 		this.estado = ESTADO_PEDIDO.en_espera;
+		this.idCamarero = idCamarero;
+		this.idCocinero = idCocinero;
 	}
 
 	// Metodos
-
+	
+	public void insertarPedido() throws ClassNotFoundException, SQLException {
+		
+		
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "resadmin", "resadmin123");
+		if (connection != null) {
+			System.out.format("%s \n","Conexion realizada.");
+			PreparedStatement ps = connection.prepareStatement("insert into PEDIDOS (ID_PEDIDO,MESA,)values(?,?,,?,?)");
+			ps.setString(1, this.getIdPedido());
+			ps.setInt(2, this.getIdMesa());
+		}
+	}
+	
 	public boolean cancelarPedido() {
 		// BASE DE DATOS
 
@@ -258,7 +279,15 @@ public class Pedido {
 	public ESTADO_PEDIDO getEstado() {
 		return estado;
 	}
+	
+	public String getIdCamarero() {
+		return idCamarero;
+	}
 
+	public String getIdCocinero() {
+		return idCocinero;
+	}
+	
 	// Set
 	public void setIdPedido(String idPedido) {
 		this.idPedido = idPedido;
@@ -279,11 +308,23 @@ public class Pedido {
 	public void setEstado(ESTADO_PEDIDO estado) {
 		this.estado = estado;
 	}
+	
+	public void setIdCamarero(String idCamarero) {
+		this.idCamarero = idCamarero;
+	}
+
+	public void setIdCocinero(String idCocinero) {
+		this.idCocinero = idCocinero;
+	}
 
 	@Override
 	public String toString() {
 		return "Pedido [numeroPedido=" + idPedido + ", iDmesa=" + idMesa + ", consumibles=" + consumibles + ", precio="
 				+ precio + ", estado=" + estado + "]";
 	}
+
+	
+
+	
 
 }

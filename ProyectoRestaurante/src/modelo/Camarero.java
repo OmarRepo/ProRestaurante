@@ -6,8 +6,8 @@ public class Camarero extends Empleado{
 	
 
 	//constructor
-	public Camarero(String dni, String nombre) {
-		super(dni, nombre);
+	public Camarero(String id,String dni, String nombre) {
+		super(id, dni, nombre);
 	}
 	
 	//Metodos
