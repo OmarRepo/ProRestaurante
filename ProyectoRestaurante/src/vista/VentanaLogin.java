@@ -27,7 +27,6 @@ public class VentanaLogin extends JFrame implements ActionListener{
 	private JLabel password;
 	private JPasswordField escribePassword;
 	private JButton acceder;
-	private JButton crearUsuario;
 	private JPanel panel;
 	
 	public VentanaLogin() {
@@ -75,11 +74,6 @@ public class VentanaLogin extends JFrame implements ActionListener{
 				new VentanaAdmin();
 			else
 				new VentanaPrincipalCamarero();
-		}
-		if (e.getSource().equals(crearUsuario)) {
-			
-			
-			
 		}
 		
 	}
