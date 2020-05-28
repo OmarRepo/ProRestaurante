@@ -18,6 +18,10 @@ public class Plato extends Consumible{
 		this.ingredientes = new HashMap<String,Integer>();
 		this.tipo = tipo;
 	}
+	public Plato(String id, String nombre, double precio) {
+		super(id, nombre, precio);
+		this.ingredientes = new HashMap<String,Integer>();
+	}
 	public Plato(Plato p) {
 		super(p);
 		this.ingredientes = p.getIngredientes();
@@ -88,7 +92,7 @@ public class Plato extends Consumible{
 	}
 	@Override
 	public String toString() {
-		return "\tPlato ["+super.toString()+", tipo=" + tipo + "]\n";
+		return "\tPlato ["+super.toString()+"]";
 	}
 
 }

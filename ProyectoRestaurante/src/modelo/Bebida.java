@@ -11,13 +11,15 @@ public class Bebida extends Consumible {
 			this.cantidad = cantidad;
 		}
 	}
-
+	public Bebida(String id, String nombre, double precio) {
+		super(id, nombre, precio);
+	}
 	public Bebida(Bebida b) {
 		super(b);
 		this.cantidad = b.getCantidad();
 
 	}
-
+	
 	// Métodos
 	/*
 	 * @Override public boolean validarId(String id) { return
