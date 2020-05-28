@@ -28,10 +28,11 @@ CREATE TABLE PEDIDOS (
 	Estado VARCHAR2(10 CHAR),
 	ID_Camarero VARCHAR2(5 CHAR),
 	ID_Cocinero VARCHAR2(5 CHAR),
+	Precio Number(6,2),
 	CONSTRAINT pedidos_pk PRIMARY KEY (ID_Pedido),
 	CONSTRAINT pedidos_fk1 FOREIGN KEY (ID_Cocinero) 
 	REFERENCES  empleados(ID_Empleado) ON DELETE SET NULL,
-	CONSTRAINT pedidos_fk2 FOREIGN KEY (ID_Camarero) 
+	CONSTRAINT pedidos_fk2 FOREIGN KEY (ID_Camarero)
 	REFERENCES  empleados(ID_Empleado) ON DELETE SET NULL
 );
 
