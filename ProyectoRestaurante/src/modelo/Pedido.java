@@ -17,19 +17,25 @@ public class Pedido {
 	private String idPedido;
 	private int idMesa;
 	private HashMap<String, Integer> consumibles;// la clave es un id tipo String y la cantidad un integer
-	private String idCamarero;
 	private String idCocinero;
 	private double precio;
 	private ESTADO_PEDIDO estado;
 
 	// Constructores
-	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles,String idCamarero, String idCocinero) {
+	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, ESTADO_PEDIDO estado) {
 		this.idPedido = idPedido;
 		this.idMesa = iDmesa;
 		this.consumibles = consumibles;
 		this.precio = 0;
-		this.estado = ESTADO_PEDIDO.en_espera;
-		this.idCamarero = idCamarero;
+		this.estado = estado;
+	}
+	
+	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles,String idCocinero, ESTADO_PEDIDO estado) {
+		this.idPedido = idPedido;
+		this.idMesa = iDmesa;
+		this.consumibles = consumibles;
+		this.precio = 0;
+		this.estado = estado;
 		this.idCocinero = idCocinero;
 	}
 
@@ -279,10 +285,6 @@ public class Pedido {
 	public ESTADO_PEDIDO getEstado() {
 		return estado;
 	}
-	
-	public String getIdCamarero() {
-		return idCamarero;
-	}
 
 	public String getIdCocinero() {
 		return idCocinero;
@@ -307,10 +309,6 @@ public class Pedido {
 
 	public void setEstado(ESTADO_PEDIDO estado) {
 		this.estado = estado;
-	}
-	
-	public void setIdCamarero(String idCamarero) {
-		this.idCamarero = idCamarero;
 	}
 
 	public void setIdCocinero(String idCocinero) {

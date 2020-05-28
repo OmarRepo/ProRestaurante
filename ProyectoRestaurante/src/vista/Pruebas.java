@@ -6,6 +6,7 @@ import java.util.HashMap;
 import modelo.AlmacenCutre;
 import modelo.Bebida;
 import modelo.Carta;
+import modelo.ESTADO_PEDIDO;
 import modelo.Ingrediente;
 import modelo.Menu;
 import modelo.Mesa;
@@ -37,10 +38,10 @@ public class Pruebas {
 		Plato plato1 = new Plato("P01", "Tortilla", 3, TIPO_PLATO.entrante);
 		plato1.anadirIngrediente("I01", 1);
 		plato1.anadirIngrediente("I02", 1);
-		Plato plato2 = new Plato("P01", "Hamburguesa", 4, TIPO_PLATO.segundo);
+		Plato plato2 = new Plato("P03", "Hamburguesa", 4, TIPO_PLATO.segundo);
 		plato2.anadirIngrediente("I03", 1);
 		plato2.anadirIngrediente("I04", 2);
-		Plato plato3 = new Plato("P01", "Patatas fritas", 4, TIPO_PLATO.primero);
+		Plato plato3 = new Plato("P02", "Patatas fritas", 4, TIPO_PLATO.primero);
 		plato3.anadirIngrediente("I01", 2);
 		Menu menu1 = new Menu("M01", "Especial", 7.30);
 		menu1.anadirConsumible(bebida1);
@@ -68,7 +69,7 @@ public class Pruebas {
 	
 	public static String hacerPedido(Restaurante res, HashMap<String, Integer> consumibles,String numeroPedido, int idMesa, String idCamarero, String idCocinero) {
 		
-		Pedido ped = new Pedido(numeroPedido, idMesa, consumibles,idCamarero, idCocinero);
+		Pedido ped = new Pedido(numeroPedido, idMesa, consumibles,ESTADO_PEDIDO.en_espera);
 		if (res.buscarMesa(idMesa) != null) {
 			res.buscarMesa(idMesa).getPedidos().add(ped);
 			

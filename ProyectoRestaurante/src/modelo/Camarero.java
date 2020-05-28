@@ -11,6 +11,7 @@ public class Camarero extends Empleado{
 	}
 	
 	//Metodos
+	
 	public void tomarNota(int idMesa) {
 		
 		Scanner sc = new Scanner(System.in);

@@ -1,6 +1,7 @@
 package vista;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,21 +13,22 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
+
 
 import modelo.Consumible;
+import modelo.ESTADO_PEDIDO;
+import modelo.Pedido;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
@@ -35,8 +37,12 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	private Restaurante res;
 	
 	//Carta
-	private JLabel carta;
-	private JButton mostrarCarta;
+	private JScrollPane sCartaMenu;
+	private JTable cartaMenu;
+	private JScrollPane sCartaPlatos;
+	private JTable cartaPlatos;
+	private JScrollPane sCartaBebidas;
+	private JTable cartaBebidas;
 	
 	//Pedidos
 	private ModeloTabla modelPedidos;
@@ -49,13 +55,10 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 			private JTextField txtPedido;
 			private JLabel mesa;
 			private JTextField txtMesa;
-			private JLabel consumible;
-			private JTextField txtConsumible;
-			private JLabel cantidad;
-			private JTextField txtCantidad;
 			private JPanel panelIntroducirPedido;
 	private JButton eliminarPedido;
 	private JButton pagarPedido;
+	private JButton guardarPedido;
 		
 	//Paneles
 	private JTabbedPane pestañas;
@@ -74,7 +77,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	
 	public void prepararCarta() {
 		for (Consumible i : this.res.getCarta().getListaConsumibles()) {
-			Object[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio()),new JCheckBox()};
+			Object[] fila = {i.getId(),i.getNombre(),0,Double.toString(i.getPrecio()),false};
 			modelCarta.addRow(fila);
 		}
 	}
@@ -85,17 +88,13 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		
 		//Panel Carta
 		panelCarta = new JPanel();
-		panelCarta.setLayout(new MigLayout("align 50% 50%"));
+		panelCarta.setLayout(new MigLayout());
 		
 		
-		carta = new JLabel(res.getCarta().mostrarCarta());
-		
-		mostrarCarta = new JButton("Mostrar Carta");
-		mostrarCarta.addActionListener(this);
-		
-		panelCarta.add(carta);
-		panelCarta.add(mostrarCarta,"wrap");
-		
+		/*panelCarta.add(cartaMenus,"dock north,wrap");
+		panelCarta.add(cartaBebidas,"dock west");
+		panelCarta.add(cartaPlatos,"dock east");
+		*/
 		pestañas.addTab("Carta", panelCarta);
 		
 		//Panel Pedidos
@@ -104,12 +103,14 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		tablaPedidos.addMouseListener(this);
 		tablaCarta = new JTable();
 		
-		anadirPedido = new JButton("Añadir Pedido");
+		anadirPedido = new JButton("Nuevo Pedido");
 		anadirPedido.addActionListener(this);
 		eliminarPedido = new JButton("Eliminar Pedido");
 		eliminarPedido.addActionListener(this);
 		pagarPedido = new JButton("Pagar Pedido");
 		pagarPedido.addActionListener(this);
+		guardarPedido = new JButton("Guardar Pedio");
+		guardarPedido.addActionListener(this);
 		
 		panelPedidos = new JPanel();
 		panelPedidos.setLayout(new MigLayout("align 50% 50%"));
@@ -120,12 +121,13 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		panelTablaPedidos = new JScrollPane(tablaPedidos);
 		panelTablaPedidos.setSize((int) (panelPedidos.getSize().getWidth()/2) , (int) (panelPedidos.getSize().getHeight()/2));
 		
-		panelPedidos.add(panelTablaPedidos);
-		panelPedidos.add(panelTablaCarta,"wrap");
+		panelPedidos.add(panelTablaPedidos,"growx, pushx");
+		panelPedidos.add(panelTablaCarta,"wrap, growx, pushx");
 		
 		panelPedidos.add(anadirPedido,"split3,align 50% 50%");
 		panelPedidos.add(eliminarPedido);
 		panelPedidos.add(pagarPedido);
+		panelPedidos.add(guardarPedido);
 		
 		pestañas.addTab("Pedidos", panelPedidos);
 		
@@ -152,47 +154,36 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		modelPedidos = new ModeloTabla(null,titulosPedidos);
 		tablaPedidos.setModel(modelPedidos);
 	
-		String titulosCarta[] = {"ID Consumible","Nombre","Cantidad",""};
+		String titulosCarta[] = {"ID Consumible","Nombre","Cantidad","Precio",""};
 		modelCarta = new ModeloTabla(null,titulosCarta);
 		tablaCarta.setModel(modelCarta);
+		tablaCarta.setCellEditor(tablaCarta.getDefaultEditor(Boolean.class));
+		
 	}
 	
-	public void introducirPedido() {
+	public void nuevoPedido() {
 		panelIntroducirPedido = new JPanel();
 		panelIntroducirPedido.setLayout(new MigLayout());
 		pedido = new JLabel("ID Pedido: ");
 		txtPedido = new JTextField(4);
 		mesa = new JLabel("Mesa: ");
 		txtMesa = new JTextField(4);
-		consumible = new JLabel("Consumible: ");
-		txtConsumible = new JTextField(4);
-		cantidad = new JLabel("Cantidad: ");
-		txtCantidad = new JTextField(4);
 		
 		panelIntroducirPedido.add(pedido);
 		panelIntroducirPedido.add(txtPedido,"wrap");
 		panelIntroducirPedido.add(mesa);
 		panelIntroducirPedido.add(txtMesa,"wrap");
-		panelIntroducirPedido.add(consumible);
-		panelIntroducirPedido.add(txtConsumible,"wrap");
-		panelIntroducirPedido.add(cantidad);
-		panelIntroducirPedido.add(txtCantidad,"wrap");
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//Botones carta
-		if (e.getSource().equals(mostrarCarta))
-			JOptionPane.showMessageDialog(this, res.getCarta().mostrarCarta());
-	
 		//Botones Pedidos
 		if (e.getSource().equals(anadirPedido)) {
-			introducirPedido();
+			nuevoPedido();
 			int resultado = JOptionPane.showConfirmDialog(this, panelIntroducirPedido, "Introduce los parametros del pedido",JOptionPane.OK_CANCEL_OPTION);
 			if (resultado == JOptionPane.OK_OPTION) {
-				modelPedidos = (ModeloTabla) tablaPedidos.getModel();
-				String[] fila = {txtPedido.getText(),txtMesa.getText(),txtConsumible.getText(),txtCantidad.getText(),modelo.ESTADO_PEDIDO.en_espera.name()};
+				String[] fila = {txtPedido.getText(),txtMesa.getText(),modelo.ESTADO_PEDIDO.en_espera.name()};
 				modelPedidos.addRow(fila);
 				
 			}
@@ -202,7 +193,6 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 			if (filaSeleccionada == -1)
 				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
 			else {
-				modelPedidos = (ModeloTabla) tablaPedidos.getModel();
 				modelPedidos.removeRow(filaSeleccionada);
 			}
 		}
@@ -220,6 +210,24 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				}
 			}
 		}
+		if (e.getSource().equals(guardarPedido)) {
+			int filaSeleccionada = tablaPedidos.getSelectedRow();
+			String id = tablaPedidos.getValueAt(filaSeleccionada, 0).toString();
+			int mesa = Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString());
+			HashMap<String, Integer> conPedidos = new HashMap<String,Integer>();
+			ESTADO_PEDIDO estado = ESTADO_PEDIDO.valueOf(tablaPedidos.getValueAt(filaSeleccionada, 2).toString());
+			
+			if (filaSeleccionada == -1)
+				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
+			else {
+				for (int i=0; i<=tablaPedidos.getRowCount(); i++) {
+					if ((Boolean) tablaCarta.getValueAt(i, 4))
+						conPedidos.put(tablaCarta.getValueAt(i, 0).toString(), Integer.parseInt(tablaCarta.getValueAt(i, 2).toString()));
+				}
+				res.getListaMesas()[Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString())].getPedidos().add(new Pedido(id,mesa,conPedidos,estado));
+				
+			}
+		}
 	}
 
 	
@@ -232,14 +240,34 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if (e.getClickCount()==2) {
+		boolean pedidoExiste=false;
+		int cont=0;
+		if (e.getClickCount()==1) {
 			JTable tabla = (JTable)e.getSource();
 			int filaSeleccionada = tabla.getSelectedRow();
-			tabla.getValueAt(filaSeleccionada, 0);
-			System.out.format("%s \n","hola");
-			
-			//res.getCarta().
+			System.out.format("%s \n",tabla.getValueAt(filaSeleccionada, 0).toString());
+		
+			if (res.getListaMesas().length > Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))) {
+					for (Pedido i : res.getListaMesas()[Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))].getPedidos()) {
+						
+						for (Consumible j : res.getCarta().getListaConsumibles()) {
+							tablaCarta.setValueAt(false, cont, 4);
+							tablaCarta.setValueAt(0, cont, 2);
+							if (i.getIdPedido().equalsIgnoreCase(tabla.getValueAt(filaSeleccionada, 0).toString())) {
+									
+									if (i.getConsumibles().keySet().contains(tablaCarta.getValueAt(cont, 0).toString())) {
+										//Pongo tick en el boton de check
+										tablaCarta.setValueAt(true, cont, 4);
+										tablaCarta.setValueAt(i.getConsumibles().get(tablaCarta.getValueAt(cont, 0).toString()).toString(), cont, 2);
+									}
+							}
+							cont++;
+						}
+							
+					}
+				}
+			else
+				JOptionPane.showMessageDialog(this, "Esa mesa no existe.");
 		}
 	}
 

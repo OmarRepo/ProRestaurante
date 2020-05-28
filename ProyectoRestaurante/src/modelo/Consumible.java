@@ -2,7 +2,7 @@ package modelo;
 
 import java.util.Objects;
 
-public abstract class Consumible {
+public abstract class Consumible implements Comparable<Consumible> {
 	private String id;
 	private String nombre;
 	private double precio;
@@ -101,6 +101,13 @@ public abstract class Consumible {
 				return true;
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(Consumible o) {
+		
+		return this.getId().compareTo(o.getId());
+	
 	}
 
 }

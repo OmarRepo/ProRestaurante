@@ -1,18 +1,18 @@
 package modelo;
 
-import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Iterator;
 
 public class Carta {
 
-	private HashSet<Consumible> listaConsumibles;
+	private TreeSet<Consumible> listaConsumibles;
 
 	// Contructores
 	public Carta() {
-		listaConsumibles = new HashSet<Consumible>();
+		listaConsumibles = new TreeSet<Consumible>();
 	}
 
-	public Carta(HashSet<Consumible> listaConsumibles) {
+	public Carta(TreeSet<Consumible> listaConsumibles) {
 		this.listaConsumibles = listaConsumibles;
 	}
 
@@ -38,14 +38,15 @@ public class Carta {
 
 		return carta+"</body></html>";
 	}
+	
 
 	// Get
-	public HashSet<Consumible> getListaConsumibles() {
+	public TreeSet<Consumible> getListaConsumibles() {
 		return listaConsumibles;
 	}
 
 	// Set
-	public void setListaConsumibles(HashSet<Consumible> listaConsumibles) {
+	public void setListaConsumibles(TreeSet<Consumible> listaConsumibles) {
 		this.listaConsumibles = listaConsumibles;
 	}
 
