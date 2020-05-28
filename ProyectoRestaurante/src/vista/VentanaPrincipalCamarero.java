@@ -1,23 +1,16 @@
 package vista;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,13 +20,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-import modelo.Bebida;
-import modelo.ConexionBBDD;
 import modelo.Consumible;
 import modelo.ESTADO_PEDIDO;
-import modelo.Menu;
 import modelo.Pedido;
-import modelo.Plato;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
@@ -59,8 +48,6 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	private JTable tablaCarta;
 	private JButton anadirPedido;
 	//Panel Introducir Pedidos
-			private JLabel pedido;
-			private JTextField txtPedido;
 			private JLabel mesa;
 			private JTextField txtMesa;
 			private JPanel panelIntroducirPedido;
@@ -210,28 +197,55 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	public void nuevoPedido() {
 		panelIntroducirPedido = new JPanel();
 		panelIntroducirPedido.setLayout(new MigLayout());
-		pedido = new JLabel("ID Pedido: ");
-		txtPedido = new JTextField(4);
+
 		mesa = new JLabel("Mesa: ");
 		txtMesa = new JTextField(4);
 		
-		panelIntroducirPedido.add(pedido);
-		panelIntroducirPedido.add(txtPedido,"wrap");
 		panelIntroducirPedido.add(mesa);
 		panelIntroducirPedido.add(txtMesa,"wrap");
 
 	}
-
+	
+	public Pedido seleccionarPedido() {
+		int filaSeleccionada = tablaPedidos.getSelectedRow();
+		
+		String id = null;
+		int mesa = 0;
+		HashMap<String, Integer> conPedidos = null;
+		ESTADO_PEDIDO estado = null;
+		
+		if (filaSeleccionada == -1)
+			JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
+		else {
+			id = tablaPedidos.getValueAt(filaSeleccionada, 0).toString();
+			mesa = Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString());
+			conPedidos = new HashMap<String,Integer>();
+			estado = ESTADO_PEDIDO.valueOf(tablaPedidos.getValueAt(filaSeleccionada, 2).toString());
+			
+			for (int i=0; i<=tablaPedidos.getRowCount(); i++) {
+				if ((Boolean) tablaCarta.getValueAt(i, 4))
+					conPedidos.put(tablaCarta.getValueAt(i, 0).toString(), Integer.parseInt(tablaCarta.getValueAt(i, 2).toString()));
+			}
+		}
+			return new Pedido(id,mesa,conPedidos,estado);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e){
 		//Botones Pedidos
+		
 		if (e.getSource().equals(anadirPedido)) {
-			nuevoPedido();
-			int resultado = JOptionPane.showConfirmDialog(this, panelIntroducirPedido, "Introduce los parametros del pedido",JOptionPane.OK_CANCEL_OPTION);
-			if (resultado == JOptionPane.OK_OPTION) {
-				String[] fila = {txtPedido.getText(),txtMesa.getText(),modelo.ESTADO_PEDIDO.en_espera.name()};
-				modelPedidos.addRow(fila);
-				
+			try {
+				nuevoPedido();
+				int resultado = JOptionPane.showConfirmDialog(this, panelIntroducirPedido, "Introduce los parametros del pedido",JOptionPane.OK_CANCEL_OPTION);
+				if (resultado == JOptionPane.OK_OPTION) {
+					String[] fila = {Pedido.generarIdPedido(),txtMesa.getText(),modelo.ESTADO_PEDIDO.en_espera.name()};
+					
+					modelPedidos.addRow(fila);
+					
+				}
+			} catch (Exception e1) {
+				// TODO: handle exception
 			}
 		}
 		if (e.getSource().equals(eliminarPedido)) {
@@ -242,53 +256,39 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				modelPedidos.removeRow(filaSeleccionada);
 			}
 		}
-		/*if (e.getSource().equals(pagarPedido)) {
+		if (e.getSource().equals(pagarPedido)) {
 			int filaSeleccionada = tablaPedidos.getSelectedRow();
+			Pedido pedido;
 			if (filaSeleccionada == -1)
 				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
-			else if (modelPedidos.getValueAt(filaSeleccionada, 4).equals(modelo.ESTADO_PEDIDO.en_espera.name())) {
+			else if (modelPedidos.getValueAt(filaSeleccionada, 2).equals(modelo.ESTADO_PEDIDO.en_espera.name())) {
 				try {
-					//Inicializar.pagarPedido(res);
-					modelPedidos.setValueAt(modelo.ESTADO_PEDIDO.pagado.name(), filaSeleccionada, 4);
+					pedido = seleccionarPedido();
+					pedido.calcularPrecio(res.getCarta());
+					pedido.imprimirFactura();
+					modelPedidos.setValueAt(modelo.ESTADO_PEDIDO.pagado.name(), filaSeleccionada, 2);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
-		}*/
+			} else
+				JOptionPane.showMessageDialog(this, "El pedido aun no ha sido preparado.");
+		}
 		if (e.getSource().equals(guardarPedido)) {
-			Pedido ped;
-			int filaSeleccionada = tablaPedidos.getSelectedRow();
-			if (filaSeleccionada == -1)
-				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
-			else {
-				String id = tablaPedidos.getValueAt(filaSeleccionada, 0).toString();
-				int mesa = Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString());
-				HashMap<String, Integer> conPedidos = new HashMap<String,Integer>();
-				ESTADO_PEDIDO estado = ESTADO_PEDIDO.valueOf(tablaPedidos.getValueAt(filaSeleccionada, 2).toString());
-				
-				for (int i=0; i<=tablaPedidos.getRowCount(); i++) {
-					if ((Boolean) tablaCarta.getValueAt(i, 4))
-						conPedidos.put(tablaCarta.getValueAt(i, 0).toString(), Integer.parseInt(tablaCarta.getValueAt(i, 2).toString()));
-				}
-				ped = new Pedido(id,mesa,conPedidos,estado);
+				Pedido pedido;
+				pedido = seleccionarPedido();
+				pedido.calcularPrecio(res.getCarta());
 				try {
-					if (!ped.buscarPedido()) 
-						ped.insertarPedido();
+					if (!pedido.buscarPedido()) 
+						pedido.insertarPedido();
 					else
-						ped.modificarPedido();
+						pedido.modificarPedido();
 					
 				} catch(ClassNotFoundException | SQLException ce) {
 					JOptionPane.showMessageDialog(this, "Error al actualizar el pedido.");
-				}
-				
-			}
+				}	
 		}
 	}
-
-	
-
-	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

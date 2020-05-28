@@ -41,8 +41,36 @@ public class Pedido {
 		this.estado = estado;
 		this.idCocinero = idCocinero;
 	}
+	
+	public Pedido(int iDmesa, HashMap<String, Integer> consumibles,String idCocinero, ESTADO_PEDIDO estado) throws ClassNotFoundException, SQLException {
+		this.idPedido = generarIdPedido();
+		this.idMesa = iDmesa;
+		this.consumibles = consumibles;
+		this.precio = 0;
+		this.estado = estado;
+		this.idCocinero = idCocinero;
+	}
 
 	// Metodos
+	
+	public static String generarIdPedido() {
+		String id="P";
+		int nPedidos=1;
+		try {
+			Statement consulta=ConexionBBDD.getConnection().createStatement();
+			ResultSet resultado = consulta.executeQuery("SELECT NVL(COUNT(*),0) FROM PEDIDOS");
+			resultado.next();
+			nPedidos+=resultado.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.format("%s \n",nPedidos+"hola");
+		return id+nPedidos;
+		
+	}
 	
 	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = null;
@@ -298,8 +326,10 @@ public class Pedido {
 	 */
 
 	public void imprimirFactura() throws IOException {
-		File f = new File("factura.txt");
-
+		File f = new File("facturas/factura"+this.getIdPedido()+".txt");
+		
+		if (!f.getParentFile().exists())
+			f.getParentFile().mkdir();
 		if (!f.exists()) {
 			f.createNewFile();
 		}
@@ -365,8 +395,10 @@ public class Pedido {
 
 	@Override
 	public String toString() {
-		return "Pedido [numeroPedido=" + idPedido + ", iDmesa=" + idMesa + ", consumibles=" + consumibles + ", precio="
-				+ precio + ", estado=" + estado + "]";
+		return "Pedido \n Nº Pedido	" + idPedido + "\n"
+				+ " Mesa	" + idMesa + "\n "
+						+ "Consumibles	" + consumibles + "\n "
+								+ "Total	" + precio + "\n";
 	}
 
 	
