@@ -28,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import modelo.Bebida;
+import modelo.ConexionBBDD;
 import modelo.Consumible;
 import modelo.ESTADO_PEDIDO;
 import modelo.Menu;
@@ -78,9 +79,9 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		try {
 			res = new Restaurante();
 			crearVentana();
-			prepararMuestraDeCarta();
 			prepararTablas();
 			prepararCarta();
+			prepararMuestraDeCarta();
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, "Error al conectarse a la base de datos.");
@@ -119,7 +120,9 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		//Panel Carta
 		panelCarta = new JPanel();
 		panelCarta.setLayout(new MigLayout());
-		
+		modeloMenu = new ModeloTabla(null, null);
+		modeloPlato = new ModeloTabla(null, null);
+		modeloBebida = new ModeloTabla(null, null);
 		cartaMenu = new JTable();
 		cartaMenu.setModel(modeloMenu);
 		cartaPlatos = new JTable();
@@ -274,6 +277,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 						ped.insertarPedido();
 					else
 						ped.modificarPedido();
+					
 				} catch(ClassNotFoundException | SQLException ce) {
 					JOptionPane.showMessageDialog(this, "Error al actualizar el pedido.");
 				}
@@ -295,21 +299,18 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		
 		int cont=0;
 		if (e.getClickCount()==1) {
+			
 			HashMap<String, Integer> cons = new HashMap<String, Integer>();
 			JTable tabla = (JTable)e.getSource();
 			int filaSeleccionada = tabla.getSelectedRow();
 			String idPedido = tabla.getValueAt(filaSeleccionada, 0).toString();
 			try {
+			cons = Pedido.recorrerPedidos(idPedido);
 				if (res.getListaMesas() > Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))) {
 					
 						for (Consumible j : res.getCarta().getListaConsumibles()) {
 							tablaCarta.setValueAt(false, cont, 4);
 							tablaCarta.setValueAt(0, cont, 2);
-							ResultSet resul = Pedido.recorrerPedidos();
-							
-							while(resul.next())
-								cons = Pedido.buscarConsumibles(idPedido);
-							
 							
 							if (cons.keySet().contains(tablaCarta.getValueAt(cont, 0).toString())) {
 								//Pongo tick en el boton de check

@@ -45,18 +45,35 @@ public class Pedido {
 	// Metodos
 	
 	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
-		Statement consulta=ConexionBBDD.getConnection().createStatement();
-		ResultSet resultado = consulta.executeQuery("SELECT ID_PEDIDO FROM PEDIDOS WHERE ID_PEDIDO = "+"'"+this.idPedido+"'");
-		if (resultado.getFetchSize()==0)
-			return false;
-		return true;
+		Statement consulta = null;
+		ResultSet resultado;
+		try {
+			consulta=ConexionBBDD.getConnection().createStatement();
+			resultado = consulta.executeQuery("SELECT ID_PEDIDO FROM PEDIDOS WHERE ID_PEDIDO = "+"'"+this.idPedido+"'");
+			if (resultado.getFetchSize()==0)
+				return false;
+			return true;
+		} finally {
+			consulta.close();
+		}
 
 	}
 	
-	public static ResultSet recorrerPedidos() throws ClassNotFoundException, SQLException {
-		Statement consulta=ConexionBBDD.getConnection().createStatement();
+	public static HashMap<String, Integer> recorrerPedidos(String idPedido) throws ClassNotFoundException, SQLException {
+		
+		HashMap<String, Integer> cons = null;
+			
+		Statement consulta=ConexionBBDD.getConnection().createStatement(); 
 		ResultSet resul=consulta.executeQuery("SELECT * FROM CONSUMIBLES");
-		return resul;
+			
+		while(resul.next())
+			cons = Pedido.buscarConsumibles(idPedido);
+		
+		resul.close();
+		consulta.close();
+		
+		return cons;
+		
 	}
 	
 	public static HashMap<String, Integer> buscarConsumibles(String idPedido) throws ClassNotFoundException, SQLException {
@@ -66,20 +83,29 @@ public class Pedido {
 		while(resul.next()) {
 			consumibles.put(resul.getString("ID_CONSUMIBLE"), resul.getInt("CANTIDAD"));
 		}
-		
 		return consumibles;
 	}
 	
-	
+	/**
+	 * Inserta el pedido en la base de datos
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insertarPedido() throws ClassNotFoundException, SQLException {
 			Statement consulta=ConexionBBDD.getConnection().createStatement();
-			consulta.executeUpdate("INSERT INTO PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) VALUES ("+"'"+this.idPedido+"',"+this.idMesa+",'"+this.estado.name()+"',"+this.precio+")");
+			consulta.executeUpdate("INSERT INTO PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) VALUES ("+"'"+this.idPedido+"',"+this.idMesa+",'"+this.estado.toString()+"',"+this.precio+")");
 	}
 	
+	/**
+	 * Modifica en la base de datos los campos que correspondan al pedido con el mismo id que el del objeto.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void modificarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta=ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) SET MESA ="+this.idMesa+", ESTADO = '"+this.estado.name()+"', PRECIO = "+this.precio+")");
-}
+	}
 	
 	
 

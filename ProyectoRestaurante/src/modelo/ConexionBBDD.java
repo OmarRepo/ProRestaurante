@@ -3,6 +3,7 @@ package modelo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Proporciona un acceso global a la instancia que permite la conexión a la BB.DD desde todo el programa.
@@ -17,10 +18,13 @@ import java.sql.SQLException;
 
 public class ConexionBBDD {
 
-	private static Connection conexion = null;
+	private static Connection conexion;
 	private static String usuario;
 	private static String contrasena;
-
+	
+	static {
+		conexion = null;
+	}
 	/**
 	 * Constructor con modificador de acceso private para garantizar una sola instancia
 	 * @throws ClassNotFoundException
@@ -30,10 +34,9 @@ public class ConexionBBDD {
 		String bd = "XE";
 		String url = "jdbc:oracle:thin:@localhost:1521:" + bd;
 		String driver = "oracle.jdbc.driver.OracleDriver"; 
-
+		
 		Class.forName(driver);
-		conexion = DriverManager.getConnection(url, usuario, contrasena);
-
+		conexion = DriverManager.getConnection(url, usuario, contrasena); 
 	}
 	
 	
@@ -92,7 +95,8 @@ public class ConexionBBDD {
 		if (conexion != null) {
 			conexion.close();
 		}
-
+		
 	}
+
 
 }

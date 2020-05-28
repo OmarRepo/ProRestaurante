@@ -25,6 +25,7 @@ public class Restaurante {
 	public void prepararRestaurante() throws ClassNotFoundException, SQLException {
 		this.carta = new Carta();
 		this.listaEmpleados = actualizarEmpleados();
+		this.mesas = 10;
 	}
 	
 	private HashSet<Empleado> actualizarEmpleados() throws ClassNotFoundException, SQLException {
