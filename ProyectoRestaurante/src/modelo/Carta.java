@@ -46,15 +46,15 @@ public class Carta {
 		ResultSet resul=consulta.executeQuery("SELECT * FROM CONSUMIBLES");
 		while(resul.next()) {
 			switch (resul.getString("Tipo")) {
-			case "Menu":
-				listaConsumibles.add(new Menu(resul.getString("ID_Consumible"),resul.getString("Nombre"),resul.getDouble("Precio")));
-				break;
-			case "Plato":
-				listaConsumibles.add(new Plato(resul.getString("ID_Consumible"),resul.getString("Nombre"),resul.getDouble("Precio")));
-				break;
-			case "Bebida":
-				listaConsumibles.add(new Bebida(resul.getString("ID_Consumible"),resul.getString("Nombre"),resul.getDouble("Precio")));
-				break;
+				case "Menu":
+					listaConsumibles.add(new Menu(resul.getString("ID_Consumible"),resul.getString("Nombre"),resul.getDouble("Precio")));
+					break;
+				case "Plato":
+					listaConsumibles.add(new Plato(resul.getString("ID_Consumible"),resul.getString("Nombre"),resul.getDouble("Precio")));
+					break;
+				case "Bebida":
+					listaConsumibles.add(new Bebida(resul.getString("ID_Consumible"),resul.getString("Nombre"),resul.getDouble("Precio")));
+					break;
 			}
 		}
 	}

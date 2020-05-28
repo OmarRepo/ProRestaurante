@@ -1,26 +1,54 @@
 package modelo;
 
-import java.util.Arrays;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
 
 public class Restaurante {
 	
 	private Carta carta;
-	private Mesa[] listaMesas;
-	private Empleado[] listaEmpleados;
-	private Almacen almacen;
+	private int mesas;
+	private HashSet<Empleado> listaEmpleados;
 	
 	//Constructores
-	public Restaurante(Carta carta, Mesa[] listalistaMesass, Empleado[] listaEmpleados, Almacen almacen) {
+	public Restaurante(Carta carta, int mesas, HashSet<Empleado> listaEmpleados, Almacen almacen) {
 		this.carta = carta;
-		this.listaMesas = listalistaMesass;
+		this.mesas = mesas;
 		this.listaEmpleados = listaEmpleados;
-		this.almacen = almacen;
+	}
+	public Restaurante() throws ClassNotFoundException, SQLException {
+		prepararRestaurante();
 	}
 	
+	//Metodos
+	public void prepararRestaurante() throws ClassNotFoundException, SQLException {
+		this.carta = new Carta();
+		this.listaEmpleados = actualizarEmpleados();
+	}
+	
+	private HashSet<Empleado> actualizarEmpleados() throws ClassNotFoundException, SQLException {
+		listaEmpleados = new HashSet<Empleado>();
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		ResultSet resul=consulta.executeQuery("SELECT * FROM EMPLEADOS");
+		while(resul.next()) {
+			switch (resul.getString("TIPO")) {
+				case "Camarero":
+					listaEmpleados.add(new Camarero(resul.getString("ID_EMPLEADO"),resul.getString("DNI"),resul.getString("NOMBRE")+" "+resul.getString("APELLIDOS")));
+					break;
+				case "Cocinero":
+					listaEmpleados.add(new Cocinero(resul.getString("ID_EMPLEADO"),resul.getString("DNI"),resul.getString("NOMBRE")+" "+resul.getString("APELLIDOS")));
+					break;
+				case "Jefe":
+					listaEmpleados.add(new Jefe(resul.getString("ID_EMPLEADO"),resul.getString("DNI"),resul.getString("NOMBRE")+" "+resul.getString("APELLIDOS")));
+			}
+		}
+		return listaEmpleados;
+	}
 	
 	@Override
 	public String toString() {
-		return "Restaurante [carta=" + carta + ", listaMesas=" + Arrays.toString(listaMesas) + ", almacen=" + almacen + "]";
+		return "Restaurante [carta=" + carta + ", Mesas=" + mesas + "]";
 	}
 	
 	public Carta getCarta() {
@@ -28,59 +56,28 @@ public class Restaurante {
 	}
 
 
-	public Mesa[] getListaMesas() {
-		return listaMesas;
+	public int getListaMesas() {
+		return mesas;
 	}
 
 
-	public Empleado[] getListaEmpleados() {
+	public HashSet<Empleado> getListaEmpleados() {
 		return listaEmpleados;
 	}
-
-
-	public Almacen getAlmacen() {
-		return almacen;
-	}
-
 
 	public void setCarta(Carta carta) {
 		this.carta = carta;
 	}
 
 
-	public void setListaMesas(Mesa[] listaMesas) {
-		this.listaMesas = listaMesas;
+	public void setListaMesas(int mesas) {
+		this.mesas = mesas;
 	}
 
 
-	public void setListaEmpleados(Empleado[] listaEmpleados) {
+	public void setListaEmpleados(HashSet<Empleado> listaEmpleados) {
 		this.listaEmpleados = listaEmpleados;
 	}
-
-
-	public void setAlmacen(Almacen almacen) {
-		this.almacen = almacen;
-	}
-
-
-	/**
-	 * busca y devuelve un objeto listaMesas en el array de mesas del restaurante
-	 * @param idlistaMesas
-	 * @return listaMesas si existe una mesa con el idlistaMesas pasado como paráemtro dentro del array
-	 * @return null si no existe una mesa con el idlistaMesas pasado como parámetro
-	 */
-	
-	public Mesa buscarMesa(int idMesa) {
-		for (int i = 0; i < listaMesas.length; i++) {
-			if(listaMesas[i].getIdMesa()==idMesa) {
-				return listaMesas[i];
-			}
-		}
-		
-		return null;
-	}
-	
-	
 	
 }
 

@@ -2,11 +2,11 @@ package modelo;
 
 import java.util.Scanner;
 
-public class Camarero extends Empleado{
+public class Jefe extends Empleado{
 	
 
 	//constructor
-	public Camarero(String id,String dni, String nombre) {
+	public Jefe(String id,String dni, String nombre) {
 		super(id, dni, nombre);
 	}
 	

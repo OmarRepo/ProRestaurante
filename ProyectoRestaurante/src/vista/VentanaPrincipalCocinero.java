@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -27,7 +28,12 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener{
 	
 	public VentanaPrincipalCocinero() {
 		crearVentana();
-		res = Pruebas.prepararRestaurante();
+		try {
+			res = new Restaurante();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void crearVentana() {

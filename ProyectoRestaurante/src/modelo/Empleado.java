@@ -1,6 +1,10 @@
 package modelo;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.TreeSet;
 
 public class Empleado {
 	
@@ -24,6 +28,9 @@ public class Empleado {
 		this.nombre = that.nombre;
 		this.fechaContrato = that.fechaContrato;
 	}
+	//Metodos
+	
+	
 	
 	//Get
 	public String getId() {

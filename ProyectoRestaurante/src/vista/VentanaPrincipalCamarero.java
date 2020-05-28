@@ -10,6 +10,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -25,10 +27,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-
+import modelo.Bebida;
 import modelo.Consumible;
 import modelo.ESTADO_PEDIDO;
+import modelo.Menu;
 import modelo.Pedido;
+import modelo.Plato;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,10 +43,13 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	//Carta
 	private JScrollPane sCartaMenu;
 	private JTable cartaMenu;
+	private ModeloTabla modeloMenu;
 	private JScrollPane sCartaPlatos;
 	private JTable cartaPlatos;
+	private ModeloTabla modeloPlato;
 	private JScrollPane sCartaBebidas;
 	private JTable cartaBebidas;
+	private ModeloTabla modeloBebida;
 	
 	//Pedidos
 	private ModeloTabla modelPedidos;
@@ -68,10 +75,16 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	private JScrollPane panelTablaCarta;
 	
 	public VentanaPrincipalCamarero() {
-		res = Pruebas.prepararRestaurante();
-		crearVentana();
-		prepararTablas();
-		prepararCarta();
+		try {
+			res = new Restaurante();
+			crearVentana();
+			prepararMuestraDeCarta();
+			prepararTablas();
+			prepararCarta();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, "Error al conectarse a la base de datos.");
+		}
 	}
 	
 	
@@ -79,6 +92,23 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		for (Consumible i : this.res.getCarta().getListaConsumibles()) {
 			Object[] fila = {i.getId(),i.getNombre(),0,Double.toString(i.getPrecio()),false};
 			modelCarta.addRow(fila);
+		}
+	}
+	
+	public void prepararMuestraDeCarta() {
+		for (Consumible i : this.res.getCarta().getListaConsumibles()) {
+			Object[] fila = {i.getId(),i.getNombre(),0,Double.toString(i.getPrecio()),false};
+			switch(i.getId().charAt(0)) {
+			case 'M':
+				modeloMenu.addRow(fila);
+				break;
+			case 'P':
+				modeloPlato.addRow(fila);
+				break;
+			case 'B':
+				modeloBebida.addRow(fila);
+				break;
+			}
 		}
 	}
 	
@@ -90,6 +120,19 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		panelCarta = new JPanel();
 		panelCarta.setLayout(new MigLayout());
 		
+		cartaMenu = new JTable();
+		cartaMenu.setModel(modeloMenu);
+		cartaPlatos = new JTable();
+		cartaPlatos.setModel(modeloPlato);
+		cartaBebidas = new JTable();
+		cartaBebidas.setModel(modeloBebida);
+		sCartaMenu = new JScrollPane(cartaMenu);
+		sCartaPlatos = new JScrollPane(cartaPlatos);
+		sCartaBebidas = new JScrollPane(cartaBebidas);
+		
+		panelCarta.add(sCartaMenu);
+		panelCarta.add(sCartaPlatos);
+		panelCarta.add(sCartaBebidas);
 		
 		/*panelCarta.add(cartaMenus,"dock north,wrap");
 		panelCarta.add(cartaBebidas,"dock west");
@@ -109,7 +152,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		eliminarPedido.addActionListener(this);
 		pagarPedido = new JButton("Pagar Pedido");
 		pagarPedido.addActionListener(this);
-		guardarPedido = new JButton("Guardar Pedio");
+		guardarPedido = new JButton("Guardar Pedido");
 		guardarPedido.addActionListener(this);
 		
 		panelPedidos = new JPanel();
@@ -177,7 +220,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e){
 		//Botones Pedidos
 		if (e.getSource().equals(anadirPedido)) {
 			nuevoPedido();
@@ -196,35 +239,44 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				modelPedidos.removeRow(filaSeleccionada);
 			}
 		}
-		if (e.getSource().equals(pagarPedido)) {
+		/*if (e.getSource().equals(pagarPedido)) {
 			int filaSeleccionada = tablaPedidos.getSelectedRow();
 			if (filaSeleccionada == -1)
 				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
 			else if (modelPedidos.getValueAt(filaSeleccionada, 4).equals(modelo.ESTADO_PEDIDO.en_espera.name())) {
 				try {
-					Pruebas.pagarPedido(res);
-					modelPedidos.setValueAt(modelo.ESTADO_PEDIDO.finalizado.name(), filaSeleccionada, 4);
+					//Inicializar.pagarPedido(res);
+					modelPedidos.setValueAt(modelo.ESTADO_PEDIDO.pagado.name(), filaSeleccionada, 4);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
-		}
+		}*/
 		if (e.getSource().equals(guardarPedido)) {
+			Pedido ped;
 			int filaSeleccionada = tablaPedidos.getSelectedRow();
-			String id = tablaPedidos.getValueAt(filaSeleccionada, 0).toString();
-			int mesa = Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString());
-			HashMap<String, Integer> conPedidos = new HashMap<String,Integer>();
-			ESTADO_PEDIDO estado = ESTADO_PEDIDO.valueOf(tablaPedidos.getValueAt(filaSeleccionada, 2).toString());
-			
 			if (filaSeleccionada == -1)
 				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
 			else {
+				String id = tablaPedidos.getValueAt(filaSeleccionada, 0).toString();
+				int mesa = Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString());
+				HashMap<String, Integer> conPedidos = new HashMap<String,Integer>();
+				ESTADO_PEDIDO estado = ESTADO_PEDIDO.valueOf(tablaPedidos.getValueAt(filaSeleccionada, 2).toString());
+				
 				for (int i=0; i<=tablaPedidos.getRowCount(); i++) {
 					if ((Boolean) tablaCarta.getValueAt(i, 4))
 						conPedidos.put(tablaCarta.getValueAt(i, 0).toString(), Integer.parseInt(tablaCarta.getValueAt(i, 2).toString()));
 				}
-				res.getListaMesas()[Integer.parseInt(tablaPedidos.getValueAt(filaSeleccionada, 1).toString())].getPedidos().add(new Pedido(id,mesa,conPedidos,estado));
+				ped = new Pedido(id,mesa,conPedidos,estado);
+				try {
+					if (!ped.buscarPedido()) 
+						ped.insertarPedido();
+					else
+						ped.modificarPedido();
+				} catch(ClassNotFoundException | SQLException ce) {
+					JOptionPane.showMessageDialog(this, "Error al actualizar el pedido.");
+				}
 				
 			}
 		}
@@ -240,34 +292,41 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		boolean pedidoExiste=false;
+		
 		int cont=0;
 		if (e.getClickCount()==1) {
+			HashMap<String, Integer> cons = new HashMap<String, Integer>();
 			JTable tabla = (JTable)e.getSource();
 			int filaSeleccionada = tabla.getSelectedRow();
-			System.out.format("%s \n",tabla.getValueAt(filaSeleccionada, 0).toString());
-		
-			if (res.getListaMesas().length > Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))) {
-					for (Pedido i : res.getListaMesas()[Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))].getPedidos()) {
-						
+			String idPedido = tabla.getValueAt(filaSeleccionada, 0).toString();
+			try {
+				if (res.getListaMesas() > Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))) {
+					
 						for (Consumible j : res.getCarta().getListaConsumibles()) {
 							tablaCarta.setValueAt(false, cont, 4);
 							tablaCarta.setValueAt(0, cont, 2);
-							if (i.getIdPedido().equalsIgnoreCase(tabla.getValueAt(filaSeleccionada, 0).toString())) {
-									
-									if (i.getConsumibles().keySet().contains(tablaCarta.getValueAt(cont, 0).toString())) {
-										//Pongo tick en el boton de check
-										tablaCarta.setValueAt(true, cont, 4);
-										tablaCarta.setValueAt(i.getConsumibles().get(tablaCarta.getValueAt(cont, 0).toString()).toString(), cont, 2);
-									}
+							ResultSet resul = Pedido.recorrerPedidos();
+							
+							while(resul.next())
+								cons = Pedido.buscarConsumibles(idPedido);
+							
+							
+							if (cons.keySet().contains(tablaCarta.getValueAt(cont, 0).toString())) {
+								//Pongo tick en el boton de check
+								tablaCarta.setValueAt(true, cont, 4);
+								tablaCarta.setValueAt(cons.get(tablaCarta.getValueAt(cont, 0).toString()).toString(), cont, 2);
 							}
 							cont++;
 						}
-							
-					}
+						
 				}
-			else
-				JOptionPane.showMessageDialog(this, "Esa mesa no existe.");
+				else
+					JOptionPane.showMessageDialog(this, "Esa mesa no existe.");
+			
+			} catch (ClassNotFoundException | SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 

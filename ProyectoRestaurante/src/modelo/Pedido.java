@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.TreeSet;
 
 public class Pedido {
 
@@ -41,25 +44,44 @@ public class Pedido {
 
 	// Metodos
 	
-	public void insertarPedido() throws ClassNotFoundException, SQLException {
-		
-		
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "resadmin", "resadmin123");
-		if (connection != null) {
-			System.out.format("%s \n","Conexion realizada.");
-			PreparedStatement ps = connection.prepareStatement("insert into PEDIDOS (ID_PEDIDO,MESA,)values(?,?,,?,?)");
-			ps.setString(1, this.getIdPedido());
-			ps.setInt(2, this.getIdMesa());
-		}
-	}
-	
-	public boolean cancelarPedido() {
-		// BASE DE DATOS
-
+	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		ResultSet resultado = consulta.executeQuery("SELECT ID_PEDIDO FROM PEDIDOS WHERE ID_PEDIDO = "+"'"+this.idPedido+"'");
+		if (resultado.getFetchSize()==0)
+			return false;
 		return true;
 
 	}
+	
+	public static ResultSet recorrerPedidos() throws ClassNotFoundException, SQLException {
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		ResultSet resul=consulta.executeQuery("SELECT * FROM CONSUMIBLES");
+		return resul;
+	}
+	
+	public static HashMap<String, Integer> buscarConsumibles(String idPedido) throws ClassNotFoundException, SQLException {
+		HashMap<String, Integer> consumibles = new HashMap<String,Integer>();
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		ResultSet resul=consulta.executeQuery("SELECT * FROM PEDIDOS_CONSUMIBLES WHERE ID_PEDIDO = "+"'"+idPedido+"'");
+		while(resul.next()) {
+			consumibles.put(resul.getString("ID_CONSUMIBLE"), resul.getInt("CANTIDAD"));
+		}
+		
+		return consumibles;
+	}
+	
+	
+	public void insertarPedido() throws ClassNotFoundException, SQLException {
+			Statement consulta=ConexionBBDD.getConnection().createStatement();
+			consulta.executeUpdate("INSERT INTO PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) VALUES ("+"'"+this.idPedido+"',"+this.idMesa+",'"+this.estado.name()+"',"+this.precio+")");
+	}
+	
+	public void modificarPedido() throws ClassNotFoundException, SQLException {
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) SET MESA ="+this.idMesa+", ESTADO = '"+this.estado.name()+"', PRECIO = "+this.precio+")");
+}
+	
+	
 
 	public boolean confirmarPedido() {
 		// BASE DE DATOS
