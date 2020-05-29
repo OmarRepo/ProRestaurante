@@ -34,6 +34,7 @@ CREATE TABLE PEDIDOS (
 	REFERENCES  empleados(ID_Empleado) ON DELETE SET NULL,
 	CONSTRAINT pedidos_fk2 FOREIGN KEY (ID_Camarero)
 	REFERENCES  empleados(ID_Empleado) ON DELETE SET NULL
+	CONSTRAINT pedidos_estado CHECK(Tipo IN('en_espera','preparado','pagado','cancelado'))
 );
 
 

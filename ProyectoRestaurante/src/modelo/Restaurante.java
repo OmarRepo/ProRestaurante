@@ -12,21 +12,33 @@ public class Restaurante {
 	private HashSet<Empleado> listaEmpleados;
 	
 	//Constructores
-	public Restaurante(Carta carta, int mesas, HashSet<Empleado> listaEmpleados, RealizarPedido almacen) {
-		this.carta = carta;
-		this.mesas = mesas;
-		this.listaEmpleados = listaEmpleados;
-	}
-	public Restaurante() throws ClassNotFoundException, SQLException {
-		prepararRestaurante();
+	public Restaurante(boolean admin) throws ClassNotFoundException, SQLException {
+		if(admin)
+			prepararRestauranteAdmin();
+		else
+			prepararRestaurante();
 	}
 	
 	//Metodos
-	public void prepararRestaurante() throws ClassNotFoundException, SQLException {
+	private void prepararRestaurante() throws ClassNotFoundException, SQLException {
+		this.carta = new Carta();
+		this.listaEmpleados = null;
+		this.mesas = cargarMesas();
+	}
+	private void prepararRestauranteAdmin() throws ClassNotFoundException, SQLException {
 		this.carta = new Carta();
 		this.listaEmpleados = actualizarEmpleados();
-		this.mesas = 10;
+		this.mesas = cargarMesas();
 	}
+	private int cargarMesas() throws ClassNotFoundException, SQLException {
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		ResultSet resul=consulta.executeQuery("SELECT VALUE FROM CONFIGURACION WHERE KEY='n_mesas'");
+		if(resul.next())
+			return Integer.parseInt(resul.getString("VALUE"));
+		else
+			return 999;
+	}
+
 	
 	private HashSet<Empleado> actualizarEmpleados() throws ClassNotFoundException, SQLException {
 		listaEmpleados = new HashSet<Empleado>();
