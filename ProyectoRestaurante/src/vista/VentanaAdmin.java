@@ -1,5 +1,7 @@
 package vista;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,12 +16,15 @@ import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
 public class VentanaAdmin extends JFrame implements ActionListener{
-	
-	private JLabel skillsAdmin;
-	private JButton crearUsuario;
+	//panel principal
 	private JPanel panel;
-	Restaurante res;
-	
+	//componentes panel principal	
+	private JLabel title;
+	private JButton crearUsuario;
+	private JButton cambiarContrasena;
+	private JButton abrirCamarero;
+	private JButton abrirCocinero;
+		
 	public VentanaAdmin() {
 		crearVentana();
 	}
@@ -27,15 +32,28 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 	public void crearVentana() {
 		
 		panel = new JPanel();
-		panel.setLayout(new MigLayout());
+		panel.setLayout(new MigLayout("align center"));
 		
-		skillsAdmin = new JLabel("Opciones de administrador");
+		
+		title = new JLabel("Opciones de administrador");
 		crearUsuario = new JButton("Crear Usuario");
 		crearUsuario.addActionListener(this);
-		crearUsuario.setToolTipText("Necesitas ser administrador.");
 		
-		panel.add(skillsAdmin);
-		panel.add(crearUsuario);
+		cambiarContrasena = new JButton("Cambiar contraseñas");
+		cambiarContrasena.addActionListener(this);
+		
+		abrirCamarero = new JButton("Probar camarero");
+		abrirCamarero.addActionListener(this);
+		
+		abrirCocinero = new JButton("Probar cocinero");
+		abrirCocinero.addActionListener(this);
+		
+		panel.add(title,"growx,wrap");
+		panel.add(crearUsuario,"growx,wrap");
+		panel.add(cambiarContrasena,"growx,wrap");
+		panel.add(abrirCamarero,"growx,wrap");
+		panel.add(abrirCocinero,"growx,wrap");
+		
 		
 		panel.setAlignmentX(CENTER_ALIGNMENT);
 		setLocationRelativeTo(null);
@@ -43,12 +61,11 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 		
 		setResizable(false);
 		setTitle("Inicio de sesión");
-		//Con el codigo comentado la ventana adapta su tamaño segun el tamaño de la pantalla
-		/*Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = pantalla.height;
 		int width = pantalla.width;
-		setSize(width/6, height/6);	*/
-		pack();
+		setSize(width/4, height/3);
 	    setVisible(true);
 	    setLocationRelativeTo(null);
 	}
@@ -58,7 +75,17 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 		if (e.getSource().equals(crearUsuario)) {
 			
 		}
-	
+		else if (e.getSource().equals(cambiarContrasena)) {
+			
+		}
+		else if (e.getSource().equals(abrirCamarero)) {
+			new VentanaPrincipalCamarero();
+		}
+		
+		else if (e.getSource().equals(abrirCocinero)) {
+			new VentanaPrincipalCocinero();
+		}
+		
 	}
 	
 }
