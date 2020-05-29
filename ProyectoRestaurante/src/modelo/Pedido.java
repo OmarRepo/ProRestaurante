@@ -45,6 +45,14 @@ public class Pedido {
 		this.idCocinero = idCocinero;
 		this.realizarPedido = new RealizarPedido();
 	}
+	
+	public Pedido(String idPedido) {
+		this.idPedido = idPedido;
+		this.idMesa = 0;
+		this.consumibles = null;
+		this.precio = 0;
+		this.idCocinero = "";
+	}
 
 	// Métodos
 
@@ -71,17 +79,12 @@ public class Pedido {
 	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = null;
 		ResultSet resultado;
-		try {
-			consulta = ConexionBBDD.getConnection().createStatement();
-			resultado = consulta
+		consulta = ConexionBBDD.getConnection().createStatement();
+		resultado = consulta
 					.executeQuery("SELECT ID_PEDIDO FROM PEDIDOS WHERE ID_PEDIDO = " + "'" + this.idPedido + "'");
-			if (resultado.getFetchSize() == 0)
-				return false;
-			return true;
-		} finally {
-			consulta.close();
-		}
-
+			if (resultado.next())
+				return true;
+			return false;
 	}
 
 	public static HashMap<String, Integer> recorrerPedidos(String idPedido)
@@ -125,7 +128,7 @@ public class Pedido {
 		consulta.executeUpdate("INSERT INTO PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) VALUES (" + "'" + this.idPedido
 				+ "'," + this.idMesa + ",'" + this.estado.toString() + "'," + this.precio + ")");
 	}
-
+	
 	/**
 	 * Modifica en la base de datos los campos que correspondan al pedido con el
 	 * mismo id que el del objeto.
@@ -138,17 +141,35 @@ public class Pedido {
 		consulta.executeUpdate("UPDATE PEDIDOS SET MESA ="+this.getIdMesa()+", ESTADO = '"+this.getEstado().name()+"', PRECIO = "
 		+ this.getPrecio()+" WHERE ID_PEDIDO = '"+this.getIdPedido()+"'");
 	}
+	
+	public void borrarPedido() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("DELETE FROM PEDIDOS WHERE ID_PEDIDO = '"+this.getIdPedido()+"'");
+	}
+	
+	public void insertarPedidosConsumibles(int cantidad, String idConsumible)
+			throws SQLException, ClassNotFoundException {
+		Statement consulta;
+		consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO PEDIDOS_CONSUMIBLES (ID_PEDIDO,ID_CONSUMIBLE,CANTIDAD) VALUES ('"+this.getIdPedido()+"','"+idConsumible+"',"+cantidad+")");							
+		consulta.close();
+	}
+	
+	public void modificarPedidoConsumible(int cantidad, String idConsumible)
+			throws SQLException, ClassNotFoundException {
+		Statement consulta;
+		consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE PEDIDOS_CONSUMIBLES SET CANTIDAD = "+cantidad+" WHERE ID_PEDIDO = '"+this.getIdPedido()+"' AND ID_CONSUMIBLE = '"+idConsumible+"'");
+		consulta.close();
+	}
+	
+	public void cancelarPedidoConsumible(String idConsumible) throws SQLException, ClassNotFoundException {
+		Statement consulta;
+		consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE PEDIDOS_CONSUMIBLES SET ='"+ ESTADO_PEDIDO.cancelado.name() +"' WHERE ID_PEDIDO = '"+this.getIdPedido()+"'"+" AND ID_CONSUMIBLE = '"+idConsumible+"'");
+		consulta.close();
+	}
 
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
-	/******************************************************************************************************/
 
 	public boolean confirmarPedido() {
 		// BASE DE DATOS
