@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class AlmacenCutre extends Almacen {
+public class AlmacenCutre {
 
 	private HashSet<Ingrediente> ingredientes;
 	private HashSet<Bebida> bebidas;
@@ -156,7 +156,6 @@ public class AlmacenCutre extends Almacen {
 	 * 
 	 */
 
-	@Override
 	public void eliminarProducto(String id) {
 		if (id.startsWith("I"))
 			ingredientes.removeIf((Ingrediente i) -> i.getId().equalsIgnoreCase(id));

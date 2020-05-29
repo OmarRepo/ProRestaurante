@@ -12,7 +12,7 @@ public class Restaurante {
 	private HashSet<Empleado> listaEmpleados;
 	
 	//Constructores
-	public Restaurante(Carta carta, int mesas, HashSet<Empleado> listaEmpleados, Almacen almacen) {
+	public Restaurante(Carta carta, int mesas, HashSet<Empleado> listaEmpleados, RealizarPedido almacen) {
 		this.carta = carta;
 		this.mesas = mesas;
 		this.listaEmpleados = listaEmpleados;

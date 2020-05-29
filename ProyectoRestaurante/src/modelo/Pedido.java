@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeSet;
 
 public class Pedido {
 
@@ -24,6 +21,11 @@ public class Pedido {
 	private double precio;
 	private ESTADO_PEDIDO estado;
 
+	// private HashMap<String, Integer> ingredientesYBebidas;// almacena las
+	// cantidades de ingredientes y bebidas para el
+	// pedido
+	private RealizarPedido realizarPedido;
+
 	// Constructores
 	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, ESTADO_PEDIDO estado) {
 		this.idPedido = idPedido;
@@ -31,54 +33,30 @@ public class Pedido {
 		this.consumibles = consumibles;
 		this.precio = 0;
 		this.estado = estado;
+		this.realizarPedido = new RealizarPedido();
 	}
-	
-	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles,String idCocinero, ESTADO_PEDIDO estado) {
+
+	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, String idCocinero,
+			ESTADO_PEDIDO estado) {
 		this.idPedido = idPedido;
 		this.idMesa = iDmesa;
 		this.consumibles = consumibles;
 		this.precio = 0;
 		this.estado = estado;
 		this.idCocinero = idCocinero;
-	}
-	
-	public Pedido(int iDmesa, HashMap<String, Integer> consumibles,String idCocinero, ESTADO_PEDIDO estado) throws ClassNotFoundException, SQLException {
-		this.idPedido = generarIdPedido();
-		this.idMesa = iDmesa;
-		this.consumibles = consumibles;
-		this.precio = 0;
-		this.estado = estado;
-		this.idCocinero = idCocinero;
+		this.realizarPedido = new RealizarPedido();
 	}
 
-	// Metodos
-	
-	public static String generarIdPedido() {
-		String id="P";
-		int nPedidos=1;
-		try {
-			Statement consulta=ConexionBBDD.getConnection().createStatement();
-			ResultSet resultado = consulta.executeQuery("SELECT NVL(COUNT(*),0) FROM PEDIDOS");
-			resultado.next();
-			nPedidos+=resultado.getInt(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.format("%s \n",nPedidos+"hola");
-		return id+nPedidos;
-		
-	}
-	
+	// Métodos
+
 	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = null;
 		ResultSet resultado;
 		try {
-			consulta=ConexionBBDD.getConnection().createStatement();
-			resultado = consulta.executeQuery("SELECT ID_PEDIDO FROM PEDIDOS WHERE ID_PEDIDO = "+"'"+this.idPedido+"'");
-			if (resultado.getFetchSize()==0)
+			consulta = ConexionBBDD.getConnection().createStatement();
+			resultado = consulta
+					.executeQuery("SELECT ID_PEDIDO FROM PEDIDOS WHERE ID_PEDIDO = " + "'" + this.idPedido + "'");
+			if (resultado.getFetchSize() == 0)
 				return false;
 			return true;
 		} finally {
@@ -86,111 +64,125 @@ public class Pedido {
 		}
 
 	}
-	
-	public static HashMap<String, Integer> recorrerPedidos(String idPedido) throws ClassNotFoundException, SQLException {
-		
+
+	public static HashMap<String, Integer> recorrerPedidos(String idPedido)
+			throws ClassNotFoundException, SQLException {
+
 		HashMap<String, Integer> cons = null;
-			
-		Statement consulta=ConexionBBDD.getConnection().createStatement(); 
-		ResultSet resul=consulta.executeQuery("SELECT * FROM CONSUMIBLES");
-			
-		while(resul.next())
+
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resul = consulta.executeQuery("SELECT * FROM CONSUMIBLES");
+
+		while (resul.next())
 			cons = Pedido.buscarConsumibles(idPedido);
-		
+
 		resul.close();
 		consulta.close();
-		
+
 		return cons;
-		
+
 	}
-	
-	public static HashMap<String, Integer> buscarConsumibles(String idPedido) throws ClassNotFoundException, SQLException {
-		HashMap<String, Integer> consumibles = new HashMap<String,Integer>();
-		Statement consulta=ConexionBBDD.getConnection().createStatement();
-		ResultSet resul=consulta.executeQuery("SELECT * FROM PEDIDOS_CONSUMIBLES WHERE ID_PEDIDO = "+"'"+idPedido+"'");
-		while(resul.next()) {
+
+	public static HashMap<String, Integer> buscarConsumibles(String idPedido)
+			throws ClassNotFoundException, SQLException {
+		HashMap<String, Integer> consumibles = new HashMap<String, Integer>();
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resul = consulta
+				.executeQuery("SELECT * FROM PEDIDOS_CONSUMIBLES WHERE ID_PEDIDO = " + "'" + idPedido + "'");
+		while (resul.next()) {
 			consumibles.put(resul.getString("ID_CONSUMIBLE"), resul.getInt("CANTIDAD"));
 		}
 		return consumibles;
 	}
-	
+
 	/**
 	 * Inserta el pedido en la base de datos
+	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
 	public void insertarPedido() throws ClassNotFoundException, SQLException {
-			Statement consulta=ConexionBBDD.getConnection().createStatement();
-			consulta.executeUpdate("INSERT INTO PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) VALUES ("+"'"+this.idPedido+"',"+this.idMesa+",'"+this.estado.toString()+"',"+this.precio+")");
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) VALUES (" + "'" + this.idPedido
+				+ "'," + this.idMesa + ",'" + this.estado.toString() + "'," + this.precio + ")");
 	}
-	
+
 	/**
-	 * Modifica en la base de datos los campos que correspondan al pedido con el mismo id que el del objeto.
+	 * Modifica en la base de datos los campos que correspondan al pedido con el
+	 * mismo id que el del objeto.
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
 	public void modificarPedido() throws ClassNotFoundException, SQLException {
-		Statement consulta=ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("UPDATE PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) SET MESA ="+this.idMesa+", ESTADO = '"+this.estado.name()+"', PRECIO = "+this.precio+")");
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) SET MESA =" + this.idMesa + ", ESTADO = '"
+				+ this.estado.name() + "', PRECIO = " + this.precio + ")");
 	}
-	
-	
+
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
+	/******************************************************************************************************/
 
 	public boolean confirmarPedido() {
 		// BASE DE DATOS
 		return true;
 
 	}
+	
+	/*
+	//version
+	public void procesarPedido() throws ClassNotFoundException, SQLException {
+		if(realizarPedido.comprobarDisponibilidadBebidas()) { //si no hay bebidas suficientes en la BB.DD se sale (+eficiente)
+			if(realizarPedido.comprobarDisponibilidadIngredientes()) {//si hay existencias suficientes de ingredientes en stock
+				
+			}
+		}
+	}
+	*/
+	
 
+	
+	
 	/**
 	 * comprueba si existen suficientes unidades de ingredientes para preparar
 	 * platos y menús o suficientes unidades de bebida
 	 * 
 	 * @param carta
-	 * @param almacenCutre
+	 * @param realizarPedido
 	 * @return
 	 */
-	//antes comprobarPedido
-	public boolean isComprobado(Carta carta, AlmacenCutre almacenCutre) {
-		int noDisponibles;//prueba
+
+	public void actualizarTodosEnRealizarPedido(Carta carta) {
+
 		for (String idConsumible : consumibles.keySet()) {
 
 			// si el consumible es una bebida
 			if (idConsumible.startsWith("B")) {
-
-				if ((noDisponibles=almacenCutre.comprobarDisponibilidadBebida(idConsumible, consumibles.get(idConsumible))) != 0) {
-					return true;// si hay bebidas suficientes
-				}
-				//inicio prueba
-				else {
-					System.out.format("%s%d\n","Bebidas no disponibles ",noDisponibles);
-				}
-				
-				//fin prueba
+				realizarPedido.actualizarCantidadBebidas(idConsumible);
 
 			}
 
 			// si el consumible es un plato
 			if (idConsumible.startsWith("P")) {
-				if (!almacenCutre.comprobarDisponibilidadPlato(consultarIngredientesPlato(carta, idConsumible))) {
-					return true;
-				}
+				realizarPedido.sumarIngredientesPlato(consultarIngredientesPlato(carta, idConsumible));
 
 			}
 
 			// si el consumible es un menú
 			if (idConsumible.startsWith("M")) {
-				// Menu menu=(Menu)consumibles.get(idConsumible);
-				if (comprobarDisponibilidadMenu(consultarConsumiblesMenu(carta, idConsumible), almacenCutre, carta)) {
-					return true;
-				}
+				actualizarPrepararPedidoMenu(consultarConsumiblesMenu(carta, idConsumible), carta);
 
 			}
-
 		}
 
-		return false;
 	}
 
 	/**
@@ -203,40 +195,34 @@ public class Pedido {
 	 * @return
 	 */
 
-	public boolean comprobarDisponibilidadMenu(HashMap<String, Integer> consumibles, AlmacenCutre almacenCutre,
-			Carta carta) {
+	public void actualizarPrepararPedidoMenu(HashMap<String, Integer> consumibles, Carta carta) {
+
 		for (String idConsumible : consumibles.keySet()) {
 			// para la bebida del menú
 			if (idConsumible.startsWith("B")) {
-
-				if ((almacenCutre.comprobarDisponibilidadBebida(idConsumible, consumibles.get(idConsumible))) != 0) {
-					return false;// si hay bebidas suficientes
-				}
+				realizarPedido.actualizarCantidadBebidas(idConsumible);
 
 			}
 
 			// para los platos del menú
 			if (idConsumible.startsWith("P")) {
-				if (!almacenCutre.comprobarDisponibilidadPlato(consultarIngredientesPlato(carta, idConsumible))) {
-					return false;
-				}
+				realizarPedido.sumarIngredientesPlato(consultarIngredientesPlato(carta, idConsumible));
 
 			}
 
 		}
 
-		return true;// si tanto la bebida como los platos están disponibles (existen suficientes
-					// ingredientes en el almacén para prepararlos)
 	}
 
 	/**
 	 * devuelve un hashMap con los consumibles (platos y bebida) que forman el menú
+	 * 
 	 * @param carta
 	 * @param idMenu
 	 * @return
 	 */
 
-	public HashMap<String, Integer> consultarConsumiblesMenu(Carta carta, String idMenu) {
+	public HashMap<String, Integer> consultarConsumiblesMenu(Carta carta, String idMenu) {// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		Iterator<Consumible> itCarta = carta.getListaConsumibles().iterator();
 
 		while (itCarta.hasNext()) {
@@ -274,12 +260,13 @@ public class Pedido {
 
 	/**
 	 * devuelve un hasMap con los ingredientes que forman un plato
+	 * 
 	 * @param carta
 	 * @param idPlato
 	 * @return
 	 */
 
-	public HashMap<String, Integer> consultarIngredientesPlato(Carta carta, String idPlato) {
+	public HashMap<String, Integer> consultarIngredientesPlato(Carta carta, String idPlato) {// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		Iterator<Consumible> itCarta = carta.getListaConsumibles().iterator();
 
 		while (itCarta.hasNext()) {
@@ -298,7 +285,7 @@ public class Pedido {
 
 	}
 
-	// antes public void pagar()
+	/******************************************************************************************************************************************/
 
 	/**
 	 * recorre el HashSet consumibles y va sumando el precio de los consumibles
@@ -326,10 +313,8 @@ public class Pedido {
 	 */
 
 	public void imprimirFactura() throws IOException {
-		File f = new File("facturas/factura"+this.getIdPedido()+".txt");
-		
-		if (!f.getParentFile().exists())
-			f.getParentFile().mkdir();
+		File f = new File("factura.txt");
+
 		if (!f.exists()) {
 			f.createNewFile();
 		}
@@ -367,7 +352,7 @@ public class Pedido {
 	public String getIdCocinero() {
 		return idCocinero;
 	}
-	
+
 	// Set
 	public void setIdPedido(String idPedido) {
 		this.idPedido = idPedido;
@@ -395,14 +380,13 @@ public class Pedido {
 
 	@Override
 	public String toString() {
-		return "Pedido \n Nº Pedido	" + idPedido + "\n"
-				+ " Mesa	" + idMesa + "\n "
-						+ "Consumibles	" + consumibles + "\n "
-								+ "Total	" + precio + "\n";
+		return "Pedido [numeroPedido=" + idPedido + ", iDmesa=" + idMesa + ", consumibles=" + consumibles + ", precio="
+				+ precio + ", estado=" + estado + "]";
 	}
 
-	
-
-	
+	// ssustituir consumibles que da el id y la cantidad por el nombre y la
+	// cantidad. Para ello, crear un hashMap auxiliar que almacene como clave el id
+	// y como valor el nombre para permitir un acceso rápido, aleatroio eficiente y
+	// cómodo desde el método toString
 
 }
