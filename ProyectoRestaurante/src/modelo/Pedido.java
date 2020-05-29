@@ -48,6 +48,26 @@ public class Pedido {
 
 	// Métodos
 
+	
+	public static String generarIdPedido() {
+		String id="P";
+		int nPedidos=1;
+		try {
+			Statement consulta=ConexionBBDD.getConnection().createStatement();
+			ResultSet resultado = consulta.executeQuery("SELECT NVL(COUNT(*),0) FROM PEDIDOS");
+			resultado.next();
+			nPedidos+=resultado.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.format("%s \n",nPedidos+"hola");
+		return id+nPedidos;
+
+	}
+	
 	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = null;
 		ResultSet resultado;
@@ -114,9 +134,9 @@ public class Pedido {
 	 * @throws SQLException
 	 */
 	public void modificarPedido() throws ClassNotFoundException, SQLException {
-		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("UPDATE PEDIDOS (ID_PEDIDO,MESA,ESTADO,PRECIO) SET MESA =" + this.idMesa + ", ESTADO = '"
-				+ this.estado.name() + "', PRECIO = " + this.precio + ")");
+		Statement consulta=ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE PEDIDOS SET MESA ="+this.getIdMesa()+", ESTADO = '"+this.getEstado().name()+"', PRECIO = "
+		+ this.getPrecio()+" WHERE ID_PEDIDO = '"+this.getIdPedido()+"'");
 	}
 
 	/******************************************************************************************************/

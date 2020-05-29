@@ -21,7 +21,7 @@ public class Cocinero extends Empleado {
 	 * @return
 	 */
 	//antes prepararPedido
-	public boolean isPreparado(Pedido pedido, Carta carta, AlmacenCutre almacenCutre) { // Iterator<Consumible> it =
+	/*public boolean isPreparado(Pedido pedido, Carta carta, AlmacenCutre almacenCutre) { // Iterator<Consumible> it =
 		if (pedido.isComprobado(carta, almacenCutre)) {
 
 			HashMap<String, Integer> ingredientesPlato = new HashMap<String, Integer>();
@@ -75,7 +75,7 @@ public class Cocinero extends Empleado {
 		}
 		return false;
 
-	}
+	}*/
 
 	@Override
 	public String toString() {

@@ -14,6 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import modelo.Restaurante;
@@ -23,13 +26,22 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener{
 	
 	private Restaurante res;
 	
+	private JTable ingredientes;
+	private JButton anadirIngrediente;
+	private JButton eliminarIngrediente;
+	private JButton nuevoPlatoMenu;
 	
-	private JPanel panel;
+	
+	
+	
+	private JPanel panelAlmacen;
+	private JScrollPane almacen;
+	private JTabbedPane pestanas;
 	
 	public VentanaPrincipalCocinero() {
-		crearVentana();
 		try {
 			res = new Restaurante();
+			crearVentana();
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -37,13 +49,22 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener{
 	}
 	
 	public void crearVentana() {
-		panel = new JPanel();
-		panel.setLayout(new MigLayout());
 		
-
+		pestanas = new JTabbedPane();
+		panelAlmacen = new JPanel();
+		panelAlmacen.setLayout(new MigLayout());
 		
-		setLocationRelativeTo(null);
-		this.add(panel);
+		ingredientes = new JTable();
+		almacen = new JScrollPane(ingredientes);
+		
+		anadirIngrediente = new JButton("Añadir al Almacén");
+		eliminarIngrediente = new JButton("Eliminar del Almacén");
+		
+		panelAlmacen.add(anadirIngrediente);
+		panelAlmacen.add(almacen);
+		pestanas.addTab("Almacén", panelAlmacen);
+		this.add(pestanas);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("Camarero");

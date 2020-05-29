@@ -1,15 +1,19 @@
 package vista;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,7 +23,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 
+import modelo.ConexionBBDD;
 import modelo.Consumible;
 import modelo.ESTADO_PEDIDO;
 import modelo.Pedido;
@@ -54,9 +61,10 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	private JButton eliminarPedido;
 	private JButton pagarPedido;
 	private JButton guardarPedido;
+	private JButton cargarPedidos;
 		
 	//Paneles
-	private JTabbedPane pestañas;
+	private JTabbedPane pestanas;
 	private JPanel panelCarta;
 	private JPanel panelPedidos;
 	private JScrollPane panelTablaPedidos;
@@ -85,7 +93,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	
 	public void prepararMuestraDeCarta() {
 		for (Consumible i : this.res.getCarta().getListaConsumibles()) {
-			Object[] fila = {i.getId(),i.getNombre(),0,Double.toString(i.getPrecio()),false};
+			Object[] fila = {i.getNombre(),Double.toString(i.getPrecio())};
 			switch(i.getId().charAt(0)) {
 			case 'M':
 				modeloMenu.addRow(fila);
@@ -102,20 +110,48 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	
 	public void crearVentana() {
 		
-		pestañas = new JTabbedPane();
+		pestanas = new JTabbedPane();
 		
 		//Panel Carta
 		panelCarta = new JPanel();
 		panelCarta.setLayout(new MigLayout());
-		modeloMenu = new ModeloTabla(null, null);
-		modeloPlato = new ModeloTabla(null, null);
-		modeloBebida = new ModeloTabla(null, null);
+		
+		String[] titulosM = {"Menus","Precio"};
+		modeloMenu = new ModeloTabla(null, titulosM);
+		String[] titulosP = {"Platos","Precio"};
+		modeloPlato = new ModeloTabla(null, titulosP);
+		String[] titulosB = {"Bebidas","Precio"};
+		modeloBebida = new ModeloTabla(null, titulosB);
+		
+		//Alinear hacia la derecha las columnas
+		DefaultTableCellRenderer Alinear = new DefaultTableCellRenderer();
+		Alinear.setHorizontalAlignment(SwingConstants.RIGHT);
+		//Editar cartaMenu
 		cartaMenu = new JTable();
 		cartaMenu.setModel(modeloMenu);
+		cartaMenu.setShowGrid(false);
+		
+		cartaMenu.getTableHeader().setFont(new Font("Courier New",1,18));
+		cartaMenu.setFont(new Font("Courier New",0,15));
+		cartaMenu.setFillsViewportHeight(true);
+		
+		cartaMenu.getColumnModel().getColumn(1).setCellRenderer(Alinear); //Coges el modelo de las columnas, el numeor de columna que queires editar y seleccionas el renderizado
+		//Editar cartaPlatos
 		cartaPlatos = new JTable();
 		cartaPlatos.setModel(modeloPlato);
+		cartaPlatos.setShowGrid(false);
+		cartaPlatos.getTableHeader().setFont(new Font("Cooper Black",1,14));
+		cartaPlatos.getColumnModel().getColumn(1).setCellRenderer(Alinear);
+		cartaPlatos.setFillsViewportHeight(true);
+		
+		//Editar cartaBebidas
 		cartaBebidas = new JTable();
 		cartaBebidas.setModel(modeloBebida);
+		cartaBebidas.setShowGrid(false);
+		cartaBebidas.getTableHeader().setFont(new Font("Cooper Black",1,14));
+		cartaBebidas.getColumnModel().getColumn(1).setCellRenderer(Alinear);
+		cartaBebidas.setFillsViewportHeight(true);
+		
 		sCartaMenu = new JScrollPane(cartaMenu);
 		sCartaPlatos = new JScrollPane(cartaPlatos);
 		sCartaBebidas = new JScrollPane(cartaBebidas);
@@ -128,7 +164,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		panelCarta.add(cartaBebidas,"dock west");
 		panelCarta.add(cartaPlatos,"dock east");
 		*/
-		pestañas.addTab("Carta", panelCarta);
+		pestanas.addTab("Carta", panelCarta);
 		
 		//Panel Pedidos
 		tablaPedidos = new JTable();
@@ -144,6 +180,8 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		pagarPedido.addActionListener(this);
 		guardarPedido = new JButton("Guardar Pedido");
 		guardarPedido.addActionListener(this);
+		cargarPedidos = new JButton("Cargar Pedidos");
+		cargarPedidos.addActionListener(this);
 		
 		panelPedidos = new JPanel();
 		panelPedidos.setLayout(new MigLayout("align 50% 50%"));
@@ -157,15 +195,17 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		panelPedidos.add(panelTablaPedidos,"growx, pushx");
 		panelPedidos.add(panelTablaCarta,"wrap, growx, pushx");
 		
-		panelPedidos.add(anadirPedido,"split3,align 50% 50%");
+		panelPedidos.add(cargarPedidos,"split3,align 50% 50%");
+		panelPedidos.add(anadirPedido);
 		panelPedidos.add(eliminarPedido);
+		panelPedidos.add(guardarPedido,"split2,align 50% 50%");
 		panelPedidos.add(pagarPedido);
-		panelPedidos.add(guardarPedido);
-		
-		pestañas.addTab("Pedidos", panelPedidos);
 		
 		
-		this.add(pestañas);
+		pestanas.addTab("Pedidos", panelPedidos);
+		
+		
+		this.add(pestanas);
 		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -233,7 +273,20 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	@Override
 	public void actionPerformed(ActionEvent e){
 		//Botones Pedidos
-		
+		if (e.getSource().equals(cargarPedidos)) {
+			Statement consulta;
+			try {
+				consulta = ConexionBBDD.getConnection().createStatement();
+				ResultSet resul=consulta.executeQuery("SELECT * FROM PEDIDOS");
+			while(resul.next()) {
+				String[] fila = {resul.getString("ID_PEDIDO"),resul.getString("MESA"),resul.getString("ESTADO")};
+				modelPedidos.addRow(fila);
+			}
+			} catch (ClassNotFoundException | SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		if (e.getSource().equals(anadirPedido)) {
 			try {
 				nuevoPedido();
@@ -277,13 +330,30 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		if (e.getSource().equals(guardarPedido)) {
 				Pedido pedido;
 				pedido = seleccionarPedido();
+				//Seleccionar Consumibles
+				for (int i=0; i<tablaCarta.getRowCount();i++) {
+					Statement consulta;
+					try {
+						if ((Boolean)tablaCarta.getValueAt(i, 4)) {
+							consulta = ConexionBBDD.getConnection().createStatement();
+							consulta.executeUpdate("INSERT INTO PEDIDOS_CONSUMIBLES (ID_PEDIDO,ID_CONSUMIBLE,CANTIDAD) VALUES ('"+pedido.getIdPedido()+"','"+tablaCarta.getValueAt(i, 0)+"',"+tablaCarta.getValueAt(i, 2)+")");
+						}
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				//--------------------------------------------------
 				pedido.calcularPrecio(res.getCarta());
 				try {
 					if (!pedido.buscarPedido()) 
 						pedido.insertarPedido();
-					else
+					else {
 						pedido.modificarPedido();
-					
+					}
 				} catch(ClassNotFoundException | SQLException ce) {
 					JOptionPane.showMessageDialog(this, "Error al actualizar el pedido.");
 				}	
