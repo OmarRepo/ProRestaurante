@@ -1,17 +1,23 @@
-package modelo;
+package pruebas;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class AlmacenCutre {
+import modelo.RealizarPedido;
+import modelo.Bebida;
+import modelo.Consumible;
+import modelo.Ingrediente;
+
+
+public class BackupAlmacenCutre extends RealizarPedido {
 
 	private HashSet<Ingrediente> ingredientes;
 	private HashSet<Bebida> bebidas;
 
 	// Constructor
 
-	public AlmacenCutre() {
+	public BackupAlmacenCutre() {
 		ingredientes = new HashSet<Ingrediente>();
 		bebidas = new HashSet<Bebida>();
 	}
@@ -156,6 +162,7 @@ public class AlmacenCutre {
 	 * 
 	 */
 
+	@Override
 	public void eliminarProducto(String id) {
 		if (id.startsWith("I"))
 			ingredientes.removeIf((Ingrediente i) -> i.getId().equalsIgnoreCase(id));
