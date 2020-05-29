@@ -328,16 +328,39 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				JOptionPane.showMessageDialog(this, "El pedido aun no ha sido preparado.");
 		}
 		if (e.getSource().equals(guardarPedido)) {
-				Pedido pedido;
-				pedido = seleccionarPedido();
+				Pedido pedido = seleccionarPedido();
+				HashMap<String, Integer> consumibles = null;
+				try {
+					consumibles = Pedido.buscarConsumibles(pedido.getIdPedido());
+				} catch (ClassNotFoundException | SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				//Seleccionar Consumibles
 				for (int i=0; i<tablaCarta.getRowCount();i++) {
-					Statement consulta;
+					Statement consulta = null;
 					try {
-						if ((Boolean)tablaCarta.getValueAt(i, 4)) {
+						
+						if (consumibles.containsKey(tablaCarta.getValueAt(i, 0))) {
+						
+								if ((Boolean)tablaCarta.getValueAt(i, 4)) {
+									//Modificar cantidad pedido
+									consulta = ConexionBBDD.getConnection().createStatement();
+									consulta.executeUpdate("UPDATE PEDIDOS_CONSUMIBLES SET CANTIDAD = "+tablaCarta.getValueAt(i, 2));
+									consulta.close();
+								} else {
+									//borrar pedido
+									consulta = ConexionBBDD.getConnection().createStatement();
+									consulta.executeUpdate("DELETE FROM PEDIDOS_CONSUMIBLES WHERE ID_PEDIDO = '"+pedido.getIdPedido()+"'"+" AND ID_CONSUMIBLE = '"+tablaCarta.getValueAt(i, 0)+"'");
+									consulta.close();
+								}
+						} else if ((Boolean)tablaCarta.getValueAt(i, 4)) {
+							//Insertar pedido consumible
 							consulta = ConexionBBDD.getConnection().createStatement();
-							consulta.executeUpdate("INSERT INTO PEDIDOS_CONSUMIBLES (ID_PEDIDO,ID_CONSUMIBLE,CANTIDAD) VALUES ('"+pedido.getIdPedido()+"','"+tablaCarta.getValueAt(i, 0)+"',"+tablaCarta.getValueAt(i, 2)+")");
+							consulta.executeUpdate("INSERT INTO PEDIDOS_CONSUMIBLES (ID_PEDIDO,ID_CONSUMIBLE,CANTIDAD) VALUES ('"+pedido.getIdPedido()+"','"+tablaCarta.getValueAt(i, 0)+"',"+tablaCarta.getValueAt(i, 2)+")");							
+							consulta.close();
 						}
+						JOptionPane.showMessageDialog(this, "Pedido guardado correctamente.");
 					} catch (ClassNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

@@ -32,7 +32,7 @@ public class Inicializar {
 		// TODO Auto-generated method stub
 		ConexionBBDD.setUsuario("resadmin");
 		ConexionBBDD.setContrasena("resadmin123");
-		new VentanaLogin();
+		new VentanaPrincipalCamarero();
 	}
 
 }
