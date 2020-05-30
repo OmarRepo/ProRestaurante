@@ -13,6 +13,7 @@ import java.util.Iterator;
 
 public class Pedido {
 
+	
 	private String idPedido;
 	private int idMesa;
 	private HashMap<String, Integer> consumibles;// la clave es un id tipo String y la cantidad un integer
