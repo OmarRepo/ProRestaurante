@@ -12,11 +12,9 @@ import modelo.ConexionBBDD;
 import modelo.ESTADO_PEDIDO;
 import modelo.Ingrediente;
 import modelo.Menu;
-import modelo.Mesa;
 import modelo.Pedido;
 import modelo.Plato;
 import modelo.Restaurante;
-import modelo.TIPO_PLATO;
 
 public class Inicializar {
 	
@@ -30,9 +28,7 @@ public class Inicializar {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		ConexionBBDD.setUsuario("resadmin");
-		ConexionBBDD.setContrasena("resadmin123");
-		new VentanaPrincipalCamarero();
+		new VentanaLogin();
 	}
 
 }

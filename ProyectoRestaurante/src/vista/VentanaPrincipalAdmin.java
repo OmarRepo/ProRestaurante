@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
-public class VentanaAdminPrincipal extends JFrame implements ActionListener{
+public class VentanaPrincipalAdmin extends JFrame implements ActionListener{
 	//panel principal
 	private JPanel panel;
 	//componentes panel principal	
@@ -25,7 +25,7 @@ public class VentanaAdminPrincipal extends JFrame implements ActionListener{
 	private JButton abrirCamarero;
 	private JButton abrirCocinero;
 		
-	public VentanaAdminPrincipal() {
+	public VentanaPrincipalAdmin() {
 		crearVentana();
 	}
 	
@@ -52,7 +52,6 @@ public class VentanaAdminPrincipal extends JFrame implements ActionListener{
 		panel.add(abrirCocinero,"growx,wrap");
 		
 		
-		panel.setAlignmentX(CENTER_ALIGNMENT);
 		setLocationRelativeTo(null);
 		this.add(panel);
 		

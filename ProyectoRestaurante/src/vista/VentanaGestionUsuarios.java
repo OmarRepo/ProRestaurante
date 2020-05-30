@@ -32,7 +32,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	
 	private Restaurante res;
 	private JPanel panelGestion;
-	
+	private JPanel panelDatos;
 	private JTable tablaUsuarios;
 	private ModeloTablaUsuarios modeloTablaUsuarios;
 	private JScrollPane scrolltablaUsuarios;
@@ -67,7 +67,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private void crearVentana() {
 		//panel de ventana
 		panelGestion = new JPanel();
-		panelGestion.setLayout(new MigLayout("align 50% 50%"));
+		panelGestion.setLayout(new MigLayout("align 50%"));
 		//tabla de usuarios
 		tablaUsuarios = new JTable();
 		tablaUsuarios.addMouseListener(this);
@@ -83,6 +83,8 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		eliminarUsuario = new JButton("Eliminar Usuario");
 		eliminarUsuario.addActionListener(this);
 		//etiquetas y campos
+		panelDatos=new JPanel();
+		panelDatos.setLayout(new MigLayout());
 		ID=new JLabel("ID:");
 		IDText=new JLabel("ninguno");
 		DNI=new JLabel("DNI:");
@@ -99,27 +101,31 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		tipoCombobox=new JComboBox<>();
 		fecha=new JLabel("Fecha Contratacion:");
 		fechaText=new JLabel();
-		//insercion en el panel general
-		panelGestion.add(scrolltablaUsuarios,"growy,pushy");
+		//insercion en el panel datos
+		panelDatos.add(ID);
+		panelDatos.add(IDText,"wrap");
+		panelDatos.add(DNI);
+		panelDatos.add(DNIText,"wrap");
+		panelDatos.add(nombre);
+		panelDatos.add(nombreText,"wrap");
+		panelDatos.add(apellido);
+		panelDatos.add(apellidoText,"wrap");
+		panelDatos.add(constrasena);
+		panelDatos.add(constrasenaText,"wrap");
+		panelDatos.add(fecha);
+		panelDatos.add(fechaText,"wrap");
+		panelDatos.add(tipo);
+		panelDatos.add(tipoCombobox,"wrap");
+		panelDatos.add(crearUsuario);
+		panelDatos.add(modificarUsuario);
+		panelDatos.add(eliminarUsuario);
+		//insDatosen el panel general
+		panelGestion.add(panelDatos,"growy,pushy");
+		panelGestion.add(scrolltablaUsuarios,"grow,push");
 		
-		panelGestion.add(ID);
-		panelGestion.add(IDText,"wrap");
-		panelGestion.add(DNI);
-		panelGestion.add(DNIText,"wrap");
-		panelGestion.add(nombre);
-		panelGestion.add(nombreText,"wrap");
-		panelGestion.add(apellido);
-		panelGestion.add(apellidoText,"wrap");
-		panelGestion.add(constrasena);
-		panelGestion.add(constrasenaText,"wrap");
-		panelGestion.add(fecha);
-		panelGestion.add(fechaText,"wrap");
-		panelGestion.add(tipo);
-		panelGestion.add(tipoCombobox,"wrap");
 		
-		panelGestion.add(crearUsuario);
-		panelGestion.add(modificarUsuario);
-		panelGestion.add(eliminarUsuario);
+		
+		
 		this.add(panelGestion);
 		
 		//ajustes a a esta ventana
