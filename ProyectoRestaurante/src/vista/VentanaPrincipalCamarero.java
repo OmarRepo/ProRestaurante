@@ -71,7 +71,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 	
 	public VentanaPrincipalCamarero() {
 		try {
-			res = new Restaurante();
+			res = new Restaurante(false);
 			crearVentana();
 			prepararTablas();
 			prepararCarta();
@@ -247,7 +247,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 
 	}
 	
-	public Pedido seleccionarPedido() {
+	public Pedido crearPedidoSeleccionado() {
 		int filaSeleccionada = tablaPedidos.getSelectedRow();
 		
 		String id = null;
@@ -312,7 +312,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
 			else if (modelPedidos.getValueAt(filaSeleccionada, 2).equals(modelo.ESTADO_PEDIDO.en_espera.name())) {
 				try {
-					pedido = seleccionarPedido();
+					pedido = crearPedidoSeleccionado();
 					pedido.calcularPrecio(res.getCarta());
 					pedido.imprimirFactura();
 					modelPedidos.setValueAt(modelo.ESTADO_PEDIDO.pagado.name(), filaSeleccionada, 2);
@@ -324,7 +324,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				JOptionPane.showMessageDialog(this, "El pedido aun no ha sido preparado.");
 		}
 		if (e.getSource().equals(guardarPedido)) {
-				Pedido pedido = seleccionarPedido();
+				Pedido pedido = crearPedidoSeleccionado();
 				HashMap<String, Integer> consumibles = null;
 				int cantidad;
 				String idConsumible;

@@ -5,18 +5,11 @@ import java.util.HashMap;
 public class Plato extends Consumible{
 	
 	private HashMap<String, Integer> ingredientes;
-	private TIPO_PLATO tipo;
 	
 	//Constructores
-	public Plato(String id, String nombre, double precio, HashMap<String,Integer> ingredientes, TIPO_PLATO tipo) {
+	public Plato(String id, String nombre, double precio, HashMap<String,Integer> ingredientes) {
 		super(id, nombre, precio);
 		this.ingredientes = ingredientes;
-		this.tipo = tipo;
-	}
-	public Plato(String id, String nombre, double precio, TIPO_PLATO tipo) {
-		super(id, nombre, precio);
-		this.ingredientes = new HashMap<String,Integer>();
-		this.tipo = tipo;
 	}
 	public Plato(String id, String nombre, double precio) {
 		super(id, nombre, precio);
@@ -25,7 +18,6 @@ public class Plato extends Consumible{
 	public Plato(Plato p) {
 		super(p);
 		this.ingredientes = p.getIngredientes();
-		this.tipo = p.getTipo();
 	}
 
 
@@ -66,17 +58,9 @@ public class Plato extends Consumible{
 		return ingredientes;
 	}
 
-	public TIPO_PLATO getTipo() {
-		return tipo;
-	}
-	
 	//set
 	public void setIngredientes(HashMap<String,Integer> ingredientes) {
 		this.ingredientes = ingredientes;
-	}
-
-	public void setTipo(TIPO_PLATO tipo) {
-		this.tipo = tipo;
 	}
 	
 	@Override

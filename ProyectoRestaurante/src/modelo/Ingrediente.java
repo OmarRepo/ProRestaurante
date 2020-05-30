@@ -1,5 +1,7 @@
 package modelo;
 
+
+
 public class Ingrediente {
 	private String id;
 	private String nombre;
@@ -16,6 +18,9 @@ public class Ingrediente {
 			this.cantidad = cantidad;
 		}
 	}
+	
+	
+	
 
 	// Métodos
 	public boolean validarId(String id) {
