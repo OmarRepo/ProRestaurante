@@ -38,10 +38,6 @@ public class Empleado {
 	
 	
 	//Metodos
-	public static Empleado consultarEmpleado(String valueAt) {
-		
-		return null;
-	}
 	
 	public String getId() {
 		return id;
@@ -99,42 +95,13 @@ public class Empleado {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof Empleado))
-			return false;
-		Empleado other = (Empleado) obj;
-		if (apellidos == null) {
-			if (other.apellidos != null)
-				return false;
-		} else if (!apellidos.equals(other.apellidos))
-			return false;
-		if (dni == null) {
-			if (other.dni != null)
-				return false;
-		} else if (!dni.equals(other.dni))
-			return false;
-		if (fechaContrato == null) {
-			if (other.fechaContrato != null)
-				return false;
-		} else if (!fechaContrato.equals(other.fechaContrato))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (nombre == null) {
-			if (other.nombre != null)
-				return false;
-		} else if (!nombre.equals(other.nombre))
-			return false;
-		if (tipo != other.tipo)
-			return false;
-		if (username == null) {
-			if (other.username != null)
-				return false;
-		} else if (!username.equals(other.username))
-			return false;
-		return true;
+		if ((obj instanceof Empleado)) {
+			Empleado that=(Empleado)obj;
+			if(this.id.equals(that.id)&&this.dni.equals(that.dni))
+				return true;
+		}
+		return false;
+		
 	}
 	
 	
