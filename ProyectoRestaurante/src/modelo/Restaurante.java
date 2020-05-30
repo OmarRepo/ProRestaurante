@@ -4,14 +4,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
-
+/**
+ * Clase que permite obtener y actualizar la carta o la lista de empleados
+ * 
+ *
+ */
 public class Restaurante {
 	
 	private Carta carta;
 	private int mesas;
 	private HashSet<Empleado> listaEmpleados;
 	
-	//Constructores
+	/**
+	 * 
+	 * @param booleano que indica el modo de inicializacion
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public Restaurante(boolean admin) throws ClassNotFoundException, SQLException {
 		if(admin)
 			prepararRestauranteAdmin();
@@ -19,17 +28,32 @@ public class Restaurante {
 			prepararRestaurante();
 	}
 	
-	//Metodos
+	/**
+	 * Metodo que prepara el restaurante para los usuarios cocinero o camarero
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private void prepararRestaurante() throws ClassNotFoundException, SQLException {
 		this.carta = new Carta();
 		this.listaEmpleados = null;
 		this.mesas = cargarMesas();
 	}
+	/**
+	 * Metodo que prepara el restaurante para los usuarios jefes
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private void prepararRestauranteAdmin() throws ClassNotFoundException, SQLException {
-		this.carta = new Carta();
-		this.listaEmpleados = actualizarEmpleados();
+		this.carta = null;
+		actualizarListaEmpleados();
 		this.mesas = cargarMesas();
 	}
+	/**
+	 * Metodo que carga la configuracion del numero de mesas desde la bbdd
+	 * @return numero de mesas de la configuracion, si no esta configurada devuelve 999
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private int cargarMesas() throws ClassNotFoundException, SQLException {
 		Statement consulta=ConexionBBDD.getConnection().createStatement();
 		ResultSet resul=consulta.executeQuery("SELECT VALUE FROM CONFIGURACION WHERE KEY='n_mesas'");
@@ -39,8 +63,12 @@ public class Restaurante {
 			return 999;
 	}
 
-	
-	private HashSet<Empleado> actualizarEmpleados() throws ClassNotFoundException, SQLException {
+	/**
+	 * Metodo que actualiza la lista de empleados del restaurante 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void actualizarListaEmpleados() throws ClassNotFoundException, SQLException {
 		Statement consulta=null;
 		ResultSet resul=null;
 		try {
@@ -53,9 +81,20 @@ public class Restaurante {
 		}finally {
 			consulta.close();
 		}
-		return listaEmpleados;
 	}
-	
+	/**
+	 * Metodo que permite obtener al empleado con la id correspondiente
+	 * @param id del empleado a obtener
+	 * @return empleado a obtener
+	 */
+	public Empleado consultarEmpleado(String id) {
+		for (Empleado empleado: listaEmpleados) {
+			if(empleado.getId().equals(id)) {
+				return empleado;
+			}
+		}
+		return null;
+	}
 	@Override
 	public String toString() {
 		return "Restaurante [carta=" + carta + ", Mesas=" + mesas + "]";

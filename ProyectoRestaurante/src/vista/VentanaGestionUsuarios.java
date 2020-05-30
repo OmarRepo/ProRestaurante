@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 
 import javax.swing.JButton;
@@ -22,7 +23,11 @@ import modelo.Empleado;
 import modelo.Restaurante;
 import modelo.TIPO_EMPLEADO;
 import net.miginfocom.swing.MigLayout;
-
+/**
+ * Clase que al ser instanciada crea una ventana destinada a la gestion de usuarios.
+ * 
+ *
+ */
 public class VentanaGestionUsuarios extends JFrame implements ActionListener,MouseListener{
 	
 	private Restaurante res;
@@ -56,7 +61,9 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		crearVentana();
 		cargarValores();
 	}
-	
+	/**
+	 * Metodo que crea los componentes de la ventana y los añade a la misma.
+	 */
 	private void crearVentana() {
 		//panel de ventana
 		panelGestion = new JPanel();
@@ -128,16 +135,28 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	    //lo hacemos visible
 	    setVisible(true);
 	}
-	
-	private void cargarValores() {
+	/**
+	 * Metodo dedicado a cargar los valores de la ventana tras iniciarla.
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	private void cargarValores() throws ClassNotFoundException, SQLException {
+		res.actualizarListaEmpleados();
 		cargarTablaUsuarios(res.getListaEmpleados());
 	}
-	
-	private void cargarTablaUsuarios(HashSet<Empleado> empleados) {
+	/**
+	 * Metodo dedicada a cargar en la tabla de usuarios los empleados de la coleccion pasada
+	 * @param empleados una coleccion de empleados
+	 */
+	private void cargarTablaUsuarios(Collection<Empleado> empleados) {
 		for (Empleado empleado : empleados) {
 			modeloTablaUsuarios.addRow(empleado);
 		}
 	}
+	/**
+	 * Metodo dedicado a mostrar los datos del empleado pasado por parametro en la parte derecha de la ventana
+	 * @param empleado a ser mostrado
+	 */
 	private void mostrarDatosEmpleado(Empleado emp) {
 		IDText.setText(emp.getId());
 		DNIText.setText(emp.getDni());
@@ -153,12 +172,14 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+	 * Espera que clickques sobre un usuario de la tabla de usuarios para entonces cargarlo en la parte derecha
+	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getClickCount()==1) {
-			if(e.getSource().equals(tablaUsuarios)) {
-				Empleado emp=Restaurante.consultarEmpleado((String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow()));
+			if(e.getSource().equals(tablaUsuarios)&&modificarUsuario.getText().equals("Modificar usuario")) {
+				Empleado emp=res.consultarEmpleado((String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow()));
 				mostrarDatosEmpleado(emp);
 			}
 		}
@@ -193,29 +214,46 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 				finalizarCrearUsuario();
 		}
 		else if(e.getSource().equals(modificarUsuario)) {
-			if(modificarUsuario.getText().equals("Modificar texto")) {
+			if(modificarUsuario.getText().equals("Modificar usuario")) {
 				iniciarModificacionUsuario();
 			}
 			else
 				finalizarModificacionUsuario();
 		}
+		if(e.getSource().equals(eliminarUsuario));
+			borrarUsuario((String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow()));
+	}
+	/**
+	 * Metodo que borra al usuario con el id pasado por parametro tras pedir confirmacion
+	 * Borra al usuario de la BBDD y pone a nulo los campos con excepcion de la id
+	 * @param id
+	 */
+	private void borrarUsuario(String id) {
+		Empleado emp=res.consultarEmpleado((String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow()));
 		
 	}
-
-	private void finalizarModificacionUsuario() {
-		
-	}
-
+	/**
+	 * Metodo que desbloquea los campos del usuario mostrado para poder modificarlos
+	 */
 	private void iniciarModificacionUsuario() {
 
 	}
-
-	private void finalizarCrearUsuario() {
-
+	/**
+	 * Metodo que efectua la modificacion con los nuevos datos
+	 */
+	private void finalizarModificacionUsuario() {
+		
 	}
-
+	/**
+	 * Metodo que vacio los campos y los desbloquea para poder rellenarlos
+	 */
 	private void iniciarCrearUsuario() {
 
 	}
+	/**
+	 * Metodo que efectua la creacion con los nuevos datos
+	 */
+	private void finalizarCrearUsuario() {
 
+	}
 }
