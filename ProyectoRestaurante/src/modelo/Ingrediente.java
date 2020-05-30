@@ -1,6 +1,11 @@
 package modelo;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
 
+import vista.Inicializar;
 
 public class Ingrediente {
 	private String id;
@@ -26,7 +31,41 @@ public class Ingrediente {
 	public boolean validarId(String id) {
 		return id.matches("^([I][0-9]{2})$");
 	}
-
+	
+	public void insertarIngrediente() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO INGREDIENTES (ID_INGREDIENTE,NOMBRE,ALMACENADO) VALUES ('" + this.id
+				+ "','" + this.nombre + "'," + this.cantidad + ")");
+	}
+	
+	public void modificarIngrediente() throws SQLException, ClassNotFoundException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE INGREDIENTES SET NOMBRE = '"+this.getNombre()+"', ALMACENADO = "+this.getCantidad()+" WHERE ID_INGREDIENTE = '"+this.getId()+"'");
+	}
+	
+	public void eliminarIngrediente() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("DELETE FROM INGREDIENTES WHERE ID_INGREDIENTE ='" + this.id + "'");
+	}
+	
+	public boolean existe() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resultado = consulta.executeQuery("SELECT * FROM INGREDIENTES WHERE ID_INGREDIENTE ='" + this.id + "'");
+		if (resultado.next())
+			return true;
+		return false;
+	}
+	
+	public static LinkedList<Ingrediente> obtenerIngredientes() throws ClassNotFoundException, SQLException {
+		LinkedList<Ingrediente> lista = new LinkedList<Ingrediente>();
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resul=consulta.executeQuery("SELECT * FROM INGREDIENTES ORDER BY ID_INGREDIENTE");
+		while(resul.next()) {
+			lista.add(new Ingrediente(resul.getString(1),resul.getString(2),resul.getInt(3)));
+		}
+		return lista;
+	}
+	
 	// get
 	public String getId() {
 		return id;

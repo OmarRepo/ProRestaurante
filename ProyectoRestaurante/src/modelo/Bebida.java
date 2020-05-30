@@ -1,5 +1,10 @@
 package modelo;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+
 public class Bebida extends Consumible {
 
 	private int cantidad;
@@ -25,7 +30,53 @@ public class Bebida extends Consumible {
 	 * @Override public boolean validarId(String id) { return
 	 * id.matches("^([B][0-9]{2})$"); }
 	 */
-
+	
+	public void insertarBebida() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO CONSUMIBLES (ID_CONSUMIBLE,NOMBRE,TIPO) VALUES ('" + this.getId()
+				+ "','" + this.getNombre() + "', 'Bebida')");
+		
+		this.asignarCantidadBebida();
+		
+	}
+	
+	public void modificarBebida() throws SQLException, ClassNotFoundException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'");
+		this.asignarCantidadBebida();
+	}
+	
+	public void asignarCantidadBebida() throws SQLException, ClassNotFoundException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE BEBIDAS SET ALMACENADO = "+this.getCantidad()+" WHERE ID_BEBIDA = '"+this.getId()+"'");
+	}
+	
+	public void eliminarBebida() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + this.getId() + "'");
+	}
+	
+	public boolean existe() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resultado = consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + this.getId() + "'");
+		if (resultado.next())
+			return true;
+		return false;
+	}
+	
+	public static LinkedList<Bebida> obtenerBebidas() throws ClassNotFoundException, SQLException {
+		LinkedList<Bebida> lista = new LinkedList<Bebida>();
+		Statement consulta = ConexionBBDD.getConnection().createStatement();	
+		ResultSet resul=consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE TIPO = 'Bebida' ORDER BY ID_CONSUMIBLE");
+		Statement consultaCantidad = ConexionBBDD.getConnection().createStatement();
+		ResultSet resultCantidad = consultaCantidad.executeQuery("SELECT ALMACENADO FROM BEBIDAS ORDER BY ID_BEBIDA");
+		while(resul.next()) {
+			resultCantidad.next();
+			lista.add(new Bebida(resul.getString(1),resul.getString(2),resultCantidad.getInt(1)));
+		}
+		return lista;
+	}
+	
 	// get
 	public int getCantidad() {
 		return cantidad;
