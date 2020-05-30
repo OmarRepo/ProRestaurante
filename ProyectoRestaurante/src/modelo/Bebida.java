@@ -31,6 +31,11 @@ public class Bebida extends Consumible {
 	 * id.matches("^([B][0-9]{2})$"); }
 	 */
 	
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insertarBebida() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("INSERT INTO CONSUMIBLES (ID_CONSUMIBLE,NOMBRE,TIPO) VALUES ('" + this.getId()
@@ -39,23 +44,40 @@ public class Bebida extends Consumible {
 		this.asignarCantidadBebida();
 		
 	}
-	
+	/**
+	 * 
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void modificarBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'");
 		this.asignarCantidadBebida();
 	}
-	
+	/**
+	 * 
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void asignarCantidadBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE BEBIDAS SET ALMACENADO = "+this.getCantidad()+" WHERE ID_BEBIDA = '"+this.getId()+"'");
 	}
-	
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void eliminarBebida() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + this.getId() + "'");
 	}
-	
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public boolean existe() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		ResultSet resultado = consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + this.getId() + "'");
@@ -63,7 +85,12 @@ public class Bebida extends Consumible {
 			return true;
 		return false;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static LinkedList<Bebida> obtenerBebidas() throws ClassNotFoundException, SQLException {
 		LinkedList<Bebida> lista = new LinkedList<Bebida>();
 		Statement consulta = ConexionBBDD.getConnection().createStatement();	

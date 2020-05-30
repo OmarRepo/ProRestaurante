@@ -31,23 +31,40 @@ public class Ingrediente {
 	public boolean validarId(String id) {
 		return id.matches("^([I][0-9]{2})$");
 	}
-	
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insertarIngrediente() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("INSERT INTO INGREDIENTES (ID_INGREDIENTE,NOMBRE,ALMACENADO) VALUES ('" + this.id
 				+ "','" + this.nombre + "'," + this.cantidad + ")");
 	}
-	
+	/**
+	 * 
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void modificarIngrediente() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE INGREDIENTES SET NOMBRE = '"+this.getNombre()+"', ALMACENADO = "+this.getCantidad()+" WHERE ID_INGREDIENTE = '"+this.getId()+"'");
 	}
-	
+	/**
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void eliminarIngrediente() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("DELETE FROM INGREDIENTES WHERE ID_INGREDIENTE ='" + this.id + "'");
 	}
-	
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public boolean existe() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		ResultSet resultado = consulta.executeQuery("SELECT * FROM INGREDIENTES WHERE ID_INGREDIENTE ='" + this.id + "'");
@@ -55,7 +72,12 @@ public class Ingrediente {
 			return true;
 		return false;
 	}
-	
+	/**
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static LinkedList<Ingrediente> obtenerIngredientes() throws ClassNotFoundException, SQLException {
 		LinkedList<Ingrediente> lista = new LinkedList<Ingrediente>();
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
