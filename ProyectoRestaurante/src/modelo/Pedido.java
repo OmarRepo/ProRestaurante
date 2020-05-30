@@ -23,7 +23,7 @@ public class Pedido {
 	// private HashMap<String, Integer> ingredientesYBebidas;// almacena las
 	// cantidades de ingredientes y bebidas para el
 	// pedido
-	private RealizarPedido realizarPedido;
+	private RequisitosPedido realizarPedido;
 
 	// Constructores
 	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, ESTADO_PEDIDO estado) {
@@ -32,7 +32,7 @@ public class Pedido {
 		this.consumibles = consumibles;
 		this.precio = 0;
 		this.estado = estado;
-		this.realizarPedido = new RealizarPedido();
+		this.realizarPedido = new RequisitosPedido();
 	}
 
 	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, String idCocinero,
@@ -43,7 +43,7 @@ public class Pedido {
 		this.precio = 0;
 		this.estado = estado;
 		this.idCocinero = idCocinero;
-		this.realizarPedido = new RealizarPedido();
+		this.realizarPedido = new RequisitosPedido();
 	}
 	
 	public Pedido(String idPedido) {
