@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,17 +16,16 @@ import javax.swing.JTextField;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
-public class VentanaAdmin extends JFrame implements ActionListener{
+public class VentanaAdminPrincipal extends JFrame implements ActionListener{
 	//panel principal
 	private JPanel panel;
 	//componentes panel principal	
 	private JLabel title;
-	private JButton crearUsuario;
-	private JButton cambiarContrasena;
+	private JButton GestionarUsuarios;
 	private JButton abrirCamarero;
 	private JButton abrirCocinero;
 		
-	public VentanaAdmin() {
+	public VentanaAdminPrincipal() {
 		crearVentana();
 	}
 	
@@ -36,11 +36,9 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 		
 		
 		title = new JLabel("Opciones de administrador");
-		crearUsuario = new JButton("Crear Usuario");
-		crearUsuario.addActionListener(this);
 		
-		cambiarContrasena = new JButton("Cambiar contraseñas");
-		cambiarContrasena.addActionListener(this);
+		GestionarUsuarios = new JButton("Gestionar usuarios");
+		GestionarUsuarios.addActionListener(this);
 		
 		abrirCamarero = new JButton("Probar camarero");
 		abrirCamarero.addActionListener(this);
@@ -49,8 +47,7 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 		abrirCocinero.addActionListener(this);
 		
 		panel.add(title,"growx,wrap");
-		panel.add(crearUsuario,"growx,wrap");
-		panel.add(cambiarContrasena,"growx,wrap");
+		panel.add(GestionarUsuarios,"growx,wrap");
 		panel.add(abrirCamarero,"growx,wrap");
 		panel.add(abrirCocinero,"growx,wrap");
 		
@@ -66,17 +63,19 @@ public class VentanaAdmin extends JFrame implements ActionListener{
 		int height = pantalla.height;
 		int width = pantalla.width;
 		setSize(width/4, height/3);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setVisible(true);
 	    setLocationRelativeTo(null);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(crearUsuario)) {
-			
-		}
-		else if (e.getSource().equals(cambiarContrasena)) {
-			
+		if (e.getSource().equals(GestionarUsuarios)) {
+			try {
+				new VentanaGestionUsuarios();
+			} catch (ClassNotFoundException | SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		else if (e.getSource().equals(abrirCamarero)) {
 			new VentanaPrincipalCamarero();

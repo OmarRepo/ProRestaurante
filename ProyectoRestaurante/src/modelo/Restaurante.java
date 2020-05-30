@@ -41,20 +41,17 @@ public class Restaurante {
 
 	
 	private HashSet<Empleado> actualizarEmpleados() throws ClassNotFoundException, SQLException {
-		listaEmpleados = new HashSet<Empleado>();
-		Statement consulta=ConexionBBDD.getConnection().createStatement();
-		ResultSet resul=consulta.executeQuery("SELECT * FROM EMPLEADOS");
-		while(resul.next()) {
-			switch (resul.getString("TIPO")) {
-				case "Camarero":
-					listaEmpleados.add(new Camarero(resul.getString("ID_EMPLEADO"),resul.getString("DNI"),resul.getString("NOMBRE")+" "+resul.getString("APELLIDOS")));
-					break;
-				case "Cocinero":
-					listaEmpleados.add(new Cocinero(resul.getString("ID_EMPLEADO"),resul.getString("DNI"),resul.getString("NOMBRE")+" "+resul.getString("APELLIDOS")));
-					break;
-				case "Jefe":
-					listaEmpleados.add(new Jefe(resul.getString("ID_EMPLEADO"),resul.getString("DNI"),resul.getString("NOMBRE")+" "+resul.getString("APELLIDOS")));
+		Statement consulta=null;
+		ResultSet resul=null;
+		try {
+			listaEmpleados = new HashSet<Empleado>();
+			consulta=ConexionBBDD.getConnection().createStatement();
+			resul=consulta.executeQuery("SELECT * FROM EMPLEADOS");
+			while(resul.next()) {
+				listaEmpleados.add(new Empleado(resul.getString(1),resul.getString(2),resul.getString(3),resul.getString(4),resul.getString(5),resul.getDate(6),TIPO_EMPLEADO.valueOf(resul.getString(7))));
 			}
+		}finally {
+			consulta.close();
 		}
 		return listaEmpleados;
 	}

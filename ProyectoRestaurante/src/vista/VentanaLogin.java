@@ -80,7 +80,7 @@ public class VentanaLogin extends JFrame implements ActionListener{
 				String tipo=rs.getNString("TIPO");
 				switch (tipo) {
 				case "Jefe":
-					new VentanaAdmin();
+					new VentanaAdminPrincipal();
 					break;
 				case "Camarero":
 					new VentanaPrincipalCamarero();
