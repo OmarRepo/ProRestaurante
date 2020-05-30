@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import modelo.Bebida;
 import modelo.Ingrediente;
@@ -78,7 +79,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		pestanas = new JTabbedPane();
 		
 		panelAlmacen = new JPanel();
-		panelAlmacen.setLayout(new MigLayout("align center"));
+		panelAlmacen.setLayout(new MigLayout("align 50%"));
 		formulario = new JPanel();
 		formulario.setLayout(new MigLayout());
 		
@@ -92,6 +93,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		almacen.addMouseListener(this);
 		//--------------------------------------------------------------------------------------------------------------------------
 		nuevo = new JCheckBox("Nuevo");
+		nuevo.setHorizontalTextPosition(SwingConstants.LEFT);
 		nuevo.addActionListener(this);
 		id = new JTextField(4);
 		id.setEnabled(false);
@@ -105,16 +107,19 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		eliminarIngrediente = new JButton("Eliminar del Almacén");
 		eliminarIngrediente.addActionListener(this);
 		
-		formulario.add(nuevo,"align center,split2");
+		
+		formulario.add(nuevo);
 		formulario.add(id,"wrap");
-		formulario.add(nombre,"split2,align center");
+		formulario.add(nombre);
 		formulario.add(txtNombre,"wrap");
-		formulario.add(cantidad,"split2, align center");
+		formulario.add(cantidad);
 		formulario.add(txtCantidad,"wrap");
-		formulario.add(actualizarIngrediente,"wrap");
+		formulario.add(actualizarIngrediente);
 		formulario.add(eliminarIngrediente);
-		panelAlmacen.add(formulario);
-		panelAlmacen.add(scrollAlmacen,"top");
+		panelAlmacen.add(formulario,"growy, pushy");
+		panelAlmacen.add(scrollAlmacen,"grow,push");
+		
+		
 		
 		
 		
@@ -212,10 +217,15 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 				else if (id.getText().startsWith("B")) {
 					
 					Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-					if (bebida.existe())
+					System.out.format("%s \n",bebida.existe());
+					if (bebida.existe()) {
 						bebida.modificarBebida();
-					else
+						bebida.asignarCantidadBebida();
+					}
+					else {
 						bebida.insertarBebida();
+						bebida.asignarCantidadBebida();
+					}
 					JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
 				}
 				else

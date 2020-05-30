@@ -144,7 +144,7 @@ public class Pedido {
 	
 	public void borrarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("DELETE FROM PEDIDOS WHERE ID_PEDIDO = '"+this.getIdPedido()+"'");
+		consulta.executeUpdate("UPDATE PEDIDOS SET ESTADO = '"+ESTADO_PEDIDO.cancelado+"' WHERE ID_PEDIDO = '"+this.getIdPedido()+"'");
 	}
 	
 	public void insertarPedidosConsumibles(int cantidad, String idConsumible)
@@ -166,7 +166,7 @@ public class Pedido {
 	public void cancelarPedidoConsumible(String idConsumible) throws SQLException, ClassNotFoundException {
 		Statement consulta;
 		consulta = ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("UPDATE PEDIDOS_CONSUMIBLES SET ='"+ ESTADO_PEDIDO.cancelado.name() +"' WHERE ID_PEDIDO = '"+this.getIdPedido()+"'"+" AND ID_CONSUMIBLE = '"+idConsumible+"'");
+		consulta.executeUpdate("DELETE FROM PEDIDOS_CONSUMIBLES WHERE ID_PEDIDO = '"+this.getIdPedido()+"'"+" AND ID_CONSUMIBLE = '"+idConsumible+"'");
 		consulta.close();
 	}
 

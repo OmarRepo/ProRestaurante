@@ -41,8 +41,6 @@ public class Bebida extends Consumible {
 		consulta.executeUpdate("INSERT INTO CONSUMIBLES (ID_CONSUMIBLE,NOMBRE,TIPO) VALUES ('" + this.getId()
 				+ "','" + this.getNombre() + "', 'Bebida')");
 		
-		this.asignarCantidadBebida();
-		
 	}
 	/**
 	 * 
@@ -52,7 +50,6 @@ public class Bebida extends Consumible {
 	public void modificarBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'");
-		this.asignarCantidadBebida();
 	}
 	/**
 	 * 

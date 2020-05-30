@@ -133,7 +133,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		cartaMenu.setShowGrid(false);
 		
 		cartaMenu.getTableHeader().setFont(new Font("Courier New",1,18));
-		cartaMenu.setFont(new Font("Courier New",0,15));
+		cartaMenu.setFont(new Font("Courier New",0,13));
 		cartaMenu.setFillsViewportHeight(true);
 		
 		cartaMenu.getColumnModel().getColumn(1).setCellRenderer(alinearDerecha); //Coges el modelo de las columnas, el numeor de columna que queires editar y seleccionas el renderizado
@@ -141,7 +141,8 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		cartaPlatos = new JTable();
 		cartaPlatos.setModel(modeloPlato);
 		cartaPlatos.setShowGrid(false);
-		cartaPlatos.getTableHeader().setFont(new Font("Cooper Black",1,14));
+		cartaPlatos.getTableHeader().setFont(new Font("Courier New",1,18));
+		cartaPlatos.getTableHeader().setFont(new Font("Courier New",1,13));
 		cartaPlatos.getColumnModel().getColumn(1).setCellRenderer(alinearDerecha);
 		cartaPlatos.setFillsViewportHeight(true);
 		
@@ -342,7 +343,6 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				}
 				//Seleccionar Consumibles
 				for (int i=0; i<tablaCarta.getRowCount();i++) {
-					Statement consulta = null;
 					try {
 						cantidad = Integer.parseInt(tablaCarta.getValueAt(i, 2).toString());
 						idConsumible = tablaCarta.getValueAt(i, 0).toString();
