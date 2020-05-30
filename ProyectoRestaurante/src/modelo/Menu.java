@@ -1,5 +1,7 @@
 package modelo;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 //import java.util.HashMap;
 import java.util.HashSet;
 
@@ -48,6 +50,12 @@ public class Menu extends Consumible {
 
 		return listaConsumibles.removeIf((Consumible c) -> c.getId().equalsIgnoreCase(id));
 
+	}
+	
+	public void insertarMenu() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO CONSUMIBLES (ID_CONSUMIBLE,NOMBRE,PRECIO,TIPO) VALUES ('" + this.getId()
+				+ "','" + this.getNombre() + "', "+this.getPrecio()+" 'Menu')");
 	}
 
 	public HashSet<Consumible> getListaConsumibles() {

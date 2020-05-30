@@ -1,5 +1,7 @@
 package modelo;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 public class Plato extends Consumible{
@@ -51,6 +53,12 @@ public class Plato extends Consumible{
 			return true;
 		return false;
 		
+	}
+	
+	public void insertarPlato() throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO CONSUMIBLES (ID_CONSUMIBLE,NOMBRE,PRECIO,TIPO) VALUES ('" + this.getId()
+				+ "','" + this.getNombre() + "', "+this.getPrecio()+", 'Plato')");
 	}
 	
 	//get
