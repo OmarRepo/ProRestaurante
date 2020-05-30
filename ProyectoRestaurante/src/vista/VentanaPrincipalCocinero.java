@@ -25,6 +25,7 @@ import modelo.Bebida;
 import modelo.Consumible;
 import modelo.Ingrediente;
 import modelo.Menu;
+import modelo.Pedido;
 import modelo.Plato;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
@@ -60,6 +61,14 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	private ModeloTabla modeloComponente;
 	private JButton anadirReceta;
 	private JButton eliminarReceta;
+	
+	private JPanel panelNuevaReceta;
+	private JLabel recetaId;
+	private JTextField txtRecetaId;
+	private JLabel recetaNombre;
+	private JTextField txtRecetaNombre;
+	private JLabel recetaPrecio;
+	private JTextField txtRecetaPrecio;
 	
 	//PANELES
 	private JPanel panelAlmacen;
@@ -151,7 +160,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		scrollComponente.setSize((int) (panelRecetas.getSize().getWidth()/2) , (int) (panelRecetas.getSize().getHeight()/2));
 		//----------------------------------------------------------------------------------------------------------------------------
 		anadirReceta = new JButton("Añadir Receta");
+		anadirReceta.addActionListener(this);
 		eliminarReceta = new JButton("Eliminar Receta");
+		eliminarReceta.addActionListener(this);
 		
 		elegirTabla = new JComboBox<String>();
 		elegirTabla.addItem("Menu");
@@ -247,7 +258,35 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			e1.printStackTrace();
 		}
 	}
+	
+	public void nuevaReceta() {
+		panelNuevaReceta = new JPanel();
+		panelNuevaReceta.setLayout(new MigLayout());
 
+		recetaId = new JLabel("ID: ");
+		txtRecetaId = new JTextField(6);
+		
+		recetaNombre = new JLabel("Nombre: ");
+		txtRecetaNombre = new JTextField(6);
+		
+		recetaPrecio = new JLabel("Precio: ");
+		txtRecetaPrecio = new JTextField(6);
+		
+		panelNuevaReceta.add(recetaId);
+		panelNuevaReceta.add(txtRecetaId);
+		panelNuevaReceta.add(recetaNombre);
+		panelNuevaReceta.add(txtRecetaNombre);
+		panelNuevaReceta.add(recetaPrecio);
+		panelNuevaReceta.add(txtRecetaPrecio);
+	}
+	
+	public void recargarRecetas() {
+		if (elegirTabla.getSelectedItem().toString().equals("Menu"))
+			cargarMenus();
+		else 
+			cargarPlatos();
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
@@ -311,10 +350,37 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 				modeloAlmacen.removeRow(filaSeleleccionada);
 			}
 			if (e.getSource().equals(elegirTabla)) {
-				if (elegirTabla.getSelectedItem().toString().equals("Menu"))
-					cargarMenus();
-				else 
-					cargarPlatos();
+				recargarRecetas();
+			}
+			if (e.getSource().equals(anadirReceta)) {
+				nuevaReceta();
+				int resultado = JOptionPane.showConfirmDialog(this, panelNuevaReceta, "Introduce los parametros de la receta",JOptionPane.OK_CANCEL_OPTION);
+				if (resultado == JOptionPane.OK_OPTION) {
+					String id = txtRecetaId.getText();
+					String nombre = txtRecetaNombre.getText();
+					String precio = txtRecetaPrecio.getText();
+					String[] fila = {id,nombre,precio};
+					modeloConsumible.addRow(fila);
+					if (id.startsWith("M"))
+						new Menu(id,nombre,Double.parseDouble(precio)).insertarMenu();
+					else if (id.startsWith("P"))
+						new Plato(id,nombre,Double.parseDouble(precio)).insertarPlato();
+					else if (id.startsWith("B")) {
+						Bebida bebida = new Bebida(id,nombre,Double.parseDouble(precio));
+						if (bebida.existe())
+							bebida.modificarBebida(Double.parseDouble(precio));
+						else
+							JOptionPane.showMessageDialog(this, "Esa bebida no existe en el almacén.");
+					}
+					else
+						JOptionPane.showMessageDialog(this, "ID Incorrecto.");
+					recargarRecetas();
+				}
+			}
+			if (e.getSource().equals(eliminarReceta)) {
+				int filaSeleccionada = consumible.getSelectedRow();
+				Consumible.borrarConsumible(consumible.getValueAt(filaSeleccionada, 0).toString());
+				modeloConsumible.removeRow(filaSeleccionada);
 			}
 		} catch (ClassNotFoundException ex) {
 			JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");
@@ -324,6 +390,8 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			JOptionPane.showMessageDialog(this, "Número no válido.");
 		}
 	}
+
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {

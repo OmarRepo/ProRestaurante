@@ -1,5 +1,7 @@
 package modelo;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
 
 public abstract class Consumible implements Comparable<Consumible> {
@@ -24,7 +26,8 @@ public abstract class Consumible implements Comparable<Consumible> {
 		this.nombre = c.getNombre();
 		this.precio = c.getPrecio();
 	}
-
+	
+	//Metodos
 	public boolean validarId(String id) {
 		switch (id.charAt(0)) {
 		//si es una bebida
@@ -53,6 +56,11 @@ public abstract class Consumible implements Comparable<Consumible> {
 
 		return false;
 
+	}
+	
+	public static void borrarConsumible(String id) throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
 	}
 
 	// get
