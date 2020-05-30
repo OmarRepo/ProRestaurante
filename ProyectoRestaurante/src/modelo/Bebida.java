@@ -12,9 +12,13 @@ public class Bebida extends Consumible {
 	// Constructor
 	public Bebida(String id, String nombre, double precio, int cantidad) {
 		super(id, nombre, precio);
-		if (super.getId() != null) {// solo guardamos el resto de datos si el id es correcto
+		if (this.getId() != null) {// solo guardamos el resto de datos si el id es correcto
 			this.cantidad = cantidad;
 		}
+	}
+	public Bebida(String id, String nombre, int cantidad) {
+		super(id,nombre,0);
+		this.setCantidad(cantidad);
 	}
 	public Bebida(String id, String nombre, double precio) {
 		super(id, nombre, precio);
@@ -49,7 +53,8 @@ public class Bebida extends Consumible {
 	 */
 	public void modificarBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'");
+		System.out.format("%s \n",consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'"));
+		consulta.close();
 	}
 	/**
 	 * 
@@ -58,7 +63,9 @@ public class Bebida extends Consumible {
 	 */
 	public void asignarCantidadBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		System.out.format("%s \n","UPDATE BEBIDAS SET ALMACENADO = "+this.getCantidad()+" WHERE ID_BEBIDA = '"+this.getId()+"'");
 		consulta.executeUpdate("UPDATE BEBIDAS SET ALMACENADO = "+this.getCantidad()+" WHERE ID_BEBIDA = '"+this.getId()+"'");
+		consulta.close();
 	}
 	/**
 	 * 

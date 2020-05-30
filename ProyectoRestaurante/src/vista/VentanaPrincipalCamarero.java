@@ -142,7 +142,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		cartaPlatos.setModel(modeloPlato);
 		cartaPlatos.setShowGrid(false);
 		cartaPlatos.getTableHeader().setFont(new Font("Courier New",1,18));
-		cartaPlatos.getTableHeader().setFont(new Font("Courier New",1,13));
+		cartaPlatos.setFont(new Font("Courier New",0,13));
 		cartaPlatos.getColumnModel().getColumn(1).setCellRenderer(alinearDerecha);
 		cartaPlatos.setFillsViewportHeight(true);
 		
@@ -150,7 +150,8 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		cartaBebidas = new JTable();
 		cartaBebidas.setModel(modeloBebida);
 		cartaBebidas.setShowGrid(false);
-		cartaBebidas.getTableHeader().setFont(new Font("Cooper Black",1,14));
+		cartaBebidas.getTableHeader().setFont(new Font("Courier New",1,18));
+		cartaBebidas.setFont(new Font("Courier New",0,13));
 		cartaBebidas.getColumnModel().getColumn(1).setCellRenderer(alinearDerecha);
 		cartaBebidas.setFillsViewportHeight(true);
 		

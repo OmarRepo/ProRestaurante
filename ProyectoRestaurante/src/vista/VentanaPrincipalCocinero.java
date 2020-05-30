@@ -22,7 +22,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import modelo.Bebida;
+import modelo.Consumible;
 import modelo.Ingrediente;
+import modelo.Menu;
+import modelo.Plato;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
@@ -55,6 +58,8 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	private JComboBox<String> elegirTabla;
 	private JTable componente;
 	private ModeloTabla modeloComponente;
+	private JButton anadirReceta;
+	private JButton eliminarReceta;
 	
 	//PANELES
 	private JPanel panelAlmacen;
@@ -145,6 +150,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		scrollComponente = new JScrollPane(componente);
 		scrollComponente.setSize((int) (panelRecetas.getSize().getWidth()/2) , (int) (panelRecetas.getSize().getHeight()/2));
 		//----------------------------------------------------------------------------------------------------------------------------
+		anadirReceta = new JButton("Añadir Receta");
+		eliminarReceta = new JButton("Eliminar Receta");
+		
 		elegirTabla = new JComboBox<String>();
 		elegirTabla.addItem("Menu");
 		elegirTabla.addItem("Plato");
@@ -152,11 +160,14 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		
 		
 		
-		panelRecetas.add(scrollConsumible,"west");
+		panelRecetas.add(scrollConsumible,"growx,pushx");
 		panelRecetas.add(elegirTabla);
-		panelRecetas.add(scrollComponente,"east");
+		panelRecetas.add(scrollComponente,"wrap,growx,pushx");
+		panelRecetas.add(anadirReceta,"split2");
+		panelRecetas.add(eliminarReceta);
 		
 		pestanas.addTab("Recetas", panelRecetas);
+		cargarMenus();
 		
 		//FALTA CAMBIAR EL METODO PARA QUE SE ADAPTE SEGUN SEA PLATO O MENU
 		//VentanaPrincipalCocinero.rellenarTabla(modeloConsumible, consumible, "CONSUMIBLES");
@@ -194,6 +205,48 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			e1.printStackTrace();
 		}
 	}
+	
+	public void cargarMenus() {
+		Inicializar.vaciarTabla(consumible, modeloConsumible);
+		Inicializar.vaciarTabla(componente, modeloComponente);
+		for (Consumible i : res.getCarta().getListaConsumibles()) {
+			if (i instanceof Menu) {
+				String[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio())};
+				modeloConsumible.addRow(fila);
+			}
+		}
+		
+		for (Consumible i : res.getCarta().getListaConsumibles()) {
+			if (!(i instanceof Menu)) {
+				String[] fila = {i.getId(),i.getNombre(),""};
+				modeloComponente.addRow(fila);
+			}
+		}
+	}
+	
+	public void cargarPlatos() {
+		try {
+			Inicializar.vaciarTabla(consumible, modeloConsumible);
+			Inicializar.vaciarTabla(componente, modeloComponente);
+			for (Consumible i : res.getCarta().getListaConsumibles()) {
+				if (i instanceof Plato || i instanceof Bebida) {
+					String[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio())};
+					modeloConsumible.addRow(fila);
+				}
+			}
+			for (Ingrediente i : Ingrediente.obtenerIngredientes()) {
+				String[] fila = {i.getId(),i.getNombre(),""};
+				modeloComponente.addRow(fila);
+			}
+			for (Bebida i : Bebida.obtenerBebidas()) {
+				String[] fila = {i.getId(),i.getNombre(),""};
+				modeloComponente.addRow(fila);
+			}
+		} catch (ClassNotFoundException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -207,26 +260,39 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			if (e.getSource().equals(actualizarIngrediente)) {
 				if (id.getText().startsWith("I")) {
 					
-					Ingrediente ingrediente = new Ingrediente(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-					if (ingrediente.existe())
-						ingrediente.modificarIngrediente();
-					else
-						ingrediente.insertarIngrediente();
-					JOptionPane.showMessageDialog(this, "Ingrediente cargado correctamente.");
+						Ingrediente ingrediente = new Ingrediente(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
+						if (ingrediente.existe())
+							ingrediente.modificarIngrediente();
+						else
+							ingrediente.insertarIngrediente();
+						JOptionPane.showMessageDialog(this, "Ingrediente cargado correctamente.");
+					
 				}
 				else if (id.getText().startsWith("B")) {
-					
-					Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-					System.out.format("%s \n",bebida.existe());
-					if (bebida.existe()) {
-						bebida.modificarBebida();
-						bebida.asignarCantidadBebida();
+					try {
+						Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
+						System.out.format("%s \n",bebida.existe());
+						if (bebida.existe()) {
+							bebida.modificarBebida();
+							bebida.asignarCantidadBebida();
+							JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
+						}
+						else {
+							bebida.insertarBebida();
+							bebida.asignarCantidadBebida();
+							JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
+						}
+						
+					} catch (ClassNotFoundException ex) {
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");
+					} catch (SQLException ex) {
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(this, ex.getMessage());
+					} catch (NumberFormatException ex) {
+						ex.printStackTrace();
+						JOptionPane.showMessageDialog(this, "Número no válido.");
 					}
-					else {
-						bebida.insertarBebida();
-						bebida.asignarCantidadBebida();
-					}
-					JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
 				}
 				else
 					JOptionPane.showMessageDialog(this, "Formato de ID erróneo");
@@ -243,6 +309,12 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 					bebida.eliminarBebida();
 				}
 				modeloAlmacen.removeRow(filaSeleleccionada);
+			}
+			if (e.getSource().equals(elegirTabla)) {
+				if (elegirTabla.getSelectedItem().toString().equals("Menu"))
+					cargarMenus();
+				else 
+					cargarPlatos();
 			}
 		} catch (ClassNotFoundException ex) {
 			JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");

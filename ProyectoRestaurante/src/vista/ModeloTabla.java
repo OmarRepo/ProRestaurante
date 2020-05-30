@@ -11,7 +11,7 @@ public class ModeloTabla extends DefaultTableModel {
 	
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		if (this.getColumnName(2).equals("Cantidad"))
+		if (this.getColumnName(2).equals("Cantidad") || this.getColumnName(2).equals("PRECIO (€)"))
 			return true;
 		return false;
 	}
