@@ -323,6 +323,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 			String advertencia="Se despedira se eliminara su usario. ¿Esta seguro?";
 			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==JOptionPane.OK_OPTION) {
 				restaurante.despedirEmpleado(emp);
+				emp.setUsername("");
 				modeloTablaUsuarios.removeRow(tablaUsuarios.getSelectedRow());
 				modeloTablaUsuarios.addRow(emp);
 			}
