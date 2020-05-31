@@ -9,5 +9,5 @@ public class InsuficentesExcepcion extends RuntimeException {
 	public InsuficentesExcepcion(String message) {
 		super(message);
 	}
-
+ 
 }
