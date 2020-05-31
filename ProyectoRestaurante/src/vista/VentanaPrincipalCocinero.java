@@ -1,6 +1,7 @@
 package vista;
 
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	
 	private Restaurante res;
 	
-	//Almacen
+	//PESTAÑA ALMACEN------------------------------------------------------------------------------------------------------------
 	private JTable almacen;
 	private ModeloTabla modeloAlmacen;
 	
@@ -47,18 +48,19 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	private JCheckBox nuevo;
 
 	
-	//Panel Ordenado
-	private JPanel formulario;
-	private JLabel nombre;
-	private JTextField txtNombre;
-	private JLabel cantidad;
-	private JTextField txtCantidad;
+		//PANEL CON EL FORMULARIO-------------------------------------------------------------------------------------------------
+		private JPanel formulario;
+		private JLabel nombre;
+		private JTextField txtNombre;
+		private JLabel cantidad;
+		private JTextField txtCantidad;
+		
+		private JButton actualizarIngrediente;
+		private JButton eliminarIngrediente;
+		//------------------------------------------------------------------------------------------------------------------------
+		
 	
-	private JButton actualizarIngrediente;
-	private JButton eliminarIngrediente;
-	
-	
-	//RECETAS
+	//PESTAÑA RECETAS-------------------------------------------------------------------------------------------------------------
 	private JTable consumible;
 	private ModeloRecetas modeloConsumible;
 	private JComboBox<String> elegirTabla;
@@ -76,21 +78,21 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	private JLabel recetaPrecio;
 	private JTextField txtRecetaPrecio;
 	
-	//PEDIDOS
+	//PESTAÑA PEDIDOS-------------------------------------------------------------------------------------------------------------
 	private JPanel panelPedidosCocinero;
 	private ModeloTabla modeloPedidosCocinero;
 	private JTable pedidosCocinero;
 	private JScrollPane scrollPedidosCocinero;
 	private JButton recargarPedidos;
 	
-	//PANELES
+	//PANELES---------------------------------------------------------------------------------------------------------------------
 	private JPanel panelAlmacen;
 	private JScrollPane scrollAlmacen;
 	private JPanel panelRecetas;
 	private JScrollPane scrollConsumible;
 	private JScrollPane scrollComponente;
 	private JTabbedPane pestanas;
-	
+	//-----------------------------------------------------------------------------------------------------------------------------
 	public VentanaPrincipalCocinero() {
 		try {
 			res = new Restaurante(false);
@@ -100,17 +102,20 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Metodo que inicializa todos los objetos de la ventana
+	 */
 	public void crearVentana() {
 		
 		pestanas = new JTabbedPane();
 		
+		//PESTAÑA ALMACEN---------------------------------------------------------------------------------------------------------
 		panelAlmacen = new JPanel();
 		panelAlmacen.setLayout(new MigLayout("align 50%"));
 		formulario = new JPanel();
 		formulario.setLayout(new MigLayout());
 		
-		//TABLA ALMACEN------------------------------------------------------------------------------------------------
+		//TABLA ALMACEN-----------------------------------------------------------------------------------------------------------
 		almacen = new JTable();
 		String[] cabeceraAlmacen = {"ID_INGREDIENTE", "NOMBRE", "CANTIDAD"};
 		modeloAlmacen = new ModeloTabla(null, cabeceraAlmacen);
@@ -151,7 +156,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		
 		
 		pestanas.addTab("Almacén", panelAlmacen);
-		cargarAlmacen();
+		cargarAlmacen(); //se rellena la tabla almacen
+		//------------------------------------------------------------------------------------------------------------------------
+		//PESTAÑA RECETAS---------------------------------------------------------------------------------------------------------
 		
 		panelRecetas = new JPanel();
 		panelRecetas.setLayout(new MigLayout());
@@ -180,6 +187,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		guardarComponentes = new JButton("Guardar Componentes");
 		guardarComponentes.addActionListener(this);
 		
+		//Boton desplegable
 		elegirTabla = new JComboBox<String>();
 		elegirTabla.addItem("Menu");
 		elegirTabla.addItem("Bebida");
@@ -195,9 +203,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		panelRecetas.add(eliminarReceta);
 		panelRecetas.add(guardarComponentes,"skip,split3,align center");
 		pestanas.addTab("Recetas", panelRecetas);
-		cargarMenus();
-		
-		//PESTAÑA PEDIDOS
+		cargarMenus(); //se rellena las tablas consumibles y componentes
+		//-------------------------------------------------------------------------------------------------------------------------
+		//PESTAÑA PEDIDOS----------------------------------------------------------------------------------------------------------
 		
 		panelPedidosCocinero = new JPanel();
 		panelPedidosCocinero.setLayout(new MigLayout());
@@ -216,12 +224,13 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		
 		pestanas.addTab("Pedidos", panelPedidosCocinero);
 		recargarPedidos();
+		//-------------------------------------------------------------------------------------------------------------------------
+		//CONFIGURACION DE LA VENTANA----------------------------------------------------------------------------------------------
 		this.add(pestanas);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(true);
 		setTitle("Cocinero");
-		//Con el codigo comentado la ventana adapta su tamaño segun el tamaño de la pantalla
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = pantalla.height;
 		int width = pantalla.width;
@@ -231,6 +240,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	    setVisible(true);
 	}
 	
+	/**
+	 * vacia la tabla almacen y recoge de la base de datos todos los ingredientes y bebidas para rellenar la tabla de nuevo
+	 */
 	public void cargarAlmacen() {
 		try {
 			Inicializar.vaciarTabla(almacen, modeloAlmacen);
@@ -248,6 +260,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		}
 	}
 	
+	/**
+	 * vacia la tabla comestible y consumible y recoge de la base de datos todos los menus y comestibles para rellenar las tablas de nuevo
+	 */
 	public void cargarMenus() {
 		Inicializar.vaciarTabla(consumible, modeloConsumible);
 		Inicializar.vaciarTabla(componente, modeloComponente);
@@ -266,6 +281,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		}
 	}
 	
+	/**
+	 * vacia la tabla comestible y consumible y recoge de la base de datos todos los platos e ingredientes para rellenar las tablas de nuevo
+	 */
 	public void cargarPlatos() {
 		try {
 			Inicializar.vaciarTabla(consumible, modeloConsumible);
@@ -286,6 +304,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		}
 	}
 	
+	/**
+	 * vacia la tabla comestible y consumible y recoge de la base de datos todas las bebidas para rellenar las tablas de nuevo
+	 */
 	public void cargarBebidas() {
 		try {
 			Inicializar.vaciarTabla(consumible, modeloConsumible);
@@ -306,6 +327,28 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		}
 	}
 	
+	/**
+	 * Dependiendo de la opcion que tenga el boton desplegable ejecuta uno de los tres metoods anteriores y prepara la interfaz
+	 */
+	public void recargarRecetas() {
+		if (elegirTabla.getSelectedItem().toString().equalsIgnoreCase("Menu")) {
+			anadirReceta.setText("Añadir Menu");
+			guardarComponentes.setVisible(true);
+			cargarMenus();
+		} else if (elegirTabla.getSelectedItem().toString().equalsIgnoreCase("Plato")) {
+			anadirReceta.setText("Añadir Plato");
+			guardarComponentes.setVisible(true);
+			cargarPlatos();
+		} else {
+			anadirReceta.setText("Añadir Precio");
+			guardarComponentes.setVisible(false);
+			cargarBebidas();
+		}
+	}
+	
+	/**
+	 * Crea el panel nueva receta que se abre al pulsar el boton de añadir plato, menu, andir precio
+	 */
 	public void nuevaReceta() {
 		panelNuevaReceta = new JPanel();
 		panelNuevaReceta.setLayout(new MigLayout());
@@ -334,22 +377,11 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		panelNuevaReceta.add(txtRecetaPrecio);
 	}
 	
-	public void recargarRecetas() {
-		if (elegirTabla.getSelectedItem().toString().equalsIgnoreCase("Menu")) {
-			anadirReceta.setText("Añadir Menu");
-			guardarComponentes.setVisible(true);
-			cargarMenus();
-		} else if (elegirTabla.getSelectedItem().toString().equalsIgnoreCase("Plato")) {
-			anadirReceta.setText("Añadir Plato");
-			guardarComponentes.setVisible(true);
-			cargarPlatos();
-		} else {
-			anadirReceta.setText("Añadir Precio");
-			guardarComponentes.setVisible(false);
-			cargarBebidas();
-		}
-	}
 	
+	/**
+	 * Actualiza los datos de la tabla pedidos recogiendolos de la base de datos, este metodo se ejecuta al crear la tabla y
+	 * al pulsar el boton actualizar
+	 */
 	public void recargarPedidos() {
 		Statement consulta;
 		try {
@@ -376,85 +408,16 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 					id.setEnabled(false);
 			}
 			if (e.getSource().equals(actualizarIngrediente)) {
-				if (id.getText().startsWith("I")) {
-					
-						Ingrediente ingrediente = new Ingrediente(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-						if (ingrediente.existe())
-							ingrediente.modificarIngrediente();
-						else
-							ingrediente.insertarIngrediente();
-						JOptionPane.showMessageDialog(this, "Ingrediente cargado correctamente.");
-					
-				}
-				else if (id.getText().startsWith("B")) {
-					try {
-						Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-						System.out.format("%s \n",bebida.existe());
-						if (bebida.existe()) {
-							bebida.modificarBebida();
-							bebida.asignarCantidadBebida();
-							JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
-						}
-						else {
-							bebida.insertarBebida();
-							bebida.asignarCantidadBebida();
-							JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
-						}
-						
-					} catch (ClassNotFoundException ex) {
-						ex.printStackTrace();
-						JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");
-					} catch (SQLException ex) {
-						ex.printStackTrace();
-						JOptionPane.showMessageDialog(this, ex.getMessage());
-					} catch (NumberFormatException ex) {
-						ex.printStackTrace();
-						JOptionPane.showMessageDialog(this, "Número no válido.");
-					}
-				}
-				else
-					JOptionPane.showMessageDialog(this, "Formato de ID erróneo");
-				cargarAlmacen(); //Vuelo a cargar el almacen para que aparezca el nuevo producto
+				botonActualizarIngrediente();
 			}
 			if (e.getSource().equals(eliminarIngrediente)) {
-				int filaSeleleccionada = almacen.getSelectedRow();
-				if (id.getText().startsWith("I")) {
-					Ingrediente ingrediente = new Ingrediente(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-					ingrediente.eliminarIngrediente();
-				}
-				else if (id.getText().startsWith("B")) {
-					Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-					bebida.eliminarBebida();
-				}
-				modeloAlmacen.removeRow(filaSeleleccionada);
+				botonEliminarIngrediente();
 			}
 			if (e.getSource().equals(elegirTabla)) {
 				recargarRecetas();
 			}
 			if (e.getSource().equals(anadirReceta)) {
-				nuevaReceta();
-				int resultado = JOptionPane.showConfirmDialog(this, panelNuevaReceta, "Introduce los parametros de la receta",JOptionPane.OK_CANCEL_OPTION);
-				if (resultado == JOptionPane.OK_OPTION) {
-					String id = txtRecetaId.getText();
-					String nombre = txtRecetaNombre.getText();
-					String precio = txtRecetaPrecio.getText();
-					String[] fila = {id,nombre,precio};
-					modeloConsumible.addRow(fila);
-					if (id.startsWith("M"))
-						new Menu(id,nombre,Double.parseDouble(precio)).insertarMenu();
-					else if (id.startsWith("P"))
-						new Plato(id,nombre,Double.parseDouble(precio)).insertarPlato();
-					else if (id.startsWith("B")) {
-						Bebida bebida = new Bebida(id,nombre,Double.parseDouble(precio));
-						if (bebida.existe())
-							bebida.modificarBebida(Double.parseDouble(precio));
-						else
-							JOptionPane.showMessageDialog(this, "Esa bebida no existe en el almacén.");
-					}
-					else
-						JOptionPane.showMessageDialog(this, "ID Incorrecto.");
-					recargarRecetas();
-				}
+				botonAnadirReceta();
 			}
 			if (e.getSource().equals(eliminarReceta)) {
 				int filaSeleccionada = consumible.getSelectedRow();
@@ -463,18 +426,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			}
 			
 			if (e.getSource().equals(guardarComponentes)) {
-				int filaSeleccionada = componente.getSelectedRow();
-				String idConsumible = consumible.getValueAt(filaSeleccionada, 0).toString();
-				if (idConsumible.startsWith("M"))
-					for (int i=0; i<modeloComponente.getRowCount(); i++) {
-						if ((Boolean)componente.getValueAt(i, 3))
-							Menu.insertarMenusConsumibles(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
-					}
-				else if (idConsumible.startsWith("P"))
-					for (int i=0; i<modeloComponente.getRowCount(); i++) {
-						if ((Boolean)componente.getValueAt(i, 3))
-							Plato.insertarPlatoIngredientes(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
-					}
+				botonGuardarComponentes();
 				
 			}
 			if (e.getSource().equals(recargarPedidos)) {
@@ -488,15 +440,8 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			JOptionPane.showMessageDialog(this, "Número no válido.");
 		}
 	}
-
 	
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		try {	
@@ -554,6 +499,133 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			JOptionPane.showMessageDialog(this, "Error de conexion con la base de datos, contacte con el administrador");
 		}
 	}
+	
+	
+	/**
+	 * Metodo ejecutado al pulsar el boton guardar componentes, dependiendo si el consumible seleccionado es un menu o un plato
+	 * guarda en una tabla u otra los componentes marcados con un check que forman dicho consumible
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 * @throws NumberFormatException
+	 */
+	private void botonGuardarComponentes() throws SQLException, ClassNotFoundException, NumberFormatException {
+		int filaSeleccionada = componente.getSelectedRow();
+		String idConsumible = consumible.getValueAt(filaSeleccionada, 0).toString();
+		if (idConsumible.startsWith("M"))
+			for (int i=0; i<modeloComponente.getRowCount(); i++) {
+				if ((Boolean)componente.getValueAt(i, 3))
+					Menu.insertarMenusConsumibles(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
+			}
+		else if (idConsumible.startsWith("P"))
+			for (int i=0; i<modeloComponente.getRowCount(); i++) {
+				if ((Boolean)componente.getValueAt(i, 3))
+					Plato.insertarPlatoIngredientes(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
+			}
+	}
+	
+	/**
+	 * Metodo ejecutado al pulsar el boton añadir receta, segun si es un menu, plato o bebida, agrega este producto a su correspondiente tabla
+	 * en la base de datos y actualiza las tanblas componente y consumible para que aparezca la nueva receta
+	 * @throws HeadlessException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws NumberFormatException
+	 */
+	private void botonAnadirReceta()
+			throws HeadlessException, ClassNotFoundException, SQLException, NumberFormatException {
+		nuevaReceta();
+		int resultado = JOptionPane.showConfirmDialog(this, panelNuevaReceta, "Introduce los parametros de la receta",JOptionPane.OK_CANCEL_OPTION);
+		if (resultado == JOptionPane.OK_OPTION) {
+			String id = txtRecetaId.getText();
+			String nombre = txtRecetaNombre.getText();
+			String precio = txtRecetaPrecio.getText();
+			String[] fila = {id,nombre,precio};
+			modeloConsumible.addRow(fila);
+			if (id.startsWith("M"))
+				new Menu(id,nombre,Double.parseDouble(precio)).insertarMenu();
+			else if (id.startsWith("P"))
+				new Plato(id,nombre,Double.parseDouble(precio)).insertarPlato();
+			else if (id.startsWith("B")) {
+				Bebida bebida = new Bebida(id,nombre,Double.parseDouble(precio));
+				if (bebida.existe())
+					bebida.modificarBebida(Double.parseDouble(precio));
+				else
+					JOptionPane.showMessageDialog(this, "Esa bebida no existe en el almacén.");
+			}
+			else
+				JOptionPane.showMessageDialog(this, "ID Incorrecto.");
+			recargarRecetas();
+		}
+	}
+	
+	/**
+	 * Metodo ejecutado al pulsar el boton eliminar ingrediente, elimina de la tabla almacen y de la base de datos el ingrediente
+	 * o bebida seleccionado
+	 * @throws NumberFormatException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	private void botonEliminarIngrediente() throws NumberFormatException, ClassNotFoundException, SQLException {
+		int filaSeleleccionada = almacen.getSelectedRow();
+		if (id.getText().startsWith("I")) {
+			Ingrediente ingrediente = new Ingrediente(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
+			ingrediente.eliminarIngrediente();
+		}
+		else if (id.getText().startsWith("B")) {
+			Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
+			bebida.eliminarBebida();
+		}
+		modeloAlmacen.removeRow(filaSeleleccionada);
+	}
+	
+	/**
+	 * Metodo ejecutado al pulsar el boton actualizar ingrediente, cambia en la base de datos los campos del ingrediente con elm id
+	 * puesto en el campo de arriba del fomuralario
+	 * @throws NumberFormatException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws HeadlessException
+	 */
+	private void botonActualizarIngrediente()
+			throws NumberFormatException, ClassNotFoundException, SQLException, HeadlessException {
+		if (id.getText().startsWith("I")) {
+			
+				Ingrediente ingrediente = new Ingrediente(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
+				if (ingrediente.existe())
+					ingrediente.modificarIngrediente();
+				else
+					ingrediente.insertarIngrediente();
+				JOptionPane.showMessageDialog(this, "Ingrediente cargado correctamente.");
+			
+		}
+		else if (id.getText().startsWith("B")) {
+				Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
+				System.out.format("%s \n",bebida.existe());
+				if (bebida.existe()) {
+					bebida.modificarBebida();
+					bebida.asignarCantidadBebida();
+					JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
+				}
+				else {
+					bebida.insertarBebida();
+					bebida.asignarCantidadBebida();
+					JOptionPane.showMessageDialog(this, "Bebida cargada correctamente.");
+				}
+		}
+		else
+			JOptionPane.showMessageDialog(this, "Formato de ID erróneo");
+		cargarAlmacen(); //Vuelo a cargar el almacen para que aparezca el nuevo producto
+	}
+
+	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
