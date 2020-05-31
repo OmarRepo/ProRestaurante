@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,7 +27,7 @@ import modelo.ConexionBBDD;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
-public class VentanaLogin extends JFrame implements ActionListener{
+public class VentanaLogin extends JFrame implements ActionListener,WindowListener{
 
 
 	private JLabel user;
@@ -64,15 +67,16 @@ public class VentanaLogin extends JFrame implements ActionListener{
 		setTitle("Inicio de sesión");
 		setVisible(true);
 		setLocationRelativeTo(null);
+		this.addWindowListener(this);
 	}
 	public String obtenerTipoUsuario() throws ClassNotFoundException, SQLException, InvalidNameException {
-		ConexionBBDD.setUsuario(escribeUser.getText());
-		ConexionBBDD.setContrasena(new String(escribePassword.getPassword()));
+		ConexionBBDD.setUsuario("resadmin");
+		ConexionBBDD.setContrasena("resadmin123");
 		Statement st=null;
 		ResultSet rs=null;
 		try {
 			st = ConexionBBDD.getConnection().createStatement();
-			rs=st.executeQuery("SELECT TIPO FROM EMPLEADOS WHERE USERNAME=to_char(USER)");
+			rs=st.executeQuery("SELECT TIPO FROM EMPLEADOS WHERE USERNAME='"+escribeUser.getText()+"' AND CONTRASENA ='"+new String(escribePassword.getPassword())+"'");
 			if(rs.next()) {
 				return rs.getString(1);
 			}
@@ -112,5 +116,52 @@ public class VentanaLogin extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(this, "Error:\nEmpleado sin usuario");
 			}
 		}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		try {
+			ConexionBBDD.cerrarConexion();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 	}
 

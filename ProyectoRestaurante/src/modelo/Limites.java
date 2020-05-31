@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public class Limites {
 	public static boolean comprobarL(String cadena,int longitud) {
-		if(cadena.length()>=longitud)
+		if(cadena.length()<=longitud)
 			return true;
 		return false;
 	}

@@ -9,7 +9,7 @@ CALL DROP_IF_EXISTS('CONSUMIBLES');
 CALL DROP_IF_EXISTS('PEDIDOS');
 CALL DROP_IF_EXISTS('EMPLEADOS');
 CALL DROP_IF_EXISTS('CONFIGURACION');
-
+/
 CREATE TABLE EMPLEADOS(
 	ID_Empleado VARCHAR2(5 CHAR),
 	DNI VARCHAR2(9 CHAR),
@@ -18,6 +18,7 @@ CREATE TABLE EMPLEADOS(
 	Username VARCHAR2(15 CHAR),
 	Fecha_Contratacion DATE,
 	Tipo VARCHAR2(8 CHAR),
+	Contrasena VARCHAR2(15 CHAR),
 	CONSTRAINT empleado_pk PRIMARY KEY(ID_Empleado),
 	CONSTRAINT empleado_tipo CHECK(Tipo IN('Jefe','Cocinero','Camarero'))
 );
@@ -31,10 +32,6 @@ CREATE TABLE PEDIDOS (
 	ID_Cocinero VARCHAR2(5 CHAR),
 	Precio Number(6,2), 
 	CONSTRAINT pedidos_pk PRIMARY KEY (ID_Pedido),
-	CONSTRAINT pedidos_fk1 FOREIGN KEY (ID_Cocinero) 
-	REFERENCES  empleados(ID_Empleado) ON DELETE SET NULL,
-	CONSTRAINT pedidos_fk2 FOREIGN KEY (ID_Camarero)
-	REFERENCES  empleados(ID_Empleado) ON DELETE SET NULL,
 	CONSTRAINT pedidos_estado CHECK(Estado IN('en_espera','preparado','pagado','cancelado'))
 );
 

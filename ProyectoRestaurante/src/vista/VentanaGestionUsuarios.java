@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.sql.Connection;
+import java.sql.ConnectionBuilder;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -26,22 +30,29 @@ import javax.swing.JTextField;
 
 import com.sun.tools.javac.util.Name.Table;
 
+import modelo.ConexionBBDD;
 import modelo.Empleado;
+import modelo.FieldFormatException;
+import modelo.Limites;
 import modelo.Restaurante;
 import modelo.TIPO_EMPLEADO;
 import net.miginfocom.swing.MigLayout;
 /**
- * Clase que al ser instanciada crea una ventana destinada a la gestion de usuarios.
+ * Clase que al ser instanciada crea una ventana destinada a la gestion de usuarios y empleados.
  * 
  *
  */
-public class VentanaGestionUsuarios extends JFrame implements ActionListener,MouseListener{
+public class VentanaGestionUsuarios extends JFrame implements ActionListener,MouseListener,WindowListener{
 
 	private static final String ID_DEFAULT;
 	private static final String NUEVO_USUARIO1;
 	private static final String NUEVO_USUARIO2;
 	private static final String MODIFICAR_USUARIO1;
 	private static final String MODIFICAR_USUARIO2;
+	private static final String DESPEDIR_EMPLEADO;
+	private static final String CONTRATAR_EMPLEADO;
+	private static String CONFIRMAR_CONTRATAR_EMPLEADO;
+
 	private Restaurante restaurante;
 	private JPanel panelGestion;
 	private JPanel panelDatos;
@@ -52,6 +63,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private JButton crearUsuario;
 	private JButton modificarUsuario;
 	private JButton eliminarUsuario;
+	private JButton limpiarSeleccion;
 
 	private JLabel ID;
 	private JLabel IDText;
@@ -67,13 +79,16 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private JLabel fechaText;
 	private JLabel tipo;
 	private JComboBox<TIPO_EMPLEADO> tipoCombobox;
-	private JButton limpiarSeleccion;
 
 	static {
 		MODIFICAR_USUARIO1 = "Modificar usuario";
-		MODIFICAR_USUARIO2 = "Guardadr modificacion";
+		MODIFICAR_USUARIO2 = "Guardadar modificacion";
 		NUEVO_USUARIO1 = "Nuevo Usuario";
 		NUEVO_USUARIO2 = "Guardar usuario";
+		DESPEDIR_EMPLEADO="Despedir";
+		CONTRATAR_EMPLEADO="Contratar";
+		CONFIRMAR_CONTRATAR_EMPLEADO="Confirmar";
+
 		ID_DEFAULT = "ninguno";
 	}
 	public VentanaGestionUsuarios() throws ClassNotFoundException, SQLException {
@@ -166,6 +181,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		setLocationRelativeTo(null);
 		//lo hacemos visible
 		setVisible(true);
+		this.addWindowListener(this);
 	}
 	/**
 	 * Metodo dedicado a cargar los valores de la ventana tras iniciarla.
@@ -200,11 +216,36 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		edicionPanelDatos(false);
 	}
 	/**
-	 * Metodo que genera un empleado desde los datos del panel datos usuarios
+	 * Metodo que verifica la valided de los datos introducidos
+	 * @throws FieldFormatException 
 	 */
-	private Empleado generarEmpleado() {
-		return null;
-		
+	private void verificarCampos() throws FieldFormatException {
+		String cause="DNI";
+		if(Limites.comprobarDNI(DNIText.getText())) {
+			cause="Nombre, maximo 15 caracteres";
+			if(Limites.comprobarL(nombreText.getText(), 15)) {
+				cause="Apellidos, maximo 30 caracteres";
+				if(Limites.comprobarL(apellidoText.getText(), 30)) {
+					cause="Contraseña, maximo 15 caracteres";
+					if(Limites.comprobarL(new String(contrasenaText.getPassword()), 15)) {
+						return;
+					}
+				}
+			}
+		}
+		throw new FieldFormatException(cause);
+	}
+	/**
+	 * Metodo que genera un empleado desde los datos del panel datos usuarios
+	 * @throws FieldFormatException 
+	 */
+	private Empleado generarEmpleado() throws FieldFormatException {
+		verificarCampos();
+		Empleado generado=new Empleado(IDText.getText(),DNIText.getText(),nombreText.getText(),apellidoText.getText(),
+				"",new Date(System.currentTimeMillis()),(TIPO_EMPLEADO)tipoCombobox.getSelectedItem());
+		generado.generarUsername();
+		return generado;
+
 	}
 	/**
 	 * Metodo que altera la capacidad de editar en el panel de datos
@@ -238,9 +279,17 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getClickCount()==1) {
-			if(e.getSource().equals(tablaUsuarios)&&modificarUsuario.getText().equals(MODIFICAR_USUARIO1)&&crearUsuario.getText().equals(NUEVO_USUARIO1)) {
-				Empleado emp=restaurante.consultarEmpleado((String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow()));
-				mostrarDatosEmpleado(emp);
+			if(e.getSource().equals(tablaUsuarios)&&!eliminarUsuario.getText().equals(CONFIRMAR_CONTRATAR_EMPLEADO)) {
+				Empleado emp=restaurante.consultarEmpleado((String) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(),0));
+				if(modificarUsuario.getText().equals(MODIFICAR_USUARIO1)&&crearUsuario.getText().equals(NUEVO_USUARIO1)) {
+					mostrarDatosEmpleado(emp);
+					if(emp.getUsername().equals("")) {
+						eliminarUsuario.setText(CONTRATAR_EMPLEADO);
+					}
+					else {
+						eliminarUsuario.setText(DESPEDIR_EMPLEADO);
+					}
+				}
 			}
 		}
 	}
@@ -270,9 +319,13 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 			if(evento.getSource().equals(crearUsuario)) {
 				if(crearUsuario.getText().equals(NUEVO_USUARIO1)) {
 					iniciarCrearUsuario();
+					IDText.setText(restaurante.generarIDEmpleado());
+					contrasenaText.setText("");
+					contrasenaText.setEditable(true);
 				}
 				else {
 					finalizarCrearUsuario();
+
 				}
 			}
 			else if(evento.getSource().equals(modificarUsuario)) {
@@ -284,7 +337,17 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 				}
 			}
 			else if(evento.getSource().equals(eliminarUsuario)) {
-				borrarUsuario();
+				if(eliminarUsuario.getText().equals(DESPEDIR_EMPLEADO))
+					despedirEmpleado();
+				else if(eliminarUsuario.getText().equals(CONTRATAR_EMPLEADO)) {
+					contrasenaText.setText("");
+					contrasenaText.setEditable(true);
+				}	
+				else {
+					recontratarEmpleado();
+					contrasenaText.setEditable(false);
+					eliminarUsuario.setText(DESPEDIR_EMPLEADO);
+				}
 			}
 			else if(evento.getSource().equals(limpiarSeleccion)) {
 				deseleccionarEmpleado();
@@ -292,33 +355,67 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		}catch (SQLException exception) {
 			if(exception.getErrorCode()==1017)
 				JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto\n"+"Codigo de error:"+exception.getErrorCode(),"Error",2);
-			else
-				JOptionPane.showMessageDialog(this, exception.getErrorCode());
+			else {
+				try {
+					if(!ConexionBBDD.getConnection().getAutoCommit())
+						ConexionBBDD.getConnection().rollback();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				exception.printStackTrace();
+			}//JOptionPane.showMessageDialog(this, "Error de base de datos\n Codigo error:"+exception.getErrorCode());
 		} catch (ClassNotFoundException e2) {
 			JOptionPane.showMessageDialog(this, "No se puede iniciar la conexion.\nConsultelo con su administrador","Error",1);
+		} catch (FieldFormatException e) {
+			JOptionPane.showMessageDialog(this, "Error en el campo "+e.getMessage());
+			;
 		}
 	}
+
 	/**
 	 * Metodo que borra al usuario seleccionado tras pedir confirmacion
 	 * Borra al empleado de la tabla de usuarios y eliminar su usuario  
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException
 	 */
-	private void borrarUsuario() throws ClassNotFoundException, SQLException {
+	private void despedirEmpleado() throws ClassNotFoundException, SQLException {
 		if(tablaUsuarios.getSelectedRow()!=-1) {
-			String id=(String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow());
+			String id=(String) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(),0);
+			System.out.format("%s\n",id);
 			Empleado emp=restaurante.consultarEmpleado(id);
-			String advertencia="Se borrara al empleado y se eliminara su usario.\nEsta decision no se puede revertir. ¿Esta seguro?";
-			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==0) {
-				restaurante.borrarEmpleado(emp);
+			String advertencia="Se despedira al empleado y se eliminara su usario. ¿Esta seguro?";
+			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==JOptionPane.OK_OPTION) {
+				restaurante.despedirEmpleado(emp);
 				modeloTablaUsuarios.removeRow(tablaUsuarios.getSelectedRow());
+				modeloTablaUsuarios.addRow(emp);
 			}
 		}
 		else {
 			JOptionPane.showMessageDialog(this, "Ningun empleado seleccionado por favor seleccione uno de la tabla");
 		}
 	}
-	
+	/**
+	 * Metodo que recontrata al empleado selecionado
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	private void recontratarEmpleado() throws ClassNotFoundException, SQLException {
+		if(tablaUsuarios.getSelectedRow()!=-1) {
+			String id=(String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow());
+			Empleado emp=restaurante.consultarEmpleado(id);
+			String advertencia="Se contratara al empleado y se creara su usario. ¿Esta seguro?";
+			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==0) {
+				restaurante.contratarEmpleado(emp, new String(contrasenaText.getPassword()));
+				modeloTablaUsuarios.removeRow(tablaUsuarios.getSelectedRow());
+				modeloTablaUsuarios.addRow(emp);
+			}
+		}
+		else {
+			JOptionPane.showMessageDialog(this, "Ningun empleado seleccionado por favor seleccione uno de la tabla");
+		}
+	}
 	/**
 	 * Metodo que desbloquea los campos del usuario mostrado para poder modificarlos
 	 */
@@ -330,8 +427,9 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	 * Metodo que efectua la modificacion con los nuevos datos
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
+	 * @throws FieldFormatException 
 	 */
-	private void finalizarModificacionUsuario() throws ClassNotFoundException, SQLException {
+	private void finalizarModificacionUsuario() throws ClassNotFoundException, SQLException, FieldFormatException {
 		modificarUsuario.setText(MODIFICAR_USUARIO1);
 		edicionPanelDatos(false);
 		generarEmpleado().modificarEmpleado();
@@ -349,19 +447,62 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	 * Metodo que efectua la creacion con los nuevos datos y vuelve a bloquear los campos
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
+	 * @throws FieldFormatException 
 	 */
-	private void finalizarCrearUsuario() throws ClassNotFoundException, SQLException {
-		crearUsuario.setText(NUEVO_USUARIO1);
-		edicionPanelDatos(false);
+	private void finalizarCrearUsuario() throws ClassNotFoundException, SQLException, FieldFormatException {
 		restaurante.contratarEmpleado(generarEmpleado(), new String(contrasenaText.getPassword()));
+		modeloTablaUsuarios.addRow(generarEmpleado());
+		edicionPanelDatos(false);
+		contrasenaText.setEditable(false);
+		IDText.setText(ID_DEFAULT);
+		crearUsuario.setText(NUEVO_USUARIO1);
 	}
 	/**
-	 * Metodo que deselecciona el usuario elejido y borra sus datos para poder crear un usario nuevo
+	 * Metodo que deselecciona el usuario elegido y borra sus datos para poder crear un usario nuevo
 	 */
 	private void deseleccionarEmpleado() {
 		edicionPanelDatos(false);
 		tablaUsuarios.clearSelection();
 		vaciarPanelDatos();
 		IDText.setText(ID_DEFAULT);
+	}
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowClosing(WindowEvent e) {
+		try {
+			ConexionBBDD.cerrarConexion();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

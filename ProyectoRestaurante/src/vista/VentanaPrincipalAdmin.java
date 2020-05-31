@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.SQLException;
 
 import javax.naming.InvalidNameException;
@@ -18,7 +20,7 @@ import javax.swing.JTextField;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
-public class VentanaPrincipalAdmin extends JFrame implements ActionListener{
+public class VentanaPrincipalAdmin extends JFrame implements ActionListener,WindowListener{
 	//panel principal
 	private JPanel panel;
 	//componentes panel principal	
@@ -67,6 +69,7 @@ public class VentanaPrincipalAdmin extends JFrame implements ActionListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setVisible(true);
 	    setLocationRelativeTo(null);
+	    this.addWindowListener(this);
 	}
 
 	@Override
@@ -90,6 +93,48 @@ public class VentanaPrincipalAdmin extends JFrame implements ActionListener{
 		else if (e.getSource().equals(abrirCocinero)) {
 			new VentanaPrincipalCocinero();
 		}
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 	

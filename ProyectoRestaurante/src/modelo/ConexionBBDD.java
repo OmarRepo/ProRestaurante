@@ -95,6 +95,7 @@ public class ConexionBBDD {
 		if (conexion != null) {
 			conexion.close();
 		}
+		conexion=null;
 		
 	}
 

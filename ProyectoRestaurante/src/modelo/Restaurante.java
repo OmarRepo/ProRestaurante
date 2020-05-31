@@ -90,25 +90,37 @@ public class Restaurante {
 	 */
 	public Empleado consultarEmpleado(String id) {
 		for (Empleado empleado: listaEmpleados) {
+			System.out.format("%s\n","Empleado:"+empleado.toString()+"id buscado"+id);
 			if(empleado.getId().equals(id)) {
+				System.out.format("%s\n","Entro");
 				return empleado;
 			}
 		}
 		return null;
 	}
-	public void borrarEmpleado(Empleado emp) throws ClassNotFoundException, SQLException {
+	/**
+	 * Metodo que elimina usuario del empleado y elimina fecha de contrato
+	 * @param emp
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void despedirEmpleado(Empleado emp) throws ClassNotFoundException, SQLException {
 		for (Iterator iterator = listaEmpleados.iterator(); iterator.hasNext();) {
 			Empleado empleado = (Empleado) iterator.next();
 			if(empleado.equals(empleado)) {
-				empleado.borrarEmpleado();
-				iterator.remove();
+				empleado.borrarUsuario();
+				empleado.setFechaContrato(null);
 				break;
 			}
 		}
 		
 	}
+	/**
+	 * Metodo que devuelve el siguiente ID de empleado para asignar
+	 * @return El siguiente id
+	 */
 	public String generarIDEmpleado() {
-		String id="I";
+		String id="E";
 		int numeroID=this.getListaEmpleados().size()+1;
 		for (int i = 0; i < 3-(String.valueOf(numeroID)).length(); i++) {
 			id+="0";
@@ -117,24 +129,22 @@ public class Restaurante {
 		return id;
 	}
 	public void contratarEmpleado(Empleado emp,String password) throws ClassNotFoundException, SQLException {
-		Statement st=null;
 		try {
-			st= ConexionBBDD.getConnection().createStatement();
-			if(emp.getFechaContrato()!=null) {
+			ConexionBBDD.getConnection().setAutoCommit(false);
+			if(this.listaEmpleados.contains(emp)) {
 				emp.crearUsuario(password);
+				emp.actualizarFechaContrato();
+				this.listaEmpleados.add(emp);
 			}
 			else {
 				emp.crearEmpleado();
 				emp.crearUsuario(password);
+				this.listaEmpleados.add(emp);
 			}
+			ConexionBBDD.getConnection().commit();
 		}finally {
-			if(st!=null)
-				st.close();
+			ConexionBBDD.getConnection().setAutoCommit(true);
 		}
-	}
-	public void despedirEmpleado(Empleado emp) throws ClassNotFoundException, SQLException {
-		this.getListaEmpleados().removeIf((Empleado e)->e.equals(emp));
-		emp.borrarEmpleado();
 	}
 	@Override
 	public String toString() {

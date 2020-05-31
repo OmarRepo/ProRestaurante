@@ -1,10 +1,15 @@
 package modelo;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
-
+/**
+ * Clase dedicada a manipular los datos del empleado
+ * 
+ *
+ */
 public class Empleado {
 
 	private String id;
@@ -39,38 +44,26 @@ public class Empleado {
 	}
 
 	//Metodos
-	public void borrarEmpleado() throws ClassNotFoundException, SQLException {
-		Statement st=null;
-		try {
-			ConexionBBDD.getConnection().setAutoCommit(false);
-			st= ConexionBBDD.getConnection().createStatement();
-			st.executeUpdate("DROP USER "+this.getUsername());
-			st.executeUpdate("UPDATE EMPLEADOS SET USERNAME=null WHERE ID_EMPLEADO='"+this.getId()+"'");
-			ConexionBBDD.getConnection().commit();
-		}finally {
-			if(st!=null)
-				st.close();
-			ConexionBBDD.getConnection().setAutoCommit(true);
-		}
-
-	}
 	/**
 	 * Metodo que crea el empleado en la base de datos
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
 	public void crearEmpleado() throws ClassNotFoundException, SQLException {
-		Statement st=null;
+		PreparedStatement prst=null;
 		try {
-			ConexionBBDD.getConnection().setAutoCommit(false);
-			st= ConexionBBDD.getConnection().createStatement();
-			st.executeUpdate("INSERT INTO EMPLEADOS(ID_EMPLEADO, DNI, NOMBRE, APELLIDO, USERNAME, TIPO)"+
-			"VALUES('"+this.getId()+"','"+this.getDni()+"','"+this.getNombre()+"','"+this.getApellidos()+"','"+this.getUsername()+"','"+this.getTipo()+"')");
-			ConexionBBDD.getConnection().commit();
+			prst = ConexionBBDD.getConnection().prepareStatement("INSERT INTO EMPLEADOS(ID_EMPLEADO, DNI, NOMBRE, APELLIDOS, FECHA_CONTRATACION ,USERNAME, TIPO) VALUES(?,?,?,?,?,?,?)");
+			prst.setString(1, this.getId());
+			prst.setString(2, this.getDni());
+			prst.setString(3, this.getNombre());
+			prst.setString(4, this.getApellidos());
+			prst.setDate(5, this.getFechaContrato());
+			prst.setString(6, this.getUsername());
+			prst.setString(7, this.getTipo().name());
+			prst.execute();
 		}finally {
-			if(st!=null)
-				st.close();
-			ConexionBBDD.getConnection().setAutoCommit(true);
+			if(prst!=null)
+				prst.close();
 		}
 	}
 	/**
@@ -82,72 +75,64 @@ public class Empleado {
 	public void crearUsuario(String password) throws ClassNotFoundException, SQLException {
 		Statement st=null;
 		try {
-			ConexionBBDD.getConnection().setAutoCommit(false);
 			st= ConexionBBDD.getConnection().createStatement();
-			st.executeUpdate("CREATE USER "+this.getUsername()+" IDENTIFIED BY " +password+ 
-					"DEFAULT TABLESPACE \"Restaurante\"" + 
-					"TEMPORARY TABLESPACE temp" + 
-					"ACCOUNT UNLOCK");
-			if(this.tipo.equals(TIPO_EMPLEADO.Jefe)) {
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PLATO_INGREDIENTES TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.MENUS_CONSUMIBLES TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PEDIDOS_CONSUMIBLES TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.INGREDIENTES TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.BEBIDAS TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PLATOS TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.MENUS TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.CONSUMIBLES TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PEDIDOS TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.EMPLEADOS TO "+this.getUsername());
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.CONFIGURACION TO "+this.getUsername());
-				st.addBatch("GRANT CREATE USER TO "+this.getUsername());
-				st.addBatch("GRANT DROP USER TO "+this.getUsername());
-			}
-			else if(this.tipo.equals(TIPO_EMPLEADO.Camarero)) {
-				st.addBatch("GRANT SELECT, ON restaurante.PLATO_INGREDIENTES;");
-				st.addBatch("GRANT SELECT, DELETE ON restaurante.MENUS_CONSUMIBLES;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PEDIDOS_CONSUMIBLES;");
-				st.addBatch("GRANT SELECT, UPDATE ON restaurante.INGREDIENTES;");
-				st.addBatch("GRANT SELECT, UPDATE ON restaurante.BEBIDAS;");
-				st.addBatch("GRANT SELECT ON restaurante.CONSUMIBLES;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PEDIDOS;");
-				st.addBatch("GRANT SELECT ON restaurante.EMPLEADOS;");
-				st.addBatch("GRANT SELECT ON restaurante.CONFIGURACION;");
-			}
-			else if(this.tipo.equals(TIPO_EMPLEADO.Cocinero)) {
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PLATO_INGREDIENTES;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.MENUS_CONSUMIBLES;");
-				st.addBatch("GRANT SELECT ON restaurante.PEDIDOS_CONSUMIBLES;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.INGREDIENTES;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.BEBIDAS;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.PLATOS;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.MENUS;");
-				st.addBatch("GRANT SELECT, INSERT, UPDATE, DELETE ON restaurante.CONSUMIBLES;");
-				st.addBatch("GRANT SELECT, UPDATE, ON restaurante.PEDIDOS;");
-				st.addBatch("GRANT SELECT ON restaurante.EMPLEADOS;");
-				st.addBatch("GRANT SELECT ON restaurante.CONFIGURACION;");
-			}
-			st.addBatch("UPDATE EMPLEADO SET USERNAME='"+this.getUsername()+"'WHERE ID_EMPLEADO='"+this.getId()+"'");
-			st.executeBatch();
-			ConexionBBDD.getConnection().commit();
+			st.executeUpdate("UPDATE EMPLEADOS SET USERNAME='"+this.getUsername()+"', CONTRASENA='"+password+"' WHERE ID_EMPLEADO='"+this.getId()+"'");
 		}finally {
-			if(st!=null)
-				st.close();
-			ConexionBBDD.getConnection().setAutoCommit(true);
+			st.close();
 		}
 	}
-	public void modificarEmpleado() throws ClassNotFoundException, SQLException {
+	public void borrarUsuario() throws ClassNotFoundException, SQLException {
 		Statement st=null;
 		try {
-			ConexionBBDD.getConnection().setAutoCommit(false);
 			st= ConexionBBDD.getConnection().createStatement();
-			st.executeUpdate("UPDATE EMPLEADOS SET DNI='"+this.getDni()+"', SET NOMBRE='"+this.getNombre()+"', SET APELLIDOS='"+this.getApellidos()+"', SET TIPO='"+this.getTipo().name()+"')");
-			ConexionBBDD.getConnection().commit();
+			st.executeUpdate("UPDATE EMPLEADOS SET USERNAME='',CONTRASENA='' WHERE ID_EMPLEADO='"+this.getId()+"'");
 		}finally {
-			if(st!=null)
-				st.close();
-			ConexionBBDD.getConnection().setAutoCommit(true);
+			st.close();
 		}
+	}
+	
+	/**
+	 * Metodo que modifica ciertos campos de empleado
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void modificarEmpleado() throws ClassNotFoundException, SQLException {
+		PreparedStatement prst=null;
+		try {
+			prst= ConexionBBDD.getConnection().prepareStatement("UPDATE EMPLEADOS SET DNI=?, NOMBRE=?, APELLIDOS=?, TIPO=? WHERE ID_EMPLEADO=?");
+			prst.setString(1, this.getDni());
+			prst.setString(2, this.getNombre());
+			prst.setString(3, this.getApellidos());
+			prst.setString(4, this.getTipo().name());
+			prst.setString(5, this.getId());
+			prst.execute();
+		}finally {
+			if(prst!=null)
+				prst.close();
+		}
+	}
+	/**
+	 * Metodo que modifica la fecha contratacion con la actual
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public void actualizarFechaContrato() throws ClassNotFoundException, SQLException {
+		PreparedStatement prst=null;
+		try {
+			prst= ConexionBBDD.getConnection().prepareStatement("UPDATE EMPLEADOS SET FECHA_CONTRATO=? WHERE ID_EMPLEADO=?");
+			prst.setDate(1,new Date(System.currentTimeMillis()));
+			prst.setString(2, this.getId());
+			prst.execute();
+		}finally {
+			if(prst!=null)
+				prst.close();
+		}
+	}
+	/**
+	 * Metodo que genera el username a partir del id y su nombre
+	 */
+	public void generarUsername() {
+		this.setUsername(id+nombre.substring(0, 3));
 	}
 	public String getId() {
 		return id;
