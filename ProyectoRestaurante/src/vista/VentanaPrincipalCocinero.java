@@ -228,7 +228,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		//CONFIGURACION DE LA VENTANA----------------------------------------------------------------------------------------------
 		this.add(pestanas);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setResizable(true);
 		setTitle("Cocinero");
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();

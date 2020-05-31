@@ -28,6 +28,9 @@ public class ConexionBBDDTest {
 	public static Collection<Object[]>usuarios(){
 		return Arrays.asList(new Object[][]{{"pepe","123",SQLException.class},{"RESADMIN","resadmin123",null}});
 	}
+	/**
+	 * Se prueba la primera conexion con el objeto
+	 */
 	@Test
 	public void testGetConnection() {
 		ConexionBBDD.setContrasena(contrasena);
@@ -41,6 +44,9 @@ public class ConexionBBDDTest {
 			
 		}
 	}
+	/**
+	 * Se prueba la segunda conexion con el objeto
+	 */
 	@Test
 	public void testReconnection() {
 		try {

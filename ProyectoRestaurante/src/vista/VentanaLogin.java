@@ -61,7 +61,7 @@ public class VentanaLogin extends JFrame implements ActionListener,WindowListene
 		setLocationRelativeTo(null);
 		this.add(panel);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(400, 200);
 		setResizable(false);
 		setTitle("Inicio de sesión");
@@ -104,6 +104,7 @@ public class VentanaLogin extends JFrame implements ActionListener,WindowListene
 					new VentanaPrincipalCocinero();
 					break;
 				}
+				setVisible(false);
 			}
 			} catch (SQLException exception) {
 				if(exception.getErrorCode()==1017)

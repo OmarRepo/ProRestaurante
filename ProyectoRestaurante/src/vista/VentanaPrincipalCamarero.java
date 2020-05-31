@@ -220,7 +220,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		this.add(pestanas);
 		
 		//CONFIGURACION DE LA VENTANA
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		setTitle("Camarero");
 		

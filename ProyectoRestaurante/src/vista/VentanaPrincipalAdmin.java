@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import modelo.ConexionBBDD;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
 
@@ -60,7 +61,7 @@ public class VentanaPrincipalAdmin extends JFrame implements ActionListener,Wind
 		this.add(panel);
 		
 		setResizable(false);
-		setTitle("Inicio de sesión");
+		setTitle("Opciones de administrador");
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = pantalla.height;
@@ -110,7 +111,12 @@ public class VentanaPrincipalAdmin extends JFrame implements ActionListener,Wind
 
 	@Override
 	public void windowClosed(WindowEvent e) {
-		// TODO Auto-generated method stub
+		try {
+			ConexionBBDD.cerrarConexion();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e1.getErrorCode());
+		}
 		
 	}
 

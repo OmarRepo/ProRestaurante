@@ -142,7 +142,6 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		this.add(panelGestion);
 
 		//ajustes a a esta ventana
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Gestion de usuarios");
 		//ajustar tamaño
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
