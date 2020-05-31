@@ -90,9 +90,7 @@ public class Restaurante {
 	 */
 	public Empleado consultarEmpleado(String id) {
 		for (Empleado empleado: listaEmpleados) {
-			System.out.format("%s\n","Empleado:"+empleado.toString()+"id buscado"+id);
 			if(empleado.getId().equals(id)) {
-				System.out.format("%s\n","Entro");
 				return empleado;
 			}
 		}
@@ -107,7 +105,7 @@ public class Restaurante {
 	public void despedirEmpleado(Empleado emp) throws ClassNotFoundException, SQLException {
 		for (Iterator iterator = listaEmpleados.iterator(); iterator.hasNext();) {
 			Empleado empleado = (Empleado) iterator.next();
-			if(empleado.equals(empleado)) {
+			if(empleado.equals(emp)) {
 				empleado.borrarUsuario();
 				empleado.setFechaContrato(null);
 				break;

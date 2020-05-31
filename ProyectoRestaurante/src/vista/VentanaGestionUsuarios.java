@@ -47,11 +47,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private static final String ID_DEFAULT;
 	private static final String NUEVO_USUARIO1;
 	private static final String NUEVO_USUARIO2;
-	private static final String MODIFICAR_USUARIO1;
-	private static final String MODIFICAR_USUARIO2;
 	private static final String DESPEDIR_EMPLEADO;
-	private static final String CONTRATAR_EMPLEADO;
-	private static String CONFIRMAR_CONTRATAR_EMPLEADO;
 
 	private Restaurante restaurante;
 	private JPanel panelGestion;
@@ -61,10 +57,7 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private JScrollPane scrolltablaUsuarios;
 
 	private JButton crearUsuario;
-	private JButton modificarUsuario;
 	private JButton eliminarUsuario;
-	private JButton limpiarSeleccion;
-
 	private JLabel ID;
 	private JLabel IDText;
 	private JLabel DNI;
@@ -81,14 +74,9 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private JComboBox<TIPO_EMPLEADO> tipoCombobox;
 
 	static {
-		MODIFICAR_USUARIO1 = "Modificar usuario";
-		MODIFICAR_USUARIO2 = "Guardadar modificacion";
-		NUEVO_USUARIO1 = "Nuevo Usuario";
+		NUEVO_USUARIO1 = "Nuevo usuario";
 		NUEVO_USUARIO2 = "Guardar usuario";
-		DESPEDIR_EMPLEADO="Despedir";
-		CONTRATAR_EMPLEADO="Contratar";
-		CONFIRMAR_CONTRATAR_EMPLEADO="Confirmar";
-
+		DESPEDIR_EMPLEADO ="Eliminar usuario";
 		ID_DEFAULT = "ninguno";
 	}
 	public VentanaGestionUsuarios() throws ClassNotFoundException, SQLException {
@@ -113,12 +101,8 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		//botones
 		crearUsuario = new JButton(NUEVO_USUARIO1);
 		crearUsuario.addActionListener(this);
-		modificarUsuario = new JButton(MODIFICAR_USUARIO1);
-		modificarUsuario.addActionListener(this);
 		eliminarUsuario = new JButton("Eliminar Usuario");
 		eliminarUsuario.addActionListener(this);
-		limpiarSeleccion = new JButton("Limpiar Seleccion");
-		limpiarSeleccion.addActionListener(this);
 		//etiquetas y campos
 		panelDatos=new JPanel();
 		panelDatos.setLayout(new MigLayout());
@@ -155,10 +139,8 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		panelDatos.add(fechaText,"wrap");
 		panelDatos.add(tipo);
 		panelDatos.add(tipoCombobox,"wrap");
-		panelDatos.add(crearUsuario,"growx");
-		panelDatos.add(modificarUsuario,"split2");
+		panelDatos.add(crearUsuario,"growx");;
 		panelDatos.add(eliminarUsuario,"wrap");
-		panelDatos.add(limpiarSeleccion,"wrap");
 		//insDatosen el panel general
 		panelGestion.add(panelDatos,"growy,pushy");
 		panelGestion.add(scrolltablaUsuarios,"grow,push,shrink 0");
@@ -279,16 +261,10 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getClickCount()==1) {
-			if(e.getSource().equals(tablaUsuarios)&&!eliminarUsuario.getText().equals(CONFIRMAR_CONTRATAR_EMPLEADO)) {
+			if(e.getSource().equals(tablaUsuarios)) {
 				Empleado emp=restaurante.consultarEmpleado((String) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(),0));
-				if(modificarUsuario.getText().equals(MODIFICAR_USUARIO1)&&crearUsuario.getText().equals(NUEVO_USUARIO1)) {
+				if(crearUsuario.getText().equals(NUEVO_USUARIO1)) {
 					mostrarDatosEmpleado(emp);
-					if(emp.getUsername().equals("")) {
-						eliminarUsuario.setText(CONTRATAR_EMPLEADO);
-					}
-					else {
-						eliminarUsuario.setText(DESPEDIR_EMPLEADO);
-					}
 				}
 			}
 		}
@@ -325,32 +301,11 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 				}
 				else {
 					finalizarCrearUsuario();
-
-				}
-			}
-			else if(evento.getSource().equals(modificarUsuario)) {
-				if(modificarUsuario.getText().equals(MODIFICAR_USUARIO1)) {
-					iniciarModificacionUsuario();
-				}
-				else {
-					finalizarModificacionUsuario();
 				}
 			}
 			else if(evento.getSource().equals(eliminarUsuario)) {
 				if(eliminarUsuario.getText().equals(DESPEDIR_EMPLEADO))
 					despedirEmpleado();
-				else if(eliminarUsuario.getText().equals(CONTRATAR_EMPLEADO)) {
-					contrasenaText.setText("");
-					contrasenaText.setEditable(true);
-				}	
-				else {
-					recontratarEmpleado();
-					contrasenaText.setEditable(false);
-					eliminarUsuario.setText(DESPEDIR_EMPLEADO);
-				}
-			}
-			else if(evento.getSource().equals(limpiarSeleccion)) {
-				deseleccionarEmpleado();
 			}
 		}catch (SQLException exception) {
 			if(exception.getErrorCode()==1017)
@@ -383,7 +338,6 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	private void despedirEmpleado() throws ClassNotFoundException, SQLException {
 		if(tablaUsuarios.getSelectedRow()!=-1) {
 			String id=(String) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(),0);
-			System.out.format("%s\n",id);
 			Empleado emp=restaurante.consultarEmpleado(id);
 			String advertencia="Se despedira al empleado y se eliminara su usario. ¿Esta seguro?";
 			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==JOptionPane.OK_OPTION) {
@@ -395,44 +349,6 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		else {
 			JOptionPane.showMessageDialog(this, "Ningun empleado seleccionado por favor seleccione uno de la tabla");
 		}
-	}
-	/**
-	 * Metodo que recontrata al empleado selecionado
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 */
-	private void recontratarEmpleado() throws ClassNotFoundException, SQLException {
-		if(tablaUsuarios.getSelectedRow()!=-1) {
-			String id=(String) tablaUsuarios.getValueAt(0, tablaUsuarios.getSelectedRow());
-			Empleado emp=restaurante.consultarEmpleado(id);
-			String advertencia="Se contratara al empleado y se creara su usario. ¿Esta seguro?";
-			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==0) {
-				restaurante.contratarEmpleado(emp, new String(contrasenaText.getPassword()));
-				modeloTablaUsuarios.removeRow(tablaUsuarios.getSelectedRow());
-				modeloTablaUsuarios.addRow(emp);
-			}
-		}
-		else {
-			JOptionPane.showMessageDialog(this, "Ningun empleado seleccionado por favor seleccione uno de la tabla");
-		}
-	}
-	/**
-	 * Metodo que desbloquea los campos del usuario mostrado para poder modificarlos
-	 */
-	private void iniciarModificacionUsuario() {
-		modificarUsuario.setText(MODIFICAR_USUARIO2);
-		edicionPanelDatos(true);
-	}
-	/**
-	 * Metodo que efectua la modificacion con los nuevos datos
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws FieldFormatException 
-	 */
-	private void finalizarModificacionUsuario() throws ClassNotFoundException, SQLException, FieldFormatException {
-		modificarUsuario.setText(MODIFICAR_USUARIO1);
-		edicionPanelDatos(false);
-		generarEmpleado().modificarEmpleado();
 	}
 	/**
 	 * Metodo que vacio los campos y los desbloquea para poder rellenarlos
@@ -456,15 +372,6 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 		contrasenaText.setEditable(false);
 		IDText.setText(ID_DEFAULT);
 		crearUsuario.setText(NUEVO_USUARIO1);
-	}
-	/**
-	 * Metodo que deselecciona el usuario elegido y borra sus datos para poder crear un usario nuevo
-	 */
-	private void deseleccionarEmpleado() {
-		edicionPanelDatos(false);
-		tablaUsuarios.clearSelection();
-		vaciarPanelDatos();
-		IDText.setText(ID_DEFAULT);
 	}
 	@Override
 	public void windowOpened(WindowEvent e) {

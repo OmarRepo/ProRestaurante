@@ -86,6 +86,7 @@ public class Empleado {
 		try {
 			st= ConexionBBDD.getConnection().createStatement();
 			st.executeUpdate("UPDATE EMPLEADOS SET USERNAME='',CONTRASENA='' WHERE ID_EMPLEADO='"+this.getId()+"'");
+			this.setUsername("");
 		}finally {
 			st.close();
 		}
