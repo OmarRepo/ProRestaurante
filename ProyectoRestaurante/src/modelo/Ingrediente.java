@@ -32,6 +32,7 @@ public class Ingrediente {
 		return id.matches("^([I][0-9]{2})$");
 	}
 	/**
+	 * Guarda el ingrediente en la base de datos
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -42,6 +43,7 @@ public class Ingrediente {
 				+ "','" + this.nombre + "'," + this.cantidad + ")");
 	}
 	/**
+	 * Modifica el nombre y la cantidad del ingrediente con el mismo id en la base de datos
 	 * 
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
@@ -52,6 +54,8 @@ public class Ingrediente {
 	}
 	/**
 	 * 
+	 * Elimina el ingrediente con el mismo id de la base de datos
+	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
@@ -61,7 +65,10 @@ public class Ingrediente {
 	}
 	/**
 	 * 
-	 * @return
+	 * comprueba si existe un ingrediente en la base de datos con el mimso id
+	 * 
+	 * @return true si el ingrediente existe
+	 * @return false si no existe
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
@@ -74,7 +81,10 @@ public class Ingrediente {
 	}
 	/**
 	 * 
-	 * @return
+	 * Busca en la base de datos todos los ingredientes ordenados por id y los devuelve en una lista ordenada por el orden de
+	 * inserción
+	 * 
+	 * @return LinkedList lista con los ingredientes ya ordenados por id
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */

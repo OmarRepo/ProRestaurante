@@ -52,12 +52,27 @@ public class Menu extends Consumible {
 
 	}
 	
+	/**
+	 * Guarda el menu en la base de datos
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void insertarMenu() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("INSERT INTO CONSUMIBLES (ID_CONSUMIBLE,NOMBRE,PRECIO,TIPO) VALUES ('" + this.getId()
 				+ "','" + this.getNombre() + "', "+this.getPrecio()+", 'Menu')");
 	}
 	
+	/**
+	 * 
+	 * Guarda en la base de datos un consumible del menu y su cantidad
+	 * 
+	 * @param idConsumible
+	 * @param idComponente
+	 * @param cantidad
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public static void insertarMenusConsumibles(String idConsumible,String idComponente,int cantidad)
 			throws SQLException, ClassNotFoundException {
 		Statement consulta;

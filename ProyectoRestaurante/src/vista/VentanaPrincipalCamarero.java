@@ -403,7 +403,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 			int filaSeleccionada = tabla.getSelectedRow();
 			String idPedido = tabla.getValueAt(filaSeleccionada, 0).toString();
 			try {
-			consumibles = Pedido.recorrerPedidos(idPedido);
+			consumibles = Pedido.buscarConsumibles(idPedido);
 				if (res.getListaMesas() > Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))) {
 					
 						for (Consumible j : res.getCarta().getListaConsumibles()) {

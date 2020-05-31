@@ -60,7 +60,11 @@ public class Pedido {
 	}
 
 	// Métodos
-
+	
+	/**
+	 * Genera automaticamente el id de un nuevo pedido
+	 * @return id
+	 */
 	public static String generarIdPedido() {
 		String id = "P";
 		int nPedidos = 1;
@@ -77,7 +81,13 @@ public class Pedido {
 		return id + nPedidos;
 
 	}
-
+	/**
+	 * Busca un pedido con el mismo id en la base de datos y devuelve true si existe y false si no existe
+	 * @return true si existe el pedido
+	 * @return false si no existe el pedido
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public boolean buscarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = null;
 		ResultSet resultado;
@@ -88,25 +98,15 @@ public class Pedido {
 			return true;
 		return false;
 	}
+	
 
-	public static HashMap<String, Integer> recorrerPedidos(String idPedido)
-			throws ClassNotFoundException, SQLException {
-
-		HashMap<String, Integer> cons = null;
-
-		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		ResultSet resul = consulta.executeQuery("SELECT * FROM CONSUMIBLES");
-
-		while (resul.next())
-			cons = Pedido.buscarConsumibles(idPedido);
-
-		resul.close();
-		consulta.close();
-
-		return cons;
-
-	}
-
+	/**
+	 *  Busca los consumibles del pedido cuyo id sea igual al pasado como parametro
+	 * @param idPedido
+	 * @return hashMap con los consumibles del pedido
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> buscarConsumibles(String idPedido)
 			throws ClassNotFoundException, SQLException {
 		HashMap<String, Integer> consumibles = new HashMap<String, Integer>();
@@ -143,13 +143,27 @@ public class Pedido {
 		consulta.executeUpdate("UPDATE PEDIDOS SET MESA =" + this.getIdMesa() + ", ESTADO = '" + this.getEstado().name()
 				+ "', PRECIO = " + this.getPrecio() + " WHERE ID_PEDIDO = '" + this.getIdPedido() + "'");
 	}
-
+	
+	/**
+	 * 
+	 * Marca en la base de datos el pedido como cancelado
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void borrarPedido() throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE PEDIDOS SET ESTADO = '" + ESTADO_PEDIDO.cancelado + "' WHERE ID_PEDIDO = '"
 				+ this.getIdPedido() + "'");
 	}
-
+	
+	/**
+	 * Asigna en la base de datos un consumible y si cantidad al pedido
+	 * 
+	 * @param cantidad
+	 * @param idConsumible
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void insertarPedidosConsumibles(int cantidad, String idConsumible)
 			throws SQLException, ClassNotFoundException {
 		Statement consulta;
@@ -158,7 +172,14 @@ public class Pedido {
 				+ this.getIdPedido() + "','" + idConsumible + "'," + cantidad + ")");
 		consulta.close();
 	}
-
+	
+	/**
+	 * Modifica en la base de datos la cantidad del consumible que se ha pedido en el pedido
+	 * @param cantidad
+	 * @param idConsumible
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void modificarPedidoConsumible(int cantidad, String idConsumible)
 			throws SQLException, ClassNotFoundException {
 		Statement consulta;
@@ -167,7 +188,13 @@ public class Pedido {
 				+ this.getIdPedido() + "' AND ID_CONSUMIBLE = '" + idConsumible + "'");
 		consulta.close();
 	}
-
+	
+	/**
+	 * Borra de la base de datos la asignacion del consumible al pedido
+	 * @param idConsumible
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void cancelarPedidoConsumible(String idConsumible) throws SQLException, ClassNotFoundException {
 		Statement consulta;
 		consulta = ConexionBBDD.getConnection().createStatement();
@@ -175,13 +202,24 @@ public class Pedido {
 				+ " AND ID_CONSUMIBLE = '" + idConsumible + "'");
 		consulta.close();
 	}
-	
+	/**
+	 * 
+	 * Modifica en la base de datos el estado del pedido a preparado
+	 * 
+	 */
 	public static void prepararPedido(String idPedido) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("UPDATE PEDIDOS SET ESTADO = '"+ESTADO_PEDIDO.preparado.name()+"' WHERE ID_PEDIDO = '"+idPedido+"'");
 		consulta.close();
 	}
 	
+	/**
+	 * Muestra los datos del pedido
+	 * @param idPedido
+	 * @return cadena Con los datos del pedido a mostrar
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static String mostrarPedido(String idPedido) throws ClassNotFoundException, SQLException {
 		HashMap<String, Integer> consumibles = null;
 		String cadena = "";
@@ -196,7 +234,7 @@ public class Pedido {
 					+"\n  Productos:\n";
 			consumibles = buscarConsumibles(idPedido);
 			for (String i : consumibles.keySet()) {
-				cadena += i+"	"+Consumible.buscarConsumible(i)+" * "+consumibles.get(i) + "\n";
+				cadena += i+"	"+Consumible.mostrarConsumible(i)+" * "+consumibles.get(i) + "\n";
 			}
 			cadena+="";
 			
