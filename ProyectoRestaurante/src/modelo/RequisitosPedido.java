@@ -76,11 +76,11 @@ public class RequisitosPedido {
 	 * @throws ClassNotFoundException
 	 */
 
-	public void actualizarIngredientesRequeridosPlato(HashMap<String, Integer> Plato) {
+	public void actualizarIngredientesRequeridosPlato(HashMap<String, Integer> Plato,int cantidadPlatos) {
 		int cantidadIngredientesPlato;
 		for (String idIngrediente : Plato.keySet()) {
 			cantidadIngredientesPlato = Plato.get(idIngrediente);
-			actualizarIngredientesRequeridos(idIngrediente, cantidadIngredientesPlato);
+			actualizarIngredientesRequeridos(idIngrediente, cantidadIngredientesPlato*cantidadPlatos);
 		}
 	}
 
