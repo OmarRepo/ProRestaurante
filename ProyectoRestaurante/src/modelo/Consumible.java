@@ -1,7 +1,9 @@
 package modelo;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Objects;
 
 public abstract class Consumible implements Comparable<Consumible> {
@@ -61,6 +63,23 @@ public abstract class Consumible implements Comparable<Consumible> {
 	public static void borrarConsumible(String id) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
+	}
+	
+	public static HashMap<String, Integer> buscarComponentes(String idConsumible, String tipo)
+			throws ClassNotFoundException, SQLException {
+		HashMap<String, Integer> componente = new HashMap<String, Integer>();
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resul = null;
+		if (tipo.equalsIgnoreCase("menu")) {
+			resul = consulta.executeQuery("SELECT * FROM MENUS_CONSUMIBLES WHERE ID_MENU = " + "'" + idConsumible + "'");
+		} else if (tipo.equalsIgnoreCase("plato")) {
+			resul = consulta.executeQuery("SELECT * FROM PLATO_INGREDIENTES WHERE ID_PLATO = " + "'" + idConsumible + "'");
+		}
+			
+		while (resul.next()) {
+			componente.put(resul.getString(2), resul.getInt(3));
+		}
+		return componente;
 	}
 
 	// get

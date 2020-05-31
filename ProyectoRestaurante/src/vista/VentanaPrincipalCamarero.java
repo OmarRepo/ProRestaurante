@@ -163,10 +163,6 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		panelCarta.add(sCartaPlatos);
 		panelCarta.add(sCartaBebidas);
 		
-		/*panelCarta.add(cartaMenus,"dock north,wrap");
-		panelCarta.add(cartaBebidas,"dock west");
-		panelCarta.add(cartaPlatos,"dock east");
-		*/
 		pestanas.addTab("Carta", panelCarta);
 		
 		//Panel Pedidos

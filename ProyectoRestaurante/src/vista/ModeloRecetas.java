@@ -2,16 +2,16 @@ package vista;
 
 import javax.swing.table.DefaultTableModel;
 
-public class ModeloTabla extends DefaultTableModel {
+public class ModeloRecetas extends DefaultTableModel {
 	
-	public ModeloTabla(Object object, String[] titulosPedidos) {
+	public ModeloRecetas(Object object, String[] titulosPedidos) {
 		// TODO Auto-generated constructor stub
 		super((Object[][]) object,titulosPedidos);
 	}
 	
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		if (this.getColumnName(2).equals("Cantidad") || this.getColumnName(2).equals("PRECIO (€)"))
+		if (this.getColumnName(3).equals(""))
 			return true;
 		return false;
 	}
@@ -24,9 +24,6 @@ public class ModeloTabla extends DefaultTableModel {
 				return String.class;
 			case 2:
 				return String.class;
-			case 3:
-				return String.class;
-			
 			default:
 				return Boolean.class;
 		}
