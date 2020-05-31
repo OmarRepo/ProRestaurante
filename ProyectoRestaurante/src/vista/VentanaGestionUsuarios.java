@@ -8,15 +8,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.sql.Connection;
-import java.sql.ConnectionBuilder;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.Collection;
-import java.util.HashSet;
-
-import javax.naming.InvalidNameException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -27,9 +21,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-
-import com.sun.tools.javac.util.Name.Table;
-
 import modelo.ConexionBBDD;
 import modelo.Empleado;
 import modelo.FieldFormatException;

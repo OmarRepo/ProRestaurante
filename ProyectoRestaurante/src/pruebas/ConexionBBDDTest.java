@@ -26,7 +26,7 @@ public class ConexionBBDDTest {
 	}
 	@Parameters
 	public static Collection<Object[]>usuarios(){
-		return Arrays.asList(new Object[][]{{"pepe","123",SQLException.class},{"resadmin","resadmin123",null}});
+		return Arrays.asList(new Object[][]{{"pepe","123",SQLException.class},{"RESADMIN","resadmin123",null}});
 	}
 	@Test
 	public void testGetConnection() {
