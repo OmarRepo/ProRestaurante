@@ -308,7 +308,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 			Pedido pedido;
 			if (filaSeleccionada == -1)
 				JOptionPane.showMessageDialog(null, "No hay ninguna fila seleccionada.");
-			else if (modelPedidos.getValueAt(filaSeleccionada, 2).equals(modelo.ESTADO_PEDIDO.en_espera.name())) {
+			else if (modelPedidos.getValueAt(filaSeleccionada, 2).equals(modelo.ESTADO_PEDIDO.preparado.name())) {
 				try {
 					pedido = crearPedidoSeleccionado();
 					pedido.calcularPrecio();

@@ -109,7 +109,7 @@ public class Bebida extends Consumible {
 		ResultSet resultCantidad = consultaCantidad.executeQuery("SELECT ALMACENADO FROM BEBIDAS ORDER BY ID_BEBIDA");
 		while(resul.next()) {
 			resultCantidad.next();
-			lista.add(new Bebida(resul.getString(1),resul.getString(2),resultCantidad.getInt(1)));
+			lista.add(new Bebida(resul.getString(1),resul.getString(2),resul.getDouble(3),resultCantidad.getInt(1)));
 		}
 		return lista;
 	}

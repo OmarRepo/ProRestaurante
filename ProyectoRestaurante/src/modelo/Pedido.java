@@ -74,7 +74,6 @@ public class Pedido {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		System.out.format("%s \n", nPedidos + "hola");
 		return id + nPedidos;
 
 	}

@@ -182,6 +182,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		
 		elegirTabla = new JComboBox<String>();
 		elegirTabla.addItem("Menu");
+		elegirTabla.addItem("Bebida");
 		elegirTabla.addItem("Plato");
 		elegirTabla.addActionListener(this);
 		
@@ -270,7 +271,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			Inicializar.vaciarTabla(consumible, modeloConsumible);
 			Inicializar.vaciarTabla(componente, modeloComponente);
 			for (Consumible i : res.getCarta().getListaConsumibles()) {
-				if (i instanceof Plato || i instanceof Bebida) {
+				if (i instanceof Plato) {
 					Object[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio())};
 					modeloConsumible.addRow(fila);
 				}
@@ -278,6 +279,22 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			for (Ingrediente i : Ingrediente.obtenerIngredientes()) {
 				Object[] fila = {i.getId(),i.getNombre(),0,false};
 				modeloComponente.addRow(fila);
+			}
+		} catch (ClassNotFoundException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	
+	public void cargarBebidas() {
+		try {
+			Inicializar.vaciarTabla(consumible, modeloConsumible);
+			Inicializar.vaciarTabla(componente, modeloComponente);
+			for (Consumible i : Bebida.obtenerBebidas()) {
+				if (i instanceof Bebida) {
+					Object[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio())};
+					modeloConsumible.addRow(fila);
+				}
 			}
 			for (Bebida i : Bebida.obtenerBebidas()) {
 				Object[] fila = {i.getId(),i.getNombre(),0,false};
@@ -302,6 +319,13 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		recetaPrecio = new JLabel("Precio: ");
 		txtRecetaPrecio = new JTextField(6);
 		
+		int filaSeleccionada = consumible.getSelectedRow();
+		if (consumible.getValueAt(filaSeleccionada, 0).toString().startsWith("B")) {
+			txtRecetaId.setText(consumible.getValueAt(filaSeleccionada, 0).toString());
+			txtRecetaNombre.setText(consumible.getValueAt(filaSeleccionada, 1).toString());
+			txtRecetaPrecio.setText(consumible.getValueAt(filaSeleccionada, 2).toString());	
+		}
+		
 		panelNuevaReceta.add(recetaId);
 		panelNuevaReceta.add(txtRecetaId);
 		panelNuevaReceta.add(recetaNombre);
@@ -311,10 +335,19 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	}
 	
 	public void recargarRecetas() {
-		if (elegirTabla.getSelectedItem().toString().equals("Menu"))
+		if (elegirTabla.getSelectedItem().toString().equalsIgnoreCase("Menu")) {
+			anadirReceta.setText("Añadir Menu");
+			guardarComponentes.setVisible(true);
 			cargarMenus();
-		else 
+		} else if (elegirTabla.getSelectedItem().toString().equalsIgnoreCase("Plato")) {
+			anadirReceta.setText("Añadir Plato");
+			guardarComponentes.setVisible(true);
 			cargarPlatos();
+		} else {
+			anadirReceta.setText("Añadir Precio");
+			guardarComponentes.setVisible(false);
+			cargarBebidas();
+		}
 	}
 	
 	public void recargarPedidos() {
@@ -484,6 +517,8 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 						consumibles = Consumible.buscarComponentes(idConsumible,"menu");
 					else if (idConsumible.startsWith("P"))
 						consumibles = Consumible.buscarComponentes(idConsumible,"plato");
+					else if (idConsumible.startsWith("B"))
+						consumibles.put(idConsumible, 1);
 					else
 						JOptionPane.showMessageDialog(this, "ID Incorrecto.");
 					
