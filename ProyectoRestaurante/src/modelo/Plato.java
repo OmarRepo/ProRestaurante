@@ -61,6 +61,14 @@ public class Plato extends Consumible{
 				+ "','" + this.getNombre() + "', "+this.getPrecio()+", 'Plato')");
 	}
 	
+	public static void insertarPlatoIngredientes(String idConsumible,String idComponente,int cantidad)
+			throws SQLException, ClassNotFoundException {
+		Statement consulta;
+		consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("INSERT INTO PLATO_INGREDIENTES (ID_PLATO,ID_INGREDIENTE,CANTIDAD) VALUES ('"+idConsumible+"','"+idComponente+"',"+cantidad+")");							
+		consulta.close();
+	}
+	
 	//get
 	public HashMap<String,Integer> getIngredientes() {
 		return ingredientes;

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -55,12 +56,13 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	
 	//RECETAS
 	private JTable consumible;
-	private ModeloTabla modeloConsumible;
+	private ModeloRecetas modeloConsumible;
 	private JComboBox<String> elegirTabla;
 	private JTable componente;
-	private ModeloTabla modeloComponente;
+	private ModeloRecetas modeloComponente;
 	private JButton anadirReceta;
 	private JButton eliminarReceta;
+	private JButton guardarComponentes;
 	
 	private JPanel panelNuevaReceta;
 	private JLabel recetaId;
@@ -145,7 +147,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		//TABLA CONSUMIBLE----------------------------------------------------------------------------------------------------------
 		consumible = new JTable();
 		String[] cabeceraConsumible = {"ID","NOMBRE","PRECIO (€)"};
-		modeloConsumible = new ModeloTabla(null, cabeceraConsumible);
+		modeloConsumible = new ModeloRecetas(null, cabeceraConsumible);
 		consumible.setModel(modeloConsumible);
 		scrollConsumible = new JScrollPane(consumible);
 		scrollConsumible.setSize((int) (panelRecetas.getSize().getWidth()/2) , (int) (panelRecetas.getSize().getHeight()/2));
@@ -154,8 +156,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		//TABLA COMPONENTE----------------------------------------------------------------------------------------------------------
 		componente = new JTable();
 		String[] cabeceraComponente = {"ID","NOMBRE","CANTIDAD",""};
-		modeloComponente = new ModeloTabla(null, cabeceraComponente);
+		modeloComponente = new ModeloRecetas(null, cabeceraComponente);
 		componente.setModel(modeloComponente);
+		componente.setCellEditor(componente.getDefaultEditor(Boolean.class));
 		scrollComponente = new JScrollPane(componente);
 		scrollComponente.setSize((int) (panelRecetas.getSize().getWidth()/2) , (int) (panelRecetas.getSize().getHeight()/2));
 		//----------------------------------------------------------------------------------------------------------------------------
@@ -163,6 +166,8 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		anadirReceta.addActionListener(this);
 		eliminarReceta = new JButton("Eliminar Receta");
 		eliminarReceta.addActionListener(this);
+		guardarComponentes = new JButton("Guardar Componentes");
+		guardarComponentes.addActionListener(this);
 		
 		elegirTabla = new JComboBox<String>();
 		elegirTabla.addItem("Menu");
@@ -176,14 +181,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		panelRecetas.add(scrollComponente,"wrap,growx,pushx");
 		panelRecetas.add(anadirReceta,"split2");
 		panelRecetas.add(eliminarReceta);
-		
+		panelRecetas.add(guardarComponentes,"skip,split3,align center");
 		pestanas.addTab("Recetas", panelRecetas);
 		cargarMenus();
-		
-		//FALTA CAMBIAR EL METODO PARA QUE SE ADAPTE SEGUN SEA PLATO O MENU
-		//VentanaPrincipalCocinero.rellenarTabla(modeloConsumible, consumible, "CONSUMIBLES");
-		//VentanaPrincipalCocinero.rellenarTabla(modeloComponente, componente, "INGREDIENTES");
-		//--------------------------------------------------------------------------------
 		
 		this.add(pestanas);
 		
@@ -229,7 +229,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		
 		for (Consumible i : res.getCarta().getListaConsumibles()) {
 			if (!(i instanceof Menu)) {
-				String[] fila = {i.getId(),i.getNombre(),""};
+				Object[] fila = {i.getId(),i.getNombre(),0,false};
 				modeloComponente.addRow(fila);
 			}
 		}
@@ -241,16 +241,16 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			Inicializar.vaciarTabla(componente, modeloComponente);
 			for (Consumible i : res.getCarta().getListaConsumibles()) {
 				if (i instanceof Plato || i instanceof Bebida) {
-					String[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio())};
+					Object[] fila = {i.getId(),i.getNombre(),Double.toString(i.getPrecio())};
 					modeloConsumible.addRow(fila);
 				}
 			}
 			for (Ingrediente i : Ingrediente.obtenerIngredientes()) {
-				String[] fila = {i.getId(),i.getNombre(),""};
+				Object[] fila = {i.getId(),i.getNombre(),0,false};
 				modeloComponente.addRow(fila);
 			}
 			for (Bebida i : Bebida.obtenerBebidas()) {
-				String[] fila = {i.getId(),i.getNombre(),""};
+				Object[] fila = {i.getId(),i.getNombre(),0,false};
 				modeloComponente.addRow(fila);
 			}
 		} catch (ClassNotFoundException | SQLException e1) {
@@ -382,6 +382,22 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 				Consumible.borrarConsumible(consumible.getValueAt(filaSeleccionada, 0).toString());
 				modeloConsumible.removeRow(filaSeleccionada);
 			}
+			
+			if (e.getSource().equals(guardarComponentes)) {
+				int filaSeleccionada = componente.getSelectedRow();
+				String idConsumible = consumible.getValueAt(filaSeleccionada, 0).toString();
+				if (idConsumible.startsWith("M"))
+					for (int i=0; i<modeloComponente.getRowCount(); i++) {
+						if ((Boolean)componente.getValueAt(i, 3))
+							Menu.insertarMenusConsumibles(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
+					}
+				else if (idConsumible.startsWith("P"))
+					for (int i=0; i<modeloComponente.getRowCount(); i++) {
+						if ((Boolean)componente.getValueAt(i, 3))
+							Plato.insertarPlatoIngredientes(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
+					}
+				
+			}
 		} catch (ClassNotFoundException ex) {
 			JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");
 		} catch (SQLException ex) {
@@ -409,35 +425,34 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 				txtNombre.setText(almacen.getValueAt(filaSeleccionada, 1).toString());
 				txtCantidad.setText(almacen.getValueAt(filaSeleccionada, 2).toString());
 			}
-			/*if (e.getSource().equals(consumible)) {
-			 * 	int cont=0;
+			if (e.getSource().equals(consumible)) {
 				HashMap<String, Integer> consumibles = new HashMap<String, Integer>();
 				JTable tabla = (JTable)e.getSource();
 				int filaSeleccionada = tabla.getSelectedRow();
-				String idPedido = tabla.getValueAt(filaSeleccionada, 0).toString();
+				String idConsumible = tabla.getValueAt(filaSeleccionada, 0).toString();
 				try {
-					consumibles = Pedido.recorrerPedidos(idPedido);
-					if (res.getListaMesas() > Integer.parseInt((tabla.getValueAt(filaSeleccionada, 1).toString()))) {
+					if (idConsumible.startsWith("M"))
+						consumibles = Consumible.buscarComponentes(idConsumible,"menu");
+					else if (idConsumible.startsWith("P"))
+						consumibles = Consumible.buscarComponentes(idConsumible,"plato");
+					else
+						JOptionPane.showMessageDialog(this, "ID Incorrecto.");
 					
-						for (Consumible j : res.getCarta().getListaConsumibles()) {
-							tablaCarta.setValueAt(false, cont, 4);
-							tablaCarta.setValueAt(0, cont, 2);
-							
-							if (consumibles.keySet().contains(tablaCarta.getValueAt(cont, 0).toString())) {
-								//Pongo tick en el boton de check
-								tablaCarta.setValueAt(true, cont, 4);
-								tablaCarta.setValueAt(consumibles.get(tablaCarta.getValueAt(cont, 0).toString()), cont, 2);
-							}
-							cont++;
+					for (int i=0; i<modeloComponente.getRowCount(); i++) {
+						componente.setValueAt(false, i, 3);
+						componente.setValueAt(0, i, 2);
+						
+						if (consumibles.keySet().contains(componente.getValueAt(i, 0).toString())) {
+							//Pongo tick en el boton de check
+							componente.setValueAt(true, i, 3);
+							componente.setValueAt(consumibles.get(componente.getValueAt(i, 0).toString()), i, 2);
 						}
 					}
-					else
-						JOptionPane.showMessageDialog(this, "Esa mesa no existe.");
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}*/
+			}
 		}
 		
 	}
