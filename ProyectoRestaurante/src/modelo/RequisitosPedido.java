@@ -7,8 +7,23 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 /**
+ * Funciona de manera coordinada con la clase Pedido. Existe una relación única
+ * de un objeto de tipo RequisitosPedido por cada instancia de la clase Pedido.
  * 
+ * De hecho, Pedido tiene como atributo una instancia de esta clase.
  * 
+ * Parte de la funcionalidad de Pedido calcula todos los ingredientes y bebidas
+ * necesarias para la preparación del pedido.
+ * 
+ * RequisitosPedido se encarga de alamcenar esas cantidades necesarias
+ * calculadas en Pedido, y almacenar: cada bebida (HashMap bebidasRequeridas) e
+ * ingrediente (HashMap ingredientesRequeridos) en los HashMap, así como de los
+ * ingredientes con cantidad insuficiente (HashMap ingredientesInsuficientes).
+ * 
+ * Finalmente, tras almacenar todas las cantidades, el método confirmarPedido
+ * recorre los HashMap bebidasRequeridas e ingredientesRequeridos y realiza una
+ * transacción con un UPDATE en la BB.DD con la cantidad de cada ingrediente o
+ * bebida necesaria.
  *
  */
 
@@ -102,7 +117,7 @@ public class RequisitosPedido {
 
 	/**
 	 * Añade la cantidad de la bebida que corresponde al ID recibido como parámetro
-	 * a la cantidad de la mismo en el HashMap bebidasRequeridas
+	 * la cantidad de la mismo en el HashMap bebidasRequeridas
 	 * 
 	 * @param idBebida
 	 * @param cantidad
@@ -117,11 +132,11 @@ public class RequisitosPedido {
 	}
 
 	/**
-	 * HACIENDO USO DE TRANSACCIONES commit() y rollback SÓLO SE EJECUTAN LAS
-	 * CONSULTAS SI PUEDEN EJECUTARSE TODAS (HAY CANTIDAD SUFICIENTE DE TODAS LAS
-	 * BEBIDAS E INGREDIENTES) O NINUNGA SI FALTA ALGO
-	 * 
-	 * Formaliza el pedido si no se produce ninguna excepción. Hace uso de
+	 * Procesa el pedido si no se produce ninguna excepción. Realiza los UPDATE
+	 * sobre los campos ALMACENADO de la BB.DD. (de las tablas BEBIDAS e
+	 * INGREDIENTES) con el cálculo de la diferencia de los ingredientes almacenados
+	 * menos los ingredientes requeridos que se van a gastar en la preparación del
+	 * pedido.
 	 * 
 	 * @see InsuficentesExcepcion
 	 * @throws ClassNotFoundException
@@ -137,41 +152,48 @@ public class RequisitosPedido {
 		// añadimos las consultas UPDATE de la cantidad almacenada en la BB.DDD
 
 		// ingredientes
-
 		System.out.println("INGREDIENTES");
 		for (String idIngrediente : ingredientesRequeridos.keySet()) {
-
-			int cantidadIngredientesRequeridos = ingredientesRequeridos.get(idIngrediente);
-			System.out.println("\tcantidadIngredientesRequeridos: " + cantidadIngredientesRequeridos);// >>>>>>PRUEBA<<<<<<<
-			almacenadoActualizado = ingredientesAlmacenadoBBDD(idIngrediente) - cantidadIngredientesRequeridos;
-			System.out.println("\talmacenadoActualizado: " + almacenadoActualizado);// >>>>>>PRUEBA<<<<<<<
-			System.out.println();// >>>>>>PRUEBA<<<<<<<
-			String SQL = "UPDATE INGREDIENTES SET ALMACENADO=" + almacenadoActualizado + "WHERE ID_INGREDIENTE=" + "'"
-					+ idIngrediente + "'";
-			consulta.addBatch(SQL);
+			if (ingredientesRequeridos.get(idIngrediente) > 0) {
+				int cantidadIngredientesRequeridos = ingredientesRequeridos.get(idIngrediente);
+				almacenadoActualizado = ingredientesAlmacenadoBBDD(idIngrediente) - cantidadIngredientesRequeridos;
+				String SQL = "UPDATE INGREDIENTES SET ALMACENADO=" + almacenadoActualizado + "WHERE ID_INGREDIENTE="
+						+ "'" + idIngrediente + "'";
+				consulta.addBatch(SQL);
+			}
 		}
 
 		// bebidas
 		System.out.println("BEBIDAS");
-		for (String idBebida : bebidasRequeridas.keySet()) {
-			int cantidadBebidasRequeridas = bebidasRequeridas.get(idBebida);
-			System.out.println("\tcantidadBebidasRequeridas: " + cantidadBebidasRequeridas);// >>>>>>PRUEBA<<<<<<<
-			almacenadoActualizado = bebidasAlmacenadoBBDD(idBebida) - cantidadBebidasRequeridas;
-			System.out.println("\talmacenadoActualizado: " + almacenadoActualizado);// >>>>>>PRUEBA<<<<<<<
-			System.out.println();// >>>>>>PRUEBA<<<<<<<
-			String SQL = "UPDATE BEBIDAS SET ALMACENADO=" + almacenadoActualizado + "WHERE ID_BEBIDA=" + "'" + idBebida
-					+ "'";
-			consulta.addBatch(SQL);
 
+		for (String idBebida : bebidasRequeridas.keySet()) {
+			if (bebidasRequeridas.get(idBebida) > 0) {
+				int cantidadBebidasRequeridas = bebidasRequeridas.get(idBebida);
+				almacenadoActualizado = bebidasAlmacenadoBBDD(idBebida) - cantidadBebidasRequeridas;
+				String SQL = "UPDATE BEBIDAS SET ALMACENADO=" + almacenadoActualizado + "WHERE ID_BEBIDA=" + "'"
+						+ idBebida + "'";
+				consulta.addBatch(SQL);
+
+			}
 		}
 		consulta.executeBatch();
-		// int count[] = consulta.executeBatch();
+
 		ConexionBBDD.getConnection().commit();
 
-		ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
+		// ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
 		// paquete vista con un .showMessageDialog
 
 	}
+
+	/**
+	 * Devuelve la cantidad de ingredientes almacenados en la tabla INGREDIENTES de
+	 * la BB.DD. haciendo la consulta sobre el campo ALMACENADO
+	 * 
+	 * @param idIngrediente
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 
 	public int ingredientesAlmacenadoBBDD(String idIngrediente) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
@@ -185,6 +207,16 @@ public class RequisitosPedido {
 		}
 		return almacenado;
 	}
+
+	/**
+	 * Devuelve la cantidad de bebidas almacenadas en la tabla BEBIDAS de la BB.DD.
+	 * haciendo la consulta sobre el campo ALMACENADO
+	 * 
+	 * @param idBebida
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 
 	public int bebidasAlmacenadoBBDD(String idBebida) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
@@ -200,6 +232,8 @@ public class RequisitosPedido {
 	}
 
 	/**
+	 * Devuelve true si hay suficientes ingredientes y bebidas para el pedido en la
+	 * BB.DD, tabla INGREDIENTES y tabla BEBIDAS, campos ALMACENADO para ambas.
 	 * 
 	 * @return
 	 * @throws ClassNotFoundException
@@ -219,15 +253,9 @@ public class RequisitosPedido {
 
 	}
 
-	// EN NUESTRO CASO: no mostrar en la carta si no hay suficientes para preparar
-	// ningún plato ó informar al usuario para añadir más
-	// mediante la interfaz de nuestra aplicación
-
-	// EN LA OPCIÓN 2: EJECUTANDO CONSULTAS SOBRE ALMACENADO Y COMPARANDO CON LA
-	// CANTIDAD NECESARIA PARA EL PEDIDO, SI HAY POSIBILIDAD DE
-	// RECUPERAR EL ID DEL INGREDIENTE O BEBDIA DE LOS QUE NO HAY SUFICIENTE
-
 	/**
+	 * Comprueba que hay suficientes ingredientes para el pedido en la BB.DD, tabla
+	 * INGREDIENTES, campo ALMACENADO
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -236,24 +264,20 @@ public class RequisitosPedido {
 	public void comprobarDisponibilidadIngredientesBBDD()
 			throws ClassNotFoundException, SQLException, InsuficentesExcepcion {
 
-		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		ResultSet resul = null;
-
 		for (String idIngrediente : ingredientesRequeridos.keySet()) {
 			try {
 				int cantidadIngredientesPedido = ingredientesRequeridos.get(idIngrediente);
-				resul = consulta.executeQuery(
-						"SELECT ALMACENADO FROM INGREDIENTES WHERE ID_INGREDIENTE =" + "'" + idIngrediente + "'");
-				while (resul.next()) {
-					if (cantidadIngredientesPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
-																					// ingredientes
-						// almacenados en la BB.DD necesarios para preparar el
-						// pedido
 
-						throw new InsuficentesExcepcion(idIngrediente);
+				if (cantidadIngredientesPedido > ingredientesAlmacenadoBBDD(idIngrediente)) {// si no hay suficiente
+																								// cantidad de
+					// ingredientes
+					// almacenados en la BB.DD necesarios para preparar el
+					// pedido
 
-					}
+					throw new InsuficentesExcepcion(idIngrediente);
+
 				}
+
 			} finally {
 				ingredientesInsuficientes.add(idIngrediente);// se añade por orden de inserción
 			}
@@ -262,6 +286,8 @@ public class RequisitosPedido {
 	}
 
 	/**
+	 * Comprueba que hay suficientes bebidas para el pedido en la BB.DD, tabla
+	 * BEBIDAS, campo ALMACENADO
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -271,22 +297,16 @@ public class RequisitosPedido {
 	public void comprobarDisponibilidadBebidasBBDD()
 			throws ClassNotFoundException, SQLException, InsuficentesExcepcion {
 
-		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		ResultSet resul = null;
-
 		for (String idBebida : bebidasRequeridas.keySet()) {
 			try {
 				int cantidadBebidasPedido = bebidasRequeridas.get(idBebida);
-				resul = consulta
-						.executeQuery("SELECT ALMACENADO FROM BEBIDAS WHERE ID_BEBIDA =" + "'" + idBebida + "'");
-				while (resul.next()) {
-					if (cantidadBebidasPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
-																				// ingredientes
-						// almacenados en la BB.DD necesarios para preparar el
-						// pedido
 
-						throw new InsuficentesExcepcion(idBebida);
-					}
+				if (cantidadBebidasPedido > bebidasAlmacenadoBBDD(idBebida)) {// si no hay suficiente cantidad de
+																				// ingredientes
+					// almacenados en la BB.DD necesarios para preparar el
+					// pedido
+
+					throw new InsuficentesExcepcion(idBebida);
 				}
 
 			} finally {

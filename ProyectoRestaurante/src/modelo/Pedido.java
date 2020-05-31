@@ -11,8 +11,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
+ * Funciona de manera coordinada con la clase Pedido. Existe una relación única
+ * de un objeto de tipo RequisitosPedido por cada instancia de la clase Pedido.
  * 
+ * De hecho, Pedido tiene como atributo una instancia de esta clase.
  * 
+ * Parte de la funcionalidad de Pedido calcula todos los ingredientes y bebidas
+ * necesarias para la preparación del pedido.
+ * 
+ * RequisitosPedido se encarga de alamcenar esas cantidades necesarias
+ * calculadas en Pedido, y almacenar: cada bebida (HashMap bebidasRequeridas) e
+ * ingrediente (HashMap ingredientesRequeridos) en los HashMap, así como de los
+ * ingredientes con cantidad insuficiente (HashMap ingredientesInsuficientes).
+ * 
+ * Finalmente, tras almacenar todas las cantidades, el método confirmarPedido
+ * recorre los HashMap bebidasRequeridas e ingredientesRequeridos y realiza una
+ * transacción con un UPDATE en la BB.DD con la cantidad de cada ingrediente o
+ * bebida necesaria.
  *
  */
 
