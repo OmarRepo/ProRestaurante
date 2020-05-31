@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 import javax.swing.JButton;
@@ -23,7 +25,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import modelo.Bebida;
+import modelo.ConexionBBDD;
 import modelo.Consumible;
+import modelo.ESTADO_PEDIDO;
 import modelo.Ingrediente;
 import modelo.Menu;
 import modelo.Pedido;
@@ -71,6 +75,11 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	private JTextField txtRecetaNombre;
 	private JLabel recetaPrecio;
 	private JTextField txtRecetaPrecio;
+	
+	private JPanel panelPedidosCocinero;
+	private ModeloTabla modeloPedidosCocinero;
+	private JTable pedidosCocinero;
+	private JScrollPane scrollPedidosCocinero;
 	
 	//PANELES
 	private JPanel panelAlmacen;
@@ -185,6 +194,21 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		pestanas.addTab("Recetas", panelRecetas);
 		cargarMenus();
 		
+		//Pestaña Pedidos
+		
+		panelPedidosCocinero = new JPanel();
+		panelPedidosCocinero.setLayout(new MigLayout());
+		String[] cabeceraPedidosCocinero = {"ID_PEDIDO","MESA","ESTADO"};
+		modeloPedidosCocinero = new ModeloTabla(null,cabeceraPedidosCocinero); 
+		pedidosCocinero = new JTable();
+		pedidosCocinero.addMouseListener(this);
+		pedidosCocinero.setModel(modeloPedidosCocinero);
+		scrollPedidosCocinero = new JScrollPane(pedidosCocinero);
+		
+		panelPedidosCocinero.add(scrollPedidosCocinero,"grow,push");
+		
+		pestanas.addTab("Pedidos", panelPedidosCocinero);
+		recargarPedidos();
 		this.add(pestanas);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -285,6 +309,22 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			cargarMenus();
 		else 
 			cargarPlatos();
+	}
+	
+	public void recargarPedidos() {
+		Statement consulta;
+		try {
+			Inicializar.vaciarTabla(pedidosCocinero, modeloPedidosCocinero);
+			consulta = ConexionBBDD.getConnection().createStatement();
+			ResultSet resul=consulta.executeQuery("SELECT * FROM PEDIDOS ORDER BY ID_PEDIDO");
+		while(resul.next()) {
+			String[] fila = {resul.getString("ID_PEDIDO"),resul.getString("MESA"),resul.getString("ESTADO")};
+			modeloPedidosCocinero.addRow(fila);
+		}
+		} catch (ClassNotFoundException | SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -451,6 +491,26 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 				} catch (ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				}
+			}
+			if (e.getSource().equals(pedidosCocinero)) {
+				int filaSeleccionada = pedidosCocinero.getSelectedRow();
+				
+				int resultado = JOptionPane.showConfirmDialog(this,"hola" , "Pedido "+pedidosCocinero.getValueAt(filaSeleccionada, 0).toString(),JOptionPane.OK_CANCEL_OPTION);
+				
+				if (resultado == JOptionPane.OK_OPTION) {
+					if (pedidosCocinero.getValueAt(filaSeleccionada, 2).toString().equalsIgnoreCase("en_espera")) {
+						Statement consulta;
+						try {
+							consulta = ConexionBBDD.getConnection().createStatement();
+						
+							consulta.executeUpdate("UPDATE PEDIDOS SET ESTADO = '"+ESTADO_PEDIDO.preparado.name()+"' WHERE ID_PEDIDO = '"+pedidosCocinero.getValueAt(filaSeleccionada, 0).toString()+"'");
+							recargarPedidos();
+						} catch (ClassNotFoundException | SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
 				}
 			}
 		}
