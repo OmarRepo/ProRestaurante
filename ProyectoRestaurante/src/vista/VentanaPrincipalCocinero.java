@@ -362,12 +362,15 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		recetaPrecio = new JLabel("Precio: ");
 		txtRecetaPrecio = new JTextField(6);
 		
-		int filaSeleccionada = consumible.getSelectedRow();
-		if (consumible.getValueAt(filaSeleccionada, 0).toString().startsWith("B")) {
-			txtRecetaId.setText(consumible.getValueAt(filaSeleccionada, 0).toString());
-			txtRecetaNombre.setText(consumible.getValueAt(filaSeleccionada, 1).toString());
-			txtRecetaPrecio.setText(consumible.getValueAt(filaSeleccionada, 2).toString());	
+		if(consumible.getSelectedRow()!=-1) {
+			int filaSeleccionada = consumible.getSelectedRow();
+			if (consumible.getValueAt(filaSeleccionada, 0).toString().startsWith("B")) {
+				txtRecetaId.setText(consumible.getValueAt(filaSeleccionada, 0).toString());
+				txtRecetaNombre.setText(consumible.getValueAt(filaSeleccionada, 1).toString());
+				txtRecetaPrecio.setText(consumible.getValueAt(filaSeleccionada, 2).toString());	
+			}
 		}
+		
 		
 		panelNuevaReceta.add(recetaId);
 		panelNuevaReceta.add(txtRecetaId);
