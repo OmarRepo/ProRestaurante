@@ -9,7 +9,7 @@ public class Bebida extends Consumible {
 
 	private int cantidad;
 
-	// Constructor
+	// Constructores
 	public Bebida(String id, String nombre, double precio, int cantidad) {
 		super(id, nombre, precio);
 		if (this.getId() != null) {// solo guardamos el resto de datos si el id es correcto
@@ -30,12 +30,9 @@ public class Bebida extends Consumible {
 	}
 	
 	// Métodos
-	/*
-	 * @Override public boolean validarId(String id) { return
-	 * id.matches("^([B][0-9]{2})$"); }
-	 */
 	
 	/**
+	 * Guarda el id y el nombre de una bebida en la base de datos
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -47,6 +44,7 @@ public class Bebida extends Consumible {
 		
 	}
 	/**
+	 * Cambia el nombre de la bebida con el mimso id en la base de datos
 	 * 
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
@@ -57,6 +55,14 @@ public class Bebida extends Consumible {
 		consulta.close();
 	}
 	
+	/**
+	 * 
+	 * Modifica el nombre y le asigna un precio a la bebida con el mismo id en la base de datos
+	 * 
+	 * @param precio
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 */
 	public void modificarBebida(double precio) throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		System.out.format("%s \n",consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"', PRECIO = "+precio+" WHERE ID_CONSUMIBLE = '"+this.getId()+"'"));
@@ -64,16 +70,20 @@ public class Bebida extends Consumible {
 	}
 	/**
 	 * 
+	 * Le asgina a una bebida las unidades que tiene en el almacen (esto se guarda en la tabla bebidas en vez de en consumible
+	 * que es donde se indica el precio)
+	 * 
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 */
 	public void asignarCantidadBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		System.out.format("%s \n","UPDATE BEBIDAS SET ALMACENADO = "+this.getCantidad()+" WHERE ID_BEBIDA = '"+this.getId()+"'");
 		consulta.executeUpdate("UPDATE BEBIDAS SET ALMACENADO = "+this.getCantidad()+" WHERE ID_BEBIDA = '"+this.getId()+"'");
 		consulta.close();
 	}
 	/**
+	 * 
+	 * Elimina la bebida con el mismo id en la base de datos
 	 * 
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -84,7 +94,10 @@ public class Bebida extends Consumible {
 	}
 	/**
 	 * 
-	 * @return
+	 * Comprueba si la bebida existe en la base de datos
+	 * 
+	 * @return true si existe
+	 * @return false si no existe
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
@@ -97,7 +110,9 @@ public class Bebida extends Consumible {
 	}
 	/**
 	 * 
-	 * @return
+	 * Devuelve en una lista las bebidas ordenadas por el id
+	 * 
+	 * @return lista de tipo LinkedList para que se ordenen por el orden de insercion con las bebidas
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */

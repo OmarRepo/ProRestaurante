@@ -60,12 +60,27 @@ public abstract class Consumible implements Comparable<Consumible> {
 
 	}
 	
+	/**
+	 * Elimina el consumible con el mismo id de la base de datos
+	 * 
+	 * @param id
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static void borrarConsumible(String id) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
 	}
 	
-	public static String buscarConsumible(String id) throws ClassNotFoundException, SQLException {
+	/**
+	 * Busca en la base de datos un consumible con el mismo id y devuelve su nombre y precio, si no se encuentra, devuelve el id
+	 * 
+	 * @param id
+	 * @return cadena donde se muestra el precio y el nombre
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public static String mostrarConsumible(String id) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		ResultSet result = consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
 		if (result.next())
@@ -73,6 +88,14 @@ public abstract class Consumible implements Comparable<Consumible> {
 		return id;
 	}
 	
+	/**
+	 * Busca en la base de datos el consumible con el id pasado como parametro y devuelve su precio
+	 * 
+	 * @param id
+	 * @return precio el precio del consumible
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static double obtenerPrecioConsumible(String id) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 		ResultSet result = consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
@@ -81,6 +104,17 @@ public abstract class Consumible implements Comparable<Consumible> {
 		return 0;
 	}
 	
+	/**
+	 * 
+	 * Busca en la base de datos los componentes que forman un plato o menu, segun le hayas pasado de parametro uno u otro
+	 * y los devuelve en un hashmap con su id y la cantidad necesaria
+	 * 
+	 * @param idConsumible
+	 * @param tipo El tipo de consumible que buscas, plato o menu
+	 * @return componente
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public static HashMap<String, Integer> buscarComponentes(String idConsumible, String tipo)
 			throws ClassNotFoundException, SQLException {
 		HashMap<String, Integer> componente = new HashMap<String, Integer>();

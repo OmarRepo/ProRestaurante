@@ -21,6 +21,13 @@ public class Carta {
 	}
 
 	// Metodos
+	/**
+	 * Guarda un consumible en la base de datos
+	 * 
+	 * @param consumible
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void anadirConsumible(Consumible consumible) throws ClassNotFoundException, SQLException {
 		if(!listaConsumibles.contains(consumible)) {
 			Statement consulta=ConexionBBDD.getConnection().createStatement();
@@ -29,7 +36,17 @@ public class Carta {
 		}
 
 	}
-
+	
+	/**
+	 * 
+	 * Elimina el consumible pasado como parametro de la base de datos
+	 * 
+	 * @param consumible
+	 * @return true si ha sido eliminado
+	 * @return false si no ha sido eliminado
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public boolean eliminarConsumible(Consumible consumible) throws ClassNotFoundException, SQLException {
 		if(listaConsumibles.removeIf((Consumible c) -> c.equals(consumible))) {
 			Statement consulta=ConexionBBDD.getConnection().createStatement();
@@ -40,6 +57,14 @@ public class Carta {
 			return false;
 
 	}
+	
+	/**
+	 * Selecciona todos los consumibles de la base de datos y los va añadiendo a la carta, este metodo se ejecuta en el constructor
+	 * para inicializar el restaurante
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	private void actualizarCarta() throws ClassNotFoundException, SQLException {
 		listaConsumibles = new TreeSet<Consumible>();
 		Statement consulta=ConexionBBDD.getConnection().createStatement();
@@ -58,7 +83,12 @@ public class Carta {
 			}
 		}
 	}
-	// antes en clase Empleado
+	
+	/**
+	 * Muestra la carta
+	 * @deprecated 
+	 * @return
+	 */
 	public String mostrarCarta() {
 		Iterator<Consumible> it = listaConsumibles.iterator();
 		String carta = "<html><body>Carta<br>";
