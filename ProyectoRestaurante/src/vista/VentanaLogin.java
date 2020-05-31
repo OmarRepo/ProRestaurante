@@ -41,7 +41,7 @@ public class VentanaLogin extends JFrame implements ActionListener{
 	public void crearVentana() {
 
 		panel = new JPanel();
-		panel.setLayout(new MigLayout());
+		panel.setLayout(new MigLayout("align center"));
 		user = new JLabel("Usuario: ");
 		escribeUser = new JTextField(10);
 		password = new JLabel("Constaseña: ");
@@ -53,15 +53,15 @@ public class VentanaLogin extends JFrame implements ActionListener{
 		panel.add(escribeUser,"wrap");
 		panel.add(password);
 		panel.add(escribePassword,"wrap");
-		panel.add(acceder,"skip, split2");
+		panel.add(acceder,"skip, growx");
 		panel.setAlignmentX(CENTER_ALIGNMENT);
 		setLocationRelativeTo(null);
 		this.add(panel);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(400, 200);
 		setResizable(false);
 		setTitle("Inicio de sesión");
-		pack();
 		setVisible(true);
 		setLocationRelativeTo(null);
 	}
@@ -74,7 +74,6 @@ public class VentanaLogin extends JFrame implements ActionListener{
 			st = ConexionBBDD.getConnection().createStatement();
 			rs=st.executeQuery("SELECT TIPO FROM EMPLEADOS WHERE USERNAME=to_char(USER)");
 			if(rs.next()) {
-				rs.getString(1);
 				return rs.getString(1);
 			}
 			else {

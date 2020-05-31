@@ -33,9 +33,12 @@ public class ModeloTablaUsuarios extends DefaultTableModel {
 				//apellido
 				return String.class;
 			case 4:
+				//username
+				return String.class;
+			case 5:
 				//fecha contratacion
 				return Date.class;
-			case 5:
+			case 6:
 				//tipo
 				return TIPO_EMPLEADO.class;
 			default:
@@ -44,7 +47,7 @@ public class ModeloTablaUsuarios extends DefaultTableModel {
 	}
 
 	public void addRow(Empleado emp) {
-		addRow(new Object[]{emp.getId(),emp.getDni(),emp.getNombre(),emp.getApellidos(),emp.getFechaContrato(),emp.getTipo()});
+		addRow(new Object[]{emp.getId(),emp.getDni(),emp.getNombre(),emp.getApellidos(),emp.getUsername(),emp.getFechaContrato(),emp.getTipo()});
 	}
 	
 	

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
+import java.util.Iterator;
 /**
  * Clase que permite obtener y actualizar la carta o la lista de empleados
  * 
@@ -95,6 +96,46 @@ public class Restaurante {
 		}
 		return null;
 	}
+	public void borrarEmpleado(Empleado emp) throws ClassNotFoundException, SQLException {
+		for (Iterator iterator = listaEmpleados.iterator(); iterator.hasNext();) {
+			Empleado empleado = (Empleado) iterator.next();
+			if(empleado.equals(empleado)) {
+				empleado.borrarEmpleado();
+				iterator.remove();
+				break;
+			}
+		}
+		
+	}
+	public String generarIDEmpleado() {
+		String id="I";
+		int numeroID=this.getListaEmpleados().size()+1;
+		for (int i = 0; i < 3-(String.valueOf(numeroID)).length(); i++) {
+			id+="0";
+		}
+		id+=numeroID;
+		return id;
+	}
+	public void contratarEmpleado(Empleado emp,String password) throws ClassNotFoundException, SQLException {
+		Statement st=null;
+		try {
+			st= ConexionBBDD.getConnection().createStatement();
+			if(emp.getFechaContrato()!=null) {
+				emp.crearUsuario(password);
+			}
+			else {
+				emp.crearEmpleado();
+				emp.crearUsuario(password);
+			}
+		}finally {
+			if(st!=null)
+				st.close();
+		}
+	}
+	public void despedirEmpleado(Empleado emp) throws ClassNotFoundException, SQLException {
+		this.getListaEmpleados().removeIf((Empleado e)->e.equals(emp));
+		emp.borrarEmpleado();
+	}
 	@Override
 	public String toString() {
 		return "Restaurante [carta=" + carta + ", Mesas=" + mesas + "]";
@@ -127,6 +168,8 @@ public class Restaurante {
 	public void setListaEmpleados(HashSet<Empleado> listaEmpleados) {
 		this.listaEmpleados = listaEmpleados;
 	}
+
+
 	
 }
 

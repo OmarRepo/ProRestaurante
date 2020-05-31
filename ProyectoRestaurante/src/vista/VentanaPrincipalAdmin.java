@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
+import javax.naming.InvalidNameException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -72,8 +74,13 @@ public class VentanaPrincipalAdmin extends JFrame implements ActionListener{
 		if (e.getSource().equals(GestionarUsuarios)) {
 			try {
 				new VentanaGestionUsuarios();
-			} catch (ClassNotFoundException | SQLException e1) {
-				e1.printStackTrace();
+			} catch (SQLException exception) {
+				if(exception.getErrorCode()==1017)
+					JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto\n"+"Codigo de error:"+exception.getErrorCode(),"Error",2);
+				else
+					JOptionPane.showMessageDialog(this, exception.getErrorCode());
+			} catch (ClassNotFoundException e2) {
+				JOptionPane.showMessageDialog(this, "No se puede iniciar la conexion.\nConsultelo con su administrador","Error",1);
 			}
 		}
 		else if (e.getSource().equals(abrirCamarero)) {
