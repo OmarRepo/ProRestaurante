@@ -20,7 +20,9 @@ import javax.swing.JTextField;
 import modelo.ConexionBBDD;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
-
+/**
+ * Ventana que contiene las opciones disponibles para un usuario jefe o administrador
+ */
 public class VentanaPrincipalAdmin extends JFrame implements ActionListener,WindowListener{
 	//panel principal
 	private JPanel panel;
@@ -29,7 +31,7 @@ public class VentanaPrincipalAdmin extends JFrame implements ActionListener,Wind
 	private JButton GestionarUsuarios;
 	private JButton abrirCamarero;
 	private JButton abrirCocinero;
-		
+	
 	public VentanaPrincipalAdmin() {
 		crearVentana();
 	}

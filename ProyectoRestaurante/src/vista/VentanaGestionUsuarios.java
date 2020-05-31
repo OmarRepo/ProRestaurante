@@ -29,7 +29,7 @@ import modelo.Restaurante;
 import modelo.TIPO_EMPLEADO;
 import net.miginfocom.swing.MigLayout;
 /**
- * Clase que al ser instanciada crea una ventana destinada a la gestion de usuarios y empleados.
+ * Ventana destinada a la gestion de usuarios y empleados.
  * 
  *
  */
@@ -294,23 +294,14 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 				}
 			}
 			else if(evento.getSource().equals(eliminarUsuario)) {
-				if(eliminarUsuario.getText().equals(DESPEDIR_EMPLEADO))
 					despedirEmpleado();
 			}
 		}catch (SQLException exception) {
 			if(exception.getErrorCode()==1017)
 				JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto\n"+"Codigo de error:"+exception.getErrorCode(),"Error",2);
 			else {
-				try {
-					if(!ConexionBBDD.getConnection().getAutoCommit())
-						ConexionBBDD.getConnection().rollback();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				exception.printStackTrace();
-			}//JOptionPane.showMessageDialog(this, "Error de base de datos\n Codigo error:"+exception.getErrorCode());
+				JOptionPane.showMessageDialog(this, "Error de base de datos\n Codigo error:"+exception.getErrorCode());
+			}
 		} catch (ClassNotFoundException e2) {
 			JOptionPane.showMessageDialog(this, "No se puede iniciar la conexion.\nConsultelo con su administrador","Error",1);
 		} catch (FieldFormatException e) {
@@ -324,12 +315,12 @@ public class VentanaGestionUsuarios extends JFrame implements ActionListener,Mou
 	 * Borra al empleado de la tabla de usuarios y eliminar su usuario  
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException
+	 * @throws FieldFormatException 
 	 */
-	private void despedirEmpleado() throws ClassNotFoundException, SQLException {
+	private void despedirEmpleado() throws ClassNotFoundException, SQLException, FieldFormatException {
 		if(tablaUsuarios.getSelectedRow()!=-1) {
-			String id=(String) tablaUsuarios.getValueAt(tablaUsuarios.getSelectedRow(),0);
-			Empleado emp=restaurante.consultarEmpleado(id);
-			String advertencia="Se despedira al empleado y se eliminara su usario. ¿Esta seguro?";
+			Empleado emp =generarEmpleado();
+			String advertencia="Se despedira se eliminara su usario. ¿Esta seguro?";
 			if(JOptionPane.showConfirmDialog(this,advertencia,"Borrar usuario",2,3)==JOptionPane.OK_OPTION) {
 				restaurante.despedirEmpleado(emp);
 				modeloTablaUsuarios.removeRow(tablaUsuarios.getSelectedRow());

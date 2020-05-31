@@ -26,7 +26,11 @@ import javax.swing.JTree;
 import modelo.ConexionBBDD;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
-
+/**
+ * Ventana destinada al logeo de usuarios, dependiendo de su tipo se abrira una ventana u otra
+ * 
+ *
+ */
 public class VentanaLogin extends JFrame implements ActionListener,WindowListener{
 
 

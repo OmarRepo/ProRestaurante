@@ -97,7 +97,7 @@ public class Restaurante {
 		return null;
 	}
 	/**
-	 * Metodo que elimina usuario del empleado y elimina fecha de contrato
+	 * Metodo que elimina el usuario del empleado
 	 * @param emp
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -107,7 +107,6 @@ public class Restaurante {
 			Empleado empleado = (Empleado) iterator.next();
 			if(empleado.equals(emp)) {
 				empleado.borrarUsuario();
-				empleado.setFechaContrato(null);
 				break;
 			}
 		}
@@ -126,23 +125,17 @@ public class Restaurante {
 		id+=numeroID;
 		return id;
 	}
+	/**
+	 * Metodo que contrata al empleado, es decir le crea un usuario y lo registra en la BBDD en la tabla EMPLEADOS
+	 * @param emp
+	 * @param password
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void contratarEmpleado(Empleado emp,String password) throws ClassNotFoundException, SQLException {
-		try {
-			ConexionBBDD.getConnection().setAutoCommit(false);
-			if(this.listaEmpleados.contains(emp)) {
-				emp.crearUsuario(password);
-				emp.actualizarFechaContrato();
-				this.listaEmpleados.add(emp);
-			}
-			else {
 				emp.crearEmpleado();
 				emp.crearUsuario(password);
 				this.listaEmpleados.add(emp);
-			}
-			ConexionBBDD.getConnection().commit();
-		}finally {
-			ConexionBBDD.getConnection().setAutoCommit(true);
-		}
 	}
 	@Override
 	public String toString() {
