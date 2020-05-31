@@ -38,6 +38,7 @@ public class Pedido {
 		this.precio = 0;
 		this.estado = estado;
 		this.requisitosPedido = null;
+
 	}
 
 	public Pedido(String idPedido, int iDmesa, HashMap<String, Integer> consumibles, String idCocinero,
@@ -49,6 +50,7 @@ public class Pedido {
 		this.estado = estado;
 		this.idCocinero = idCocinero;
 		this.requisitosPedido = null;
+
 	}
 
 	public Pedido(String idPedido) {
@@ -57,6 +59,8 @@ public class Pedido {
 		this.consumibles = null;
 		this.precio = 0;
 		this.idCocinero = "";
+		this.requisitosPedido = null;
+
 	}
 
 	// Métodos
@@ -261,6 +265,7 @@ public class Pedido {
 	 * @see RequisitosPedido
 	 * @return
 	 */
+
 	public RequisitosPedido inicializarRequisitosPedido() {
 		return new RequisitosPedido();
 	}
@@ -291,7 +296,8 @@ public class Pedido {
 			// si el consumible es un plato
 			if (idConsumible.startsWith("P")) {
 
-				requisitosPedido.actualizarIngredientesRequeridosPlato((consultarIngredientesPlato(idConsumible)),consumibles.get(idConsumible));
+				requisitosPedido.actualizarIngredientesRequeridosPlato((consultarIngredientesPlato(idConsumible)),
+						consumibles.get(idConsumible));
 
 			}
 
@@ -350,7 +356,7 @@ public class Pedido {
 		HashMap<String, Integer> consumiblesMenu = new HashMap<String, Integer>();
 
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		ResultSet resul = consulta.executeQuery("SELECT * FROM MENU_CONSUMIBLES WHERE ID_MENU =" + "'" + idMenu + "'");
+		ResultSet resul = consulta.executeQuery("SELECT * FROM MENUS_CONSUMIBLES WHERE ID_MENU =" + "'" + idMenu + "'");
 		String idConsumible = "";
 		Integer cantidad = 0;
 
@@ -440,6 +446,7 @@ public class Pedido {
 	}
 
 	// Get
+
 	public String getIdPedido() {
 		return idPedido;
 	}
@@ -452,6 +459,10 @@ public class Pedido {
 		return consumibles;
 	}
 
+	public String getIdCocinero() {
+		return idCocinero;
+	}
+
 	public double getPrecio() {
 		return precio;
 	}
@@ -460,21 +471,26 @@ public class Pedido {
 		return estado;
 	}
 
-	public String getIdCocinero() {
-		return idCocinero;
+	public RequisitosPedido getRequisitosPedido() {
+		return requisitosPedido;
 	}
 
 	// Set
+
 	public void setIdPedido(String idPedido) {
 		this.idPedido = idPedido;
 	}
 
-	public void setIdMesa(int iDmesa) {
-		this.idMesa = iDmesa;
+	public void setIdMesa(int idMesa) {
+		this.idMesa = idMesa;
 	}
 
 	public void setConsumibles(HashMap<String, Integer> consumibles) {
 		this.consumibles = consumibles;
+	}
+
+	public void setIdCocinero(String idCocinero) {
+		this.idCocinero = idCocinero;
 	}
 
 	public void setPrecio(double precio) {
@@ -485,27 +501,19 @@ public class Pedido {
 		this.estado = estado;
 	}
 
-	public void setIdCocinero(String idCocinero) {
-		this.idCocinero = idCocinero;
-	}
-
-	public RequisitosPedido getRequisitosPedido() {
-		return requisitosPedido;
-	}
-
 	public void setRequisitosPedido(RequisitosPedido requisitosPedido) {
 		this.requisitosPedido = requisitosPedido;
-	}
-
-	@Override
-	public String toString() {
-		return "Pedido [numeroPedido=" + idPedido + ", iDmesa=" + idMesa + ", consumibles=" + consumibles + ", precio="
-				+ precio + ", estado=" + estado + "]";
 	}
 
 	// ssustituir consumibles que da el id y la cantidad por el nombre y la
 	// cantidad. Para ello, crear un hashMap auxiliar que almacene como clave el id
 	// y como valor el nombre para permitir un acceso rápido, aleatroio eficiente y
 	// cómodo desde el método toString
+
+	@Override
+	public String toString() {
+		return "Pedido [numeroPedido=" + idPedido + ", iDmesa=" + idMesa + ", consumibles=" + consumibles + ", precio="
+				+ precio + ", estado=" + estado + "]";
+	}
 
 }

@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.LinkedHashSet; 
+import java.util.LinkedHashSet;
 
 /**
  * 
@@ -63,7 +63,7 @@ public class RequisitosPedido {
 		String clave = "";
 		while (resul.next()) {
 			clave = resul.getString("ID_BEBIDA");
-			ingredientesRequeridos.put(clave, 0);
+			bebidasRequeridas.put(clave, 0);
 		}
 	}
 
@@ -76,11 +76,11 @@ public class RequisitosPedido {
 	 * @throws ClassNotFoundException
 	 */
 
-	public void actualizarIngredientesRequeridosPlato(HashMap<String, Integer> Plato,int cantidadPlatos) {
+	public void actualizarIngredientesRequeridosPlato(HashMap<String, Integer> Plato, int cantidadPlatos) {
 		int cantidadIngredientesPlato;
 		for (String idIngrediente : Plato.keySet()) {
 			cantidadIngredientesPlato = Plato.get(idIngrediente);
-			actualizarIngredientesRequeridos(idIngrediente, cantidadIngredientesPlato*cantidadPlatos);
+			actualizarIngredientesRequeridos(idIngrediente, cantidadIngredientesPlato * cantidadPlatos);
 		}
 	}
 
@@ -92,9 +92,12 @@ public class RequisitosPedido {
 	 * @param cantidad
 	 */
 	public void actualizarIngredientesRequeridos(String idIngrediente, int cantidad) {
+		int cantidadIngredientesRequeridos = 0;
+		if (ingredientesRequeridos.containsKey(idIngrediente)) {// si lo contiene añadimos la nueva cantidad
+			cantidadIngredientesRequeridos = ingredientesRequeridos.get(idIngrediente);
+		}
 
-		int cantidadIngredientesPedido = ingredientesRequeridos.get(idIngrediente);
-		ingredientesRequeridos.replace(idIngrediente, cantidadIngredientesPedido + cantidad);
+		ingredientesRequeridos.replace(idIngrediente, cantidadIngredientesRequeridos + cantidad);
 	}
 
 	/**
@@ -105,8 +108,12 @@ public class RequisitosPedido {
 	 * @param cantidad
 	 */
 	public void actualizarBebidasRequeridas(String idBebida, int cantidad) {
-		int cantidadBebidasPedido = bebidasRequeridas.get(idBebida);
-		bebidasRequeridas.replace(idBebida, cantidadBebidasPedido + cantidad);
+		int cantidadBebidasRequeridas = 0;
+		if (bebidasRequeridas.containsKey(idBebida)) {// si la contiene añadimos la nueva cantidad
+			cantidadBebidasRequeridas += bebidasRequeridas.get(idBebida);
+		}
+
+		bebidasRequeridas.replace(idBebida, cantidadBebidasRequeridas + cantidad);
 	}
 
 	/**
@@ -114,40 +121,81 @@ public class RequisitosPedido {
 	 * CONSULTAS SI PUEDEN EJECUTARSE TODAS (HAY CANTIDAD SUFICIENTE DE TODAS LAS
 	 * BEBIDAS E INGREDIENTES) O NINUNGA SI FALTA ALGO
 	 * 
-	 * Formaliza el pedido si no se produce ninguna excepción.
-	 * Hace uso de 
+	 * Formaliza el pedido si no se produce ninguna excepción. Hace uso de
 	 * 
 	 * @see InsuficentesExcepcion
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
+
 	public void confirmarPedido() throws ClassNotFoundException, SQLException {// COCINERO
 
 		ConexionBBDD.getConnection().setAutoCommit(false);// deshabilitamos el auto-commit
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
 
+		int almacenadoActualizado;
 		// añadimos las consultas UPDATE de la cantidad almacenada en la BB.DDD
 
 		// ingredientes
+
+		System.out.println("INGREDIENTES");
 		for (String idIngrediente : ingredientesRequeridos.keySet()) {
-			int cantidadIngredientesPedido = ingredientesRequeridos.get(idIngrediente);
-			String SQL = "UPDATE INGREDIENTES SET ALMACENADO=" + cantidadIngredientesPedido + "WHERE" + "'"
+
+			int cantidadIngredientesRequeridos = ingredientesRequeridos.get(idIngrediente);
+			System.out.println("\tcantidadIngredientesRequeridos: " + cantidadIngredientesRequeridos);// >>>>>>PRUEBA<<<<<<<
+			almacenadoActualizado = ingredientesAlmacenadoBBDD(idIngrediente) - cantidadIngredientesRequeridos;
+			System.out.println("\talmacenadoActualizado: " + almacenadoActualizado);// >>>>>>PRUEBA<<<<<<<
+			System.out.println();// >>>>>>PRUEBA<<<<<<<
+			String SQL = "UPDATE INGREDIENTES SET ALMACENADO=" + almacenadoActualizado + "WHERE ID_INGREDIENTE=" + "'"
 					+ idIngrediente + "'";
 			consulta.addBatch(SQL);
 		}
+
 		// bebidas
+		System.out.println("BEBIDAS");
 		for (String idBebida : bebidasRequeridas.keySet()) {
-			int cantidadBebidasPedido = bebidasRequeridas.get(idBebida);
-			String SQL = "UPDATE BEBIDAS SET ALMACENADO=" + cantidadBebidasPedido + "WHERE" + "'" + idBebida + "'";
+			int cantidadBebidasRequeridas = bebidasRequeridas.get(idBebida);
+			System.out.println("\tcantidadBebidasRequeridas: " + cantidadBebidasRequeridas);// >>>>>>PRUEBA<<<<<<<
+			almacenadoActualizado = bebidasAlmacenadoBBDD(idBebida) - cantidadBebidasRequeridas;
+			System.out.println("\talmacenadoActualizado: " + almacenadoActualizado);// >>>>>>PRUEBA<<<<<<<
+			System.out.println();// >>>>>>PRUEBA<<<<<<<
+			String SQL = "UPDATE BEBIDAS SET ALMACENADO=" + almacenadoActualizado + "WHERE ID_BEBIDA=" + "'" + idBebida
+					+ "'";
 			consulta.addBatch(SQL);
 
 		}
-
-		int count[] = consulta.executeBatch();
+		consulta.executeBatch();
+		// int count[] = consulta.executeBatch();
 		ConexionBBDD.getConnection().commit();
 
-		// ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
+		ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
 		// paquete vista con un .showMessageDialog
+
+	}
+
+	public int ingredientesAlmacenadoBBDD(String idIngrediente) throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resul = null;
+		int almacenado = 0;
+
+		resul = consulta
+				.executeQuery("SELECT ALMACENADO FROM INGREDIENTES WHERE ID_INGREDIENTE =" + "'" + idIngrediente + "'");
+		while (resul.next()) {
+			almacenado = resul.getInt("ALMACENADO");
+		}
+		return almacenado;
+	}
+
+	public int bebidasAlmacenadoBBDD(String idBebida) throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet resul = null;
+		int almacenado = 0;
+
+		resul = consulta.executeQuery("SELECT ALMACENADO FROM BEBIDAS WHERE ID_BEBIDA =" + "'" + idBebida + "'");
+		while (resul.next()) {
+			almacenado = resul.getInt("ALMACENADO");
+		}
+		return almacenado;
 
 	}
 
@@ -195,15 +243,16 @@ public class RequisitosPedido {
 			try {
 				int cantidadIngredientesPedido = ingredientesRequeridos.get(idIngrediente);
 				resul = consulta.executeQuery(
-						"SELECT ALMACENADO FROM INGREDIENTES WHERE ID_PEDIDO =" + "'" + idIngrediente + "'");
+						"SELECT ALMACENADO FROM INGREDIENTES WHERE ID_INGREDIENTE =" + "'" + idIngrediente + "'");
+				while (resul.next()) {
+					if (cantidadIngredientesPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
+																					// ingredientes
+						// almacenados en la BB.DD necesarios para preparar el
+						// pedido
 
-				if (cantidadIngredientesPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
-																				// ingredientes
-					// almacenados en la BB.DD necesarios para preparar el
-					// pedido
+						throw new InsuficentesExcepcion(idIngrediente);
 
-					throw new InsuficentesExcepcion(idIngrediente);
-
+					}
 				}
 			} finally {
 				ingredientesInsuficientes.add(idIngrediente);// se añade por orden de inserción
@@ -230,12 +279,14 @@ public class RequisitosPedido {
 				int cantidadBebidasPedido = bebidasRequeridas.get(idBebida);
 				resul = consulta
 						.executeQuery("SELECT ALMACENADO FROM BEBIDAS WHERE ID_BEBIDA =" + "'" + idBebida + "'");
-				if (cantidadBebidasPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
-																			// ingredientes
-					// almacenados en la BB.DD necesarios para preparar el
-					// pedido
+				while (resul.next()) {
+					if (cantidadBebidasPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
+																				// ingredientes
+						// almacenados en la BB.DD necesarios para preparar el
+						// pedido
 
-					throw new InsuficentesExcepcion(idBebida);
+						throw new InsuficentesExcepcion(idBebida);
+					}
 				}
 
 			} finally {
@@ -248,20 +299,20 @@ public class RequisitosPedido {
 
 	// getters y setters
 
-	public HashMap<String, Integer> getIngredientes() {
+	public HashMap<String, Integer> getIngredientesRequeridos() {
 		return ingredientesRequeridos;
 	}
 
-	public void setIngredientes(HashMap<String, Integer> ingredientes) {
-		this.ingredientesRequeridos = ingredientes;
+	public void setIngredientesRequeridos(HashMap<String, Integer> ingredientesRequeridos) {
+		this.ingredientesRequeridos = ingredientesRequeridos;
 	}
 
-	public HashMap<String, Integer> getBebidas() {
+	public HashMap<String, Integer> getBebidasRequeridas() {
 		return bebidasRequeridas;
 	}
 
-	public void setBebidas(HashMap<String, Integer> bebidas) {
-		this.bebidasRequeridas = bebidas;
+	public void setBebidasRequeridas(HashMap<String, Integer> bebidasRequeridas) {
+		this.bebidasRequeridas = bebidasRequeridas;
 	}
 
 	public LinkedHashSet<String> getIngredientesInsuficientes() {
