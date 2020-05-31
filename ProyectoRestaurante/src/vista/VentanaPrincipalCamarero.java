@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import modelo.ConexionBBDD;
 import modelo.Consumible;
 import modelo.ESTADO_PEDIDO;
+import modelo.InsuficentesExcepcion;
 import modelo.Pedido;
 import modelo.Restaurante;
 import net.miginfocom.swing.MigLayout;
@@ -320,6 +321,8 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 					+ "\n"+e1.getMessage());
 		} catch (IOException e1) {
 			JOptionPane.showMessageDialog(this, "Error al crear la factura, contacte con el administrador");
+		} catch (InsuficentesExcepcion e1) {
+			JOptionPane.showMessageDialog(this, "No tienes suficiente cantidad de "+e1.getMessage());
 		}
 	}
 	
@@ -339,8 +342,16 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(this, "Error al conectarse a la base de datos, contacte con el administrador.");
 		} catch (SQLException e1) {
-			JOptionPane.showMessageDialog(this, "Error en sentencia SQL, contacte con el administrador y muestre el mensaje"
-					+ "\n"+e1.getMessage());
+			JOptionPane.showMessageDialog(this, "Error en sentencia SQL, contactar con el administrador");
+			try {
+				ConexionBBDD.getConnection().rollback();
+			} catch (ClassNotFoundException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (SQLException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 		}
 	}
 	
@@ -407,7 +418,11 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 		else
 			pedido.modificarPedido();
 		consumibles = Pedido.buscarConsumibles(pedido.getIdPedido());
+		pedido.calcularTodosRequisitosPedido();
+		pedido.getRequisitosPedido().comprobarDisponibilidadBebidasBBDD();
+		pedido.getRequisitosPedido().comprobarDisponibilidadIngredientesBBDD();	
 		
+		pedido.getRequisitosPedido().confirmarPedido();
 		//Seleccionar Consumibles
 		for (int i=0; i<tablaCarta.getRowCount();i++) {
 		

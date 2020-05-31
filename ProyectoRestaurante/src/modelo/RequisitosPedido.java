@@ -168,7 +168,7 @@ public class RequisitosPedido {
 		// int count[] = consulta.executeBatch();
 		ConexionBBDD.getConnection().commit();
 
-		ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
+		//ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
 		// paquete vista con un .showMessageDialog
 
 	}
