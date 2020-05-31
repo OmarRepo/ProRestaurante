@@ -76,10 +76,12 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	private JLabel recetaPrecio;
 	private JTextField txtRecetaPrecio;
 	
+	//PEDIDOS
 	private JPanel panelPedidosCocinero;
 	private ModeloTabla modeloPedidosCocinero;
 	private JTable pedidosCocinero;
 	private JScrollPane scrollPedidosCocinero;
+	private JButton recargarPedidos;
 	
 	//PANELES
 	private JPanel panelAlmacen;
@@ -194,7 +196,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		pestanas.addTab("Recetas", panelRecetas);
 		cargarMenus();
 		
-		//Pestaña Pedidos
+		//PESTAÑA PEDIDOS
 		
 		panelPedidosCocinero = new JPanel();
 		panelPedidosCocinero.setLayout(new MigLayout());
@@ -204,8 +206,12 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		pedidosCocinero.addMouseListener(this);
 		pedidosCocinero.setModel(modeloPedidosCocinero);
 		scrollPedidosCocinero = new JScrollPane(pedidosCocinero);
+		recargarPedidos = new JButton("Recargar");
+		recargarPedidos.addActionListener(this);
 		
 		panelPedidosCocinero.add(scrollPedidosCocinero,"grow,push");
+		panelPedidosCocinero.add(recargarPedidos,"dock east");
+		
 		
 		pestanas.addTab("Pedidos", panelPedidosCocinero);
 		recargarPedidos();
@@ -438,6 +444,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 					}
 				
 			}
+			if (e.getSource().equals(recargarPedidos)) {
+				recargarPedidos();
+			}
 		} catch (ClassNotFoundException ex) {
 			JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");
 		} catch (SQLException ex) {
@@ -457,20 +466,20 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
-		if (e.getClickCount()==1) {
-			if (e.getSource().equals(almacen)) {
-				int filaSeleccionada = almacen.getSelectedRow();
-				id.setText(almacen.getValueAt(filaSeleccionada, 0).toString());
-				txtNombre.setText(almacen.getValueAt(filaSeleccionada, 1).toString());
-				txtCantidad.setText(almacen.getValueAt(filaSeleccionada, 2).toString());
-			}
-			if (e.getSource().equals(consumible)) {
-				HashMap<String, Integer> consumibles = new HashMap<String, Integer>();
-				JTable tabla = (JTable)e.getSource();
-				int filaSeleccionada = tabla.getSelectedRow();
-				String idConsumible = tabla.getValueAt(filaSeleccionada, 0).toString();
-				try {
+		try {	
+			if (e.getClickCount()==1) {
+				if (e.getSource().equals(almacen)) {
+					int filaSeleccionada = almacen.getSelectedRow();
+					id.setText(almacen.getValueAt(filaSeleccionada, 0).toString());
+					txtNombre.setText(almacen.getValueAt(filaSeleccionada, 1).toString());
+					txtCantidad.setText(almacen.getValueAt(filaSeleccionada, 2).toString());
+				}
+				if (e.getSource().equals(consumible)) {
+					HashMap<String, Integer> consumibles = new HashMap<String, Integer>();
+					JTable tabla = (JTable)e.getSource();
+					int filaSeleccionada = tabla.getSelectedRow();
+					String idConsumible = tabla.getValueAt(filaSeleccionada, 0).toString();
+					
 					if (idConsumible.startsWith("M"))
 						consumibles = Consumible.buscarComponentes(idConsumible,"menu");
 					else if (idConsumible.startsWith("P"))
@@ -488,33 +497,27 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 							componente.setValueAt(consumibles.get(componente.getValueAt(i, 0).toString()), i, 2);
 						}
 					}
-				} catch (ClassNotFoundException | SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					
 				}
-			}
-			if (e.getSource().equals(pedidosCocinero)) {
-				int filaSeleccionada = pedidosCocinero.getSelectedRow();
+				if (e.getSource().equals(pedidosCocinero)) {
+					int filaSeleccionada = pedidosCocinero.getSelectedRow();
+					String id = pedidosCocinero.getValueAt(filaSeleccionada, 0).toString();
+					int resultado = JOptionPane.showConfirmDialog(this,Pedido.mostrarPedido(id) , "Pedido "+id,JOptionPane.OK_CANCEL_OPTION);
+					
+					if (resultado == JOptionPane.OK_OPTION) {
+						if (pedidosCocinero.getValueAt(filaSeleccionada, 2).toString().equalsIgnoreCase("en_espera")) {
 				
-				int resultado = JOptionPane.showConfirmDialog(this,"hola" , "Pedido "+pedidosCocinero.getValueAt(filaSeleccionada, 0).toString(),JOptionPane.OK_CANCEL_OPTION);
-				
-				if (resultado == JOptionPane.OK_OPTION) {
-					if (pedidosCocinero.getValueAt(filaSeleccionada, 2).toString().equalsIgnoreCase("en_espera")) {
-						Statement consulta;
-						try {
-							consulta = ConexionBBDD.getConnection().createStatement();
-						
-							consulta.executeUpdate("UPDATE PEDIDOS SET ESTADO = '"+ESTADO_PEDIDO.preparado.name()+"' WHERE ID_PEDIDO = '"+pedidosCocinero.getValueAt(filaSeleccionada, 0).toString()+"'");
+							Pedido.prepararPedido(id);
 							recargarPedidos();
-						} catch (ClassNotFoundException | SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							
 						}
 					}
 				}
-			}
+			} 
+				
+		} catch (ClassNotFoundException | SQLException ex) {
+			JOptionPane.showMessageDialog(this, "Error de conexion con la base de datos, contacte con el administrador");
 		}
-		
 	}
 
 	@Override

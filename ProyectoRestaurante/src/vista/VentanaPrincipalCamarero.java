@@ -311,10 +311,10 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 			else if (modelPedidos.getValueAt(filaSeleccionada, 2).equals(modelo.ESTADO_PEDIDO.en_espera.name())) {
 				try {
 					pedido = crearPedidoSeleccionado();
-					pedido.calcularPrecio(res.getCarta());
+					pedido.calcularPrecio();
 					pedido.imprimirFactura();
 					modelPedidos.setValueAt(modelo.ESTADO_PEDIDO.pagado.name(), filaSeleccionada, 2);
-				} catch (IOException e1) {
+				} catch (IOException | ClassNotFoundException | SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -327,7 +327,7 @@ public class VentanaPrincipalCamarero extends JFrame implements ActionListener,M
 				int cantidad;
 				String idConsumible;
 				try {
-					pedido.calcularPrecio(res.getCarta());
+					pedido.calcularPrecio();
 					if (!pedido.buscarPedido()) 
 						pedido.insertarPedido();
 					else {

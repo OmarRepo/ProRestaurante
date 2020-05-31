@@ -65,6 +65,22 @@ public abstract class Consumible implements Comparable<Consumible> {
 		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
 	}
 	
+	public static String buscarConsumible(String id) throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet result = consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
+		if (result.next())
+			return result.getString("NOMBRE")+"	 "+result.getDouble("PRECIO")+"€ ";
+		return id;
+	}
+	
+	public static double obtenerPrecioConsumible(String id) throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet result = consulta.executeQuery("SELECT * FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
+		if (result.next())
+			return result.getDouble("PRECIO");
+		return 0;
+	}
+	
 	public static HashMap<String, Integer> buscarComponentes(String idConsumible, String tipo)
 			throws ClassNotFoundException, SQLException {
 		HashMap<String, Integer> componente = new HashMap<String, Integer>();

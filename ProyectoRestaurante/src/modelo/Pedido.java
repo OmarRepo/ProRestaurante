@@ -176,6 +176,36 @@ public class Pedido {
 				+ " AND ID_CONSUMIBLE = '" + idConsumible + "'");
 		consulta.close();
 	}
+	
+	public static void prepararPedido(String idPedido) throws ClassNotFoundException, SQLException {
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		consulta.executeUpdate("UPDATE PEDIDOS SET ESTADO = '"+ESTADO_PEDIDO.preparado.name()+"' WHERE ID_PEDIDO = '"+idPedido+"'");
+		consulta.close();
+	}
+	
+	public static String mostrarPedido(String idPedido) throws ClassNotFoundException, SQLException {
+		HashMap<String, Integer> consumibles = null;
+		String cadena = "";
+		Statement consulta = ConexionBBDD.getConnection().createStatement();
+		ResultSet result = consulta.executeQuery("SELECT * FROM PEDIDOS WHERE ID_PEDIDO = '"+idPedido+"'");
+		
+		if (result.next()) {
+			cadena = "Pedido "+ result.getString("ID_PEDIDO")
+					+"\n Fecha "+result.getDate("FECHA_CREACION")
+					+"\n Mesa "+result.getInt("MESA")
+					+"\n Camarero "+result.getString("ID_CAMARERO")
+					+"\n  Productos:\n";
+			consumibles = buscarConsumibles(idPedido);
+			for (String i : consumibles.keySet()) {
+				cadena += i+"	"+Consumible.buscarConsumible(i)+" * "+consumibles.get(i) + "\n";
+			}
+			cadena+="";
+			
+		}
+		consulta.close();
+		return cadena;
+		
+	}
 
 	/**
 	 * Devuelve un objeto de la clase RequisitosPedido que tiene los tres HashMap
@@ -185,7 +215,6 @@ public class Pedido {
 	 * @see RequisitosPedido
 	 * @return
 	 */
-
 	public RequisitosPedido inicializarRequisitosPedido() {
 		return new RequisitosPedido();
 	}
@@ -200,7 +229,6 @@ public class Pedido {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-
 	public void calcularTodosRequisitosPedido() throws ClassNotFoundException, SQLException {
 		this.requisitosPedido = inicializarRequisitosPedido();
 		requisitosPedido.cargarIdBebidasDesdeBBDD();
@@ -248,7 +276,6 @@ public class Pedido {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-
 	public void calcularRequisitosMenu(HashMap<String, Integer> consumibles)
 			throws ClassNotFoundException, SQLException {
 
@@ -278,7 +305,6 @@ public class Pedido {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-
 	public HashMap<String, Integer> consultarConsumiblesMenu(String idMenu)
 			throws ClassNotFoundException, SQLException {
 		HashMap<String, Integer> consumiblesMenu = new HashMap<String, Integer>();
@@ -308,7 +334,6 @@ public class Pedido {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-
 	public HashMap<String, Integer> consultarIngredientesPlato(String idPlato)
 			throws ClassNotFoundException, SQLException {
 		HashMap<String, Integer> ingredientesPlato = new HashMap<String, Integer>();
@@ -335,39 +360,37 @@ public class Pedido {
 	/**
 	 * Calcula el precio del pedido. Recorre el HashMap del atributo consumibles y
 	 * va sumando el precio de los consumibles.
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public void calcularPrecio(Carta carta) {
-		Iterator<String> it = consumibles.keySet().iterator();
-		Iterator<Consumible> itCarta = carta.getListaConsumibles().iterator();
-
-		while (it.hasNext()) {
-			String key = it.next();
-			while (itCarta.hasNext()) {
-				Consumible consumible = (Consumible) itCarta.next();
-				if (key.equalsIgnoreCase(consumible.getId())) {
-					precio += consumible.getPrecio();
-				}
-			}
-		}
+	public void calcularPrecio() throws ClassNotFoundException, SQLException {
+		HashMap<String, Integer> consumibles= buscarConsumibles(this.getIdPedido());
+		
+		for (String i : consumibles.keySet()) {
+			this.setPrecio(this.getPrecio()+(Consumible.obtenerPrecioConsumible(this.getIdPedido())*consumibles.get(i)));
+		}		
 	}
 
 	/**
 	 * Crea y almacena en un fichero de texto la factura con los datos del pedido.
 	 * 
 	 * @throws IOException
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-
-	public void imprimirFactura() throws IOException {
-		File f = new File("factura.txt");
-
+	public void imprimirFactura() throws IOException, ClassNotFoundException, SQLException {
+		File f = new File("facturas/factura"+this.getIdPedido()+".txt");
+		
+		if (!f.getParentFile().exists())
+			f.getParentFile().mkdir();
 		if (!f.exists()) {
 			f.createNewFile();
 		}
 		FileWriter fw = new FileWriter(f, true);
 		BufferedWriter bw = new BufferedWriter(fw);
 
-		String texto = this.toString() + "\n";
+		String texto = mostrarPedido(this.getIdPedido()) + "\n";
 
 		bw.write(texto);
 		bw.close();
