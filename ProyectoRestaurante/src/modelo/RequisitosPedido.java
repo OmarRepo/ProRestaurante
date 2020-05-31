@@ -168,7 +168,7 @@ public class RequisitosPedido {
 		// int count[] = consulta.executeBatch();
 		ConexionBBDD.getConnection().commit();
 
-		//ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
+		ConexionBBDD.getConnection().rollback();// el rollback() se maneja desde el
 		// paquete vista con un .showMessageDialog
 
 	}
@@ -236,24 +236,20 @@ public class RequisitosPedido {
 	public void comprobarDisponibilidadIngredientesBBDD()
 			throws ClassNotFoundException, SQLException, InsuficentesExcepcion {
 
-		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		ResultSet resul = null;
-
 		for (String idIngrediente : ingredientesRequeridos.keySet()) {
 			try {
 				int cantidadIngredientesPedido = ingredientesRequeridos.get(idIngrediente);
-				resul = consulta.executeQuery(
-						"SELECT ALMACENADO FROM INGREDIENTES WHERE ID_INGREDIENTE =" + "'" + idIngrediente + "'");
-				while (resul.next()) {
-					if (cantidadIngredientesPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
-																					// ingredientes
-						// almacenados en la BB.DD necesarios para preparar el
-						// pedido
 
-						throw new InsuficentesExcepcion(idIngrediente);
+				if (cantidadIngredientesPedido > ingredientesAlmacenadoBBDD(idIngrediente)) {// si no hay suficiente
+																								// cantidad de
+					// ingredientes
+					// almacenados en la BB.DD necesarios para preparar el
+					// pedido
 
-					}
+					throw new InsuficentesExcepcion(idIngrediente);
+
 				}
+
 			} finally {
 				ingredientesInsuficientes.add(idIngrediente);// se añade por orden de inserción
 			}
@@ -271,22 +267,16 @@ public class RequisitosPedido {
 	public void comprobarDisponibilidadBebidasBBDD()
 			throws ClassNotFoundException, SQLException, InsuficentesExcepcion {
 
-		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		ResultSet resul = null;
-
 		for (String idBebida : bebidasRequeridas.keySet()) {
 			try {
 				int cantidadBebidasPedido = bebidasRequeridas.get(idBebida);
-				resul = consulta
-						.executeQuery("SELECT ALMACENADO FROM BEBIDAS WHERE ID_BEBIDA =" + "'" + idBebida + "'");
-				while (resul.next()) {
-					if (cantidadBebidasPedido > resul.getInt("ALMACENADO")) {// si no hay suficiente cantidad de
-																				// ingredientes
-						// almacenados en la BB.DD necesarios para preparar el
-						// pedido
 
-						throw new InsuficentesExcepcion(idBebida);
-					}
+				if (cantidadBebidasPedido > bebidasAlmacenadoBBDD(idBebida)) {// si no hay suficiente cantidad de
+																				// ingredientes
+					// almacenados en la BB.DD necesarios para preparar el
+					// pedido
+
+					throw new InsuficentesExcepcion(idBebida);
 				}
 
 			} finally {
