@@ -438,7 +438,7 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		} catch (ClassNotFoundException ex) {
 			JOptionPane.showMessageDialog(this, "Error de conexión, contacte con el administrador.");
 		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage());
+			JOptionPane.showMessageDialog(this, "Error en sentencia SQL, contacte con el administrador.");
 		} catch (NumberFormatException ex) {
 			JOptionPane.showMessageDialog(this, "Número no válido.");
 		}
@@ -512,18 +512,24 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	 * @throws NumberFormatException
 	 */
 	private void botonGuardarComponentes() throws SQLException, ClassNotFoundException, NumberFormatException {
-		int filaSeleccionada = componente.getSelectedRow();
+		int filaSeleccionada = consumible.getSelectedRow();
+		System.out.format("%s \n",filaSeleccionada);
 		String idConsumible = consumible.getValueAt(filaSeleccionada, 0).toString();
-		if (idConsumible.startsWith("M"))
+		
+		if (idConsumible.startsWith("M")) {
 			for (int i=0; i<modeloComponente.getRowCount(); i++) {
 				if ((Boolean)componente.getValueAt(i, 3))
 					Menu.insertarMenusConsumibles(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
 			}
-		else if (idConsumible.startsWith("P"))
+			JOptionPane.showMessageDialog(this, "Menu actualizado correctamente.");
+		}
+		else if (idConsumible.startsWith("P")) {
 			for (int i=0; i<modeloComponente.getRowCount(); i++) {
 				if ((Boolean)componente.getValueAt(i, 3))
 					Plato.insertarPlatoIngredientes(idConsumible, componente.getValueAt(i, 0).toString(), Integer.parseInt(componente.getValueAt(i, 2).toString()));
 			}
+			JOptionPane.showMessageDialog(this, "Plato actualizado correctamente.");
+		}
 	}
 	
 	/**
@@ -542,12 +548,12 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			String id = txtRecetaId.getText();
 			String nombre = txtRecetaNombre.getText();
 			String precio = txtRecetaPrecio.getText();
-			String[] fila = {id,nombre,precio};
-			modeloConsumible.addRow(fila);
+			//String[] fila = {id,nombre,precio};
+			//modeloConsumible.addRow(fila);
 			if (id.startsWith("M"))
-				new Menu(id,nombre,Double.parseDouble(precio)).insertarMenu();
+				res.getCarta().anadirConsumible(new Menu(id,nombre,Double.parseDouble(precio)));
 			else if (id.startsWith("P"))
-				new Plato(id,nombre,Double.parseDouble(precio)).insertarPlato();
+				res.getCarta().anadirConsumible(new Plato(id,nombre,Double.parseDouble(precio)));
 			else if (id.startsWith("B")) {
 				Bebida bebida = new Bebida(id,nombre,Double.parseDouble(precio));
 				if (bebida.existe())

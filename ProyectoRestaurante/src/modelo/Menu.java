@@ -77,7 +77,7 @@ public class Menu extends Consumible {
 			throws SQLException, ClassNotFoundException {
 		Statement consulta;
 		consulta = ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("INSERT INTO MENU_CONSUMIBLES (ID_MENU,ID_CONSUMIBLE,CANTIDAD) VALUES ('"+idConsumible+"','"+idComponente+"',"+cantidad+")");							
+		consulta.executeUpdate("INSERT INTO MENUS_CONSUMIBLES (ID_MENU,ID_CONSUMIBLE,CANTIDAD) VALUES ('"+idConsumible+"','"+idComponente+"',"+cantidad+")");							
 		consulta.close();
 	}
 

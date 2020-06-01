@@ -31,7 +31,8 @@ public class Carta {
 	public void anadirConsumible(Consumible consumible) throws ClassNotFoundException, SQLException {
 		if(!listaConsumibles.contains(consumible)) {
 			Statement consulta=ConexionBBDD.getConnection().createStatement();
-			consulta.executeUpdate("INSERT INTO CONSUMIBLES VALUES('"+consumible.getId()+"','"+consumible.getNombre()+"','"+consumible.getPrecio()+"','"+consumible.getClass().getSimpleName()+"')");
+			
+			consulta.executeUpdate("INSERT INTO CONSUMIBLES VALUES('"+consumible.getId()+"','"+consumible.getNombre()+"',"+consumible.getPrecio()+",'"+consumible.getClass().getSimpleName()+"')");
 			listaConsumibles.add(consumible);
 		}
 
