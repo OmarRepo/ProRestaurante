@@ -108,6 +108,7 @@ public class VentanaLogin extends JFrame implements ActionListener,WindowListene
 					new VentanaPrincipalCocinero();
 					break;
 				}
+				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			}
 			} catch (SQLException exception) {
 				if(exception.getErrorCode()==1017)

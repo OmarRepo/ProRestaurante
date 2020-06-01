@@ -258,7 +258,7 @@ public class Pedido {
 
 		if (result.next()) {
 			cadena = "Pedido " + result.getString("ID_PEDIDO") + "\n Fecha " + result.getDate("FECHA_CREACION")
-					+ "\n Mesa " + result.getInt("MESA") + "\n Camarero " + result.getString("ID_CAMARERO")
+					+ "\n Mesa " + result.getInt("MESA")
 					+ "\n  Productos:\n";
 			consumibles = buscarConsumibles(idPedido);
 			for (String i : consumibles.keySet()) {
