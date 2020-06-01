@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import modelo.Bebida;
+import modelo.Carta;
 import modelo.ConexionBBDD;
 import modelo.Consumible;
 import modelo.ESTADO_PEDIDO;
@@ -424,8 +425,9 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			}
 			if (e.getSource().equals(eliminarReceta)) {
 				int filaSeleccionada = consumible.getSelectedRow();
-				Consumible.borrarConsumible(consumible.getValueAt(filaSeleccionada, 0).toString());
+				Consumible.borrarConsumible((String)consumible.getValueAt(filaSeleccionada, 0));
 				modeloConsumible.removeRow(filaSeleccionada);
+				res.setCarta(new Carta());
 			}
 			
 			if (e.getSource().equals(guardarComponentes)) {
@@ -513,7 +515,6 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 	 */
 	private void botonGuardarComponentes() throws SQLException, ClassNotFoundException, NumberFormatException {
 		int filaSeleccionada = consumible.getSelectedRow();
-		System.out.format("%s \n",filaSeleccionada);
 		String idConsumible = consumible.getValueAt(filaSeleccionada, 0).toString();
 		
 		if (idConsumible.startsWith("M")) {
@@ -552,9 +553,11 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 			//modeloConsumible.addRow(fila);
 			if (id.startsWith("M"))
 				res.getCarta().anadirConsumible(new Menu(id,nombre,Double.parseDouble(precio)));
-			else if (id.startsWith("P"))
+			else if (id.startsWith("P")) {
+				System.out.println(id);
 				res.getCarta().anadirConsumible(new Plato(id,nombre,Double.parseDouble(precio)));
-			else if (id.startsWith("B")) {
+			
+			}else if (id.startsWith("B")) {
 				Bebida bebida = new Bebida(id,nombre,Double.parseDouble(precio));
 				if (bebida.existe())
 					bebida.modificarBebida(Double.parseDouble(precio));
@@ -609,7 +612,6 @@ public class VentanaPrincipalCocinero extends JFrame implements ActionListener,M
 		}
 		else if (id.getText().startsWith("B")) {
 				Bebida bebida = new Bebida(id.getText(),txtNombre.getText(),Integer.parseInt(txtCantidad.getText()));
-				System.out.format("%s \n",bebida.existe());
 				if (bebida.existe()) {
 					bebida.modificarBebida();
 					bebida.asignarCantidadBebida();

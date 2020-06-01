@@ -69,7 +69,8 @@ public abstract class Consumible implements Comparable<Consumible> {
 	 */
 	public static void borrarConsumible(String id) throws ClassNotFoundException, SQLException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE ='" + id + "'");
+		consulta.executeUpdate("DELETE FROM CONSUMIBLES WHERE ID_CONSUMIBLE = '" + id + "'");
+		consulta.close();
 	}
 	
 	/**

@@ -51,7 +51,7 @@ public class Bebida extends Consumible {
 	 */
 	public void modificarBebida() throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		System.out.format("%s \n",consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'"));
+		consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"' WHERE ID_CONSUMIBLE = '"+this.getId()+"'");
 		consulta.close();
 	}
 	
@@ -65,7 +65,7 @@ public class Bebida extends Consumible {
 	 */
 	public void modificarBebida(double precio) throws SQLException, ClassNotFoundException {
 		Statement consulta = ConexionBBDD.getConnection().createStatement();
-		System.out.format("%s \n",consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"', PRECIO = "+precio+" WHERE ID_CONSUMIBLE = '"+this.getId()+"'"));
+		consulta.executeUpdate("UPDATE CONSUMIBLES SET NOMBRE = '"+this.getNombre()+"', PRECIO = "+precio+" WHERE ID_CONSUMIBLE = '"+this.getId()+"'");
 		consulta.close();
 	}
 	/**
